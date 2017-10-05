@@ -33,6 +33,8 @@ public class StarGenerator : MonoBehaviour {
             //points[i].startLifetime = 5000;
             //particleStars[i].remainingLifetime = Mathf.Infinity;
 
+            //TODO: Dark stars are too dark to be visible
+            //UNDONE: Add no mesh collider only prefab for raycasting
             starParticles[i].startColor = Color.white * (1.0f - ((float.Parse(components[6]) + 1.44f) / 8)) * 2;
             starParticles[i].startSize = starSize;
 
