@@ -53,6 +53,7 @@ public class StarGenerator : MonoBehaviour {
 
     // BV < -0.4,+2.0 >
     // Returns Color with RGB <0,1> 
+    // https://stackoverflow.com/questions/21977786/star-b-v-color-index-to-apparent-rgb-color
     private Color getColor(float bv) {
         float t, r = 0.0f, g = 0.0f, b = 0.0f;
         if (bv < -0.4) bv = -0.4f; if (bv > 2.0) bv = 2.0f;
