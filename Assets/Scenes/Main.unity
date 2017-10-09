@@ -444,7 +444,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   starCSV: {fileID: 4900000, guid: 607c88b6c8a50458696d60318b5ac3dd, type: 3}
   ps: {fileID: 1083175137}
-  starsMax: 5000
+  starsMax: 2000
   starSize: 10
   starDistance: 10
 --- !u!198 &1083175137
@@ -506,7 +506,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 1529314361
+  randomSeed: 1052070658
   InitialModule:
     serializedVersion: 3
     enabled: 1
