@@ -52,7 +52,7 @@ public class StarGenerator : MonoBehaviour {
 
 
     // BV < -0.4,+2.0 >
-    // Returns Color with RGB <0,1> 
+    // Returns Color with RGB <0,1>
     // https://stackoverflow.com/questions/21977786/star-b-v-color-index-to-apparent-rgb-color
     private Color getColor(float bv) {
         float t, r = 0.0f, g = 0.0f, b = 0.0f;
@@ -61,7 +61,7 @@ public class StarGenerator : MonoBehaviour {
             if ((bv >= -.4f) && (bv < .0f)) { t = (bv + .4f) / (.0f + .4f); g = 0.70f + (0.07f * t) + (0.1f * t * t); } else if ((bv >= .0f) && (bv < .4f)) { t = (bv - .0f) / (.4f - .0f); g = 0.87f + (0.11f * t); } else if ((bv >= .4f) && (bv < 1.60f)) { t = (bv - .4f) / (1.60f - .4f); g = 0.98f - (0.16f * t); } else if ((bv >= 1.60f) && (bv < 2.00f)) { t = (bv - 1.60f) / (2.00f - 1.60f); g = 0.82f - (0.5f * t * t); }
             if ((bv >= -.4f) && (bv < .4f)) { t = (bv + .4f) / (.4f + .4f); b = 1.00f; } else if ((bv >= .4f) && (bv < 1.5f)) { t = (bv - .4f) / (1.5f - .4f); b = 1.00f - (0.47f * t) + (0.1f * t * t); } else if ((bv >= 1.50f) && (bv < 1.94)) { t = (bv - 1.50f) / (1.94f - 1.50f); b = 0.63f - (0.6f * t * t); }
         Vector3 temp = new Vector3(r, g, b).normalized;
-        return new Color(temp.x, temp.y, temp.z);
+        return new Color(temp.x, temp.y, temp.z, 25544f);
     }
 
 
