@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class StarGenerator : MonoBehaviour {
     // TODO: https://www.youtube.com/watch?v=-E32N-0qwVM&t=279s
@@ -27,29 +25,26 @@ public class StarGenerator : MonoBehaviour {
     // Use this for initialization
     void Start() {
         load_data();
-        createStars();
+        createStars(new Vector3(0,0,0));
     }
 
 
-    private void createStars() {
-        starParticles = new ParticleSystem.Particle[starsMax];
-        string[] lines = starCSV.text.Split('\n');
+    private void createStars(Vector3 pos) {
         for (int i = 0; i < starsMax; i++) {
-            string[] components = lines[i].Split(',');
             //particleStars[i].position = Random.insideUnitSphere * 10f;
             //points[i].position = Random.insideUnitSphere * 10;
-            starParticles[i].position = new Vector3(starDataSet[i].X, starDataSet[i].Z, starDataSet[i].Y).normalized * Camera.main.farClipPlane * 0.9f;
+            Vector3 starPos = new Vector3(starDataSet[i].X-pos.x, starDataSet[i].Z-pos.y, starDataSet[i].Y-pos.z);
+            starParticles[i].position = pos + starPos.normalized * Camera.main.farClipPlane * 0.9f;
 
             //points[i].startLifetime = 5000;
             //particleStars[i].remainingLifetime = Mathf.Infinity;
 
             //TODO: Dark stars are too dark to be visible
             //UNDONE: Add no mesh collider only prefab for raycasting
-            //Debug.Log(components[9]);
 
             starParticles[i].startColor = starDataSet[i].Color * (1.0f - (starDataSet[i].Mag + 1.44f) / 8) * 3;
             
-            Debug.Log(starParticles[i].startColor);
+            //Debug.Log(starParticles[i].startColor);
             starParticles[i].startSize = starSize;
 
         }
@@ -73,7 +68,7 @@ public class StarGenerator : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-
+        createStars(Camera.main.transform.position);
     }
 
     void load_data() {
@@ -81,6 +76,7 @@ public class StarGenerator : MonoBehaviour {
         // HIP,BayerFlamsteed,ProperName,Distance,Mag,AbsMag,Spectrum,ColorIndex,X,Y,Z
 
         starDataSet = new StarData[starsMax];
+        starParticles = new ParticleSystem.Particle[starsMax];
 
         for (int i = 0; i < starsMax; i++) {
             string[] components = lines[i].Split(',');
@@ -100,5 +96,6 @@ public class StarGenerator : MonoBehaviour {
             starDataSet[i].Y = float.Parse(components[9]);
             starDataSet[i].Z = float.Parse(components[10]);
         }
+        starCSV = null;
     }
 }
