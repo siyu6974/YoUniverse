@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
+using System;
 
 public class StarGenerator : MonoBehaviour {
+    private const float EYE_RESOLUTION = 0.25f;
+
     // TODO: https://www.youtube.com/watch?v=-E32N-0qwVM&t=279s
     [SerializeField]
     private TextAsset starCSV;
@@ -22,6 +25,10 @@ public class StarGenerator : MonoBehaviour {
     public int starsMax = 100;
     public float starSize = 1;
 
+
+    float starLinearScale = 19.569f * 2f;
+    float lnfovFactor;
+
     // Use this for initialization
     void Start() {
         load_data();
@@ -35,14 +42,20 @@ public class StarGenerator : MonoBehaviour {
             //points[i].position = Random.insideUnitSphere * 10;
             Vector3 starPos = new Vector3(starDataSet[i].X-pos.x, starDataSet[i].Z-pos.y, starDataSet[i].Y-pos.z);
             starParticles[i].position = pos + starPos.normalized * Camera.main.farClipPlane * 0.9f;
+            //starLinearScale = Math.Pow(35 * 2.0f * 1, 1.40f / 2f * 1);
+            starSize = adaptLuminanceScaledLn(pointSourceMagToLnLuminance(starDataSet[i].Mag), .6f);
+            starSize *= starLinearScale;
 
+            float luminanceFactor = 1f;
+            if (starSize >= 20) {
+                starSize = 20;
+            }
             //points[i].startLifetime = 5000;
             //particleStars[i].remainingLifetime = Mathf.Infinity;
 
-            //TODO: Dark stars are too dark to be visible
             //UNDONE: Add no mesh collider only prefab for raycasting
 
-            starParticles[i].startColor = starDataSet[i].Color * (1.0f - (starDataSet[i].Mag + 1.44f) / 8) * 3;
+            starParticles[i].startColor = starDataSet[i].Color * luminanceFactor;
             
             //Debug.Log(starParticles[i].startColor);
             starParticles[i].startSize = starSize;
@@ -69,6 +82,10 @@ public class StarGenerator : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        float fov = Camera.main.fieldOfView / 180f;
+        double powFactor = Math.Pow(60f / Math.Max(0.7f, fov), 0.8f);
+
+        lnfovFactor = (float)Math.Log(1f / 50f * 2025000f * 60f * 60f / (fov * fov) / (EYE_RESOLUTION * EYE_RESOLUTION) / powFactor / 1.4f);
         createStars(Camera.main.transform.position);
     }
 
@@ -100,15 +117,25 @@ public class StarGenerator : MonoBehaviour {
         starCSV = null;
     }
 
+    // Compute the ln of the luminance for a point source with the given mag for the current FOV
+    float pointSourceMagToLnLuminance(float mag){
+        return -0.92103f*(mag + 12.12331f) + lnfovFactor;
+    }   
+
+    float adaptLuminanceScaledLn(float lnWorldLuminance, float pFact = 0.5f) {
+        const float lnPix0p0001 = -8.0656104861f;
+        return (float)Math.Exp(((lnWorldLuminance+lnPix0p0001)*1)*pFact);
+    }
 
     private int bVToIndex(float bV) {
         return (int)((bV + .5f) / (4f / 127f));
     }
 
-    //! Convert quantized B-V index to RGB colors
+    // from Stellarium
     private Color indexToColor(int bV) {
         return colorTable[bV];
     }
+
 
     private Color[] colorTable = new Color[128] {
         new Color(0.602745f,0.713725f,1.000000f),
