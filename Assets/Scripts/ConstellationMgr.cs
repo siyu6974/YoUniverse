@@ -79,7 +79,7 @@ public class ConstellationMgr : MonoBehaviour {
                 links[j, 1] = int.Parse(components[3 + j * 2 + 1]);
             }
             ConstellationData data = new ConstellationData() {
-                name = "",
+                name = "", // TODO
                 abbr = components[0],
                 links = links
             };
