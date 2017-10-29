@@ -9,11 +9,11 @@ public struct ConstellationData {
 }
 
 public class ConstellationMgr : MonoBehaviour {
-    bool _enabled;
+    bool _drawLineEnabled;
 
     [SerializeField]
-    public bool enabled {
-        get { return _enabled; }
+    public bool drawLineEnabled {
+        get { return _drawLineEnabled; }
         set {
             if (value == false) {
                 foreach (GameObject go in linesDrawn) {
@@ -21,7 +21,7 @@ public class ConstellationMgr : MonoBehaviour {
                 }
                 linesDrawn.Clear();
             }
-            _enabled = value;
+            _drawLineEnabled = value;
         }
     }
 
@@ -36,13 +36,13 @@ public class ConstellationMgr : MonoBehaviour {
 
 
 	void Start () {
-        enabled = true;
+        drawLineEnabled = true;
         load_data();
         linesDrawn = new List<GameObject>();
 	}
 	
 	void Update () {
-        if (!enabled) return;
+        if (!drawLineEnabled) return;
 
         foreach (GameObject go in linesDrawn) {
             Destroy(go);
