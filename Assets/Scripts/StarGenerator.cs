@@ -1,29 +1,32 @@
 ﻿using UnityEngine;
 using System;
 
+public struct StarData {
+    public int HIP;
+    public string BayerFlamsteed;
+    public string ProperName;
+    public float Distance;
+    public float Mag;
+    public float AbsMag;
+    public string Spectrum;
+    public Color Color;
+    public float X, Y, Z;
+    public Vector3 drawnPos;
+}
+
 public class StarGenerator : MonoBehaviour {
     private const float EYE_RESOLUTION = 0.25f;
 
-    // TODO: https://www.youtube.com/watch?v=-E32N-0qwVM&t=279s
     [SerializeField]
     private TextAsset starCSV;
-    private struct StarData {
-        public int HIP;
-        public string BayerFlamsteed;
-        public string ProperName;
-        public float Distance;
-        public float Mag;
-        public float AbsMag;
-        public string Spectrum;
-        public Color Color;
-        public float X, Y, Z;
-    }
-    private StarData[] starDataSet;
+
+    [HideInInspector]
+    public StarData[] starDataSet;
     public ParticleSystem ps;
     private ParticleSystem.Particle[] starParticles;
 
     public int starsMax = 100;
-    public float starSize = 1;
+    private float starSize = 1;
 
 
     float starLinearScale = 19.569f * 2f;
@@ -37,12 +40,14 @@ public class StarGenerator : MonoBehaviour {
 
 
     private void createStars(Vector3 pos) {
+        // TODO: USE absMag to get more stars!
         for (int i = 0; i < starsMax; i++) {
             //particleStars[i].position = Random.insideUnitSphere * 10f;
             //points[i].position = Random.insideUnitSphere * 10;
-            Vector3 starPos = new Vector3(starDataSet[i].X-pos.x, starDataSet[i].Z-pos.y, starDataSet[i].Y-pos.z);
-            starParticles[i].position = pos + starPos.normalized * Camera.main.farClipPlane * 0.9f;
-            //starLinearScale = Math.Pow(35 * 2.0f * 1, 1.40f / 2f * 1);
+            Vector3 starRelativePos = new Vector3(starDataSet[i].X-pos.x, starDataSet[i].Z-pos.y, starDataSet[i].Y-pos.z);
+            starParticles[i].position = pos + starRelativePos.normalized * Camera.main.farClipPlane * 0.9f;
+            starDataSet[i].drawnPos = starParticles[i].position;
+
             starSize = adaptLuminanceScaledLn(pointSourceMagToLnLuminance(starDataSet[i].Mag), .6f);
             starSize *= starLinearScale;
 
