@@ -2,15 +2,17 @@
 using System;
 
 public struct StarData {
+    // invar
     public int HIP;
     public string BayerFlamsteed;
     public string ProperName;
-    public float Distance;
-    public float Mag;
     public float AbsMag;
     public string Spectrum;
     public Color Color;
     public float X, Y, Z;
+
+    // var
+    public float Mag;
     public Vector3 drawnPos;
 }
 
@@ -47,6 +49,8 @@ public class StarGenerator : MonoBehaviour {
             Vector3 starRelativePos = new Vector3(starDataSet[i].X-pos.x, starDataSet[i].Z-pos.y, starDataSet[i].Y-pos.z);
             starParticles[i].position = pos + starRelativePos.normalized * Camera.main.farClipPlane * 0.9f;
             starDataSet[i].drawnPos = starParticles[i].position;
+            
+            starDataSet[i].Mag = adaptMagitude(starRelativePos.magnitude, starDataSet[i].AbsMag);
 
             starSize = adaptLuminanceScaledLn(pointSourceMagToLnLuminance(starDataSet[i].Mag), .6f);
             starSize *= starLinearScale;
@@ -106,20 +110,23 @@ public class StarGenerator : MonoBehaviour {
             starDataSet[i].HIP = int.Parse(components[0]);
             starDataSet[i].BayerFlamsteed = components[1];
             starDataSet[i].ProperName = components[2];
-            starDataSet[i].Distance = float.Parse(components[3]);
-            starDataSet[i].Mag = float.Parse(components[4]);
-            starDataSet[i].AbsMag = float.Parse(components[5]);
-            starDataSet[i].Spectrum = components[6];
+            starDataSet[i].AbsMag = float.Parse(components[3]);
+            starDataSet[i].Spectrum = components[4];
             try {
-                starDataSet[i].Color = getColor(float.Parse(components[7]));
+                starDataSet[i].Color = getColor(float.Parse(components[5]));
             } catch {
                 starDataSet[i].Color = Color.white;
             }
-            starDataSet[i].X = float.Parse(components[8]);
-            starDataSet[i].Y = float.Parse(components[9]);
-            starDataSet[i].Z = float.Parse(components[10]);
+            starDataSet[i].X = float.Parse(components[6]);
+            starDataSet[i].Y = float.Parse(components[7]);
+            starDataSet[i].Z = float.Parse(components[8]);
         }
         starCSV = null;
+    }
+
+
+    float adaptMagitude(float distance, float M) {
+        return (float)(M - 5 * Math.Log10(10 / distance));
     }
 
     // Compute the ln of the luminance for a point source with the given mag for the current FOV

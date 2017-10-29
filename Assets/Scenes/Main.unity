@@ -360,7 +360,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 458a277e43e7146e3a28d659d903917b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enable: 1
   linesParentObjTransform: {fileID: 1037490423}
   lineMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   dataSource: {fileID: 4900000, guid: 4b2a6d4d74e934ee2abb6270f7ce6b7d, type: 3}

@@ -36,7 +36,7 @@ public class ConstellationMgr : MonoBehaviour {
 
 
 	void Start () {
-        drawLineEnabled = true;
+        //drawLineEnabled = true;
         load_data();
         linesDrawn = new List<GameObject>();
 	}
