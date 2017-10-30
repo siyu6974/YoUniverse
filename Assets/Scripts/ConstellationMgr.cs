@@ -15,8 +15,8 @@ public class ConstellationMgr : MonoBehaviour {
         get { return _drawLineEnabled; }
         set {
             if (value == false) {
-                foreach (GameObject go in linesDrawn) {
-                    Destroy(go);
+                foreach (LineRenderer lr in linesDrawn) {
+                    Destroy(lr.gameObject);
                 }
                 linesDrawn.Clear();
             }
@@ -30,23 +30,22 @@ public class ConstellationMgr : MonoBehaviour {
     private StarData[] starDataSet;
 
     public GameObject linePrefab;
-    private List<GameObject> linesDrawn;
+    private List<LineRenderer> linesDrawn;
 
 
 	void Start () {
-        //drawLineEnabled = true;
         load_data();
-        linesDrawn = new List<GameObject>();
+        linesDrawn = new List<LineRenderer>();
 	}
 	
 	void Update () {
-        if (!_drawLineEnabled) return;
-
-        foreach (GameObject go in linesDrawn) {
-            Destroy(go);
+        if (Input.GetKeyDown(KeyCode.M)) {
+            drawLineEnabled = !drawLineEnabled;
         }
-        linesDrawn.Clear();
+        if (!_drawLineEnabled) return;
+        lineIndex = 0;
 
+        // if contellationData not ready, skip this frame
         if (contellationDataSet == null) return;
 
         for (int i = 0; i < contellationDataSet.Length;i++) {
@@ -58,8 +57,8 @@ public class ConstellationMgr : MonoBehaviour {
                     drawLine(a, b, Color.white);
             }
         }
-        
 	}
+
 
     public TextAsset dataSource;
 
@@ -88,18 +87,24 @@ public class ConstellationMgr : MonoBehaviour {
     }
 
 
+    int lineIndex = 0;
     void drawLine(Vector3 start, Vector3 end, Color color) {
-        GameObject myLine = Instantiate(linePrefab, transform);
-        LineRenderer lr = myLine.GetComponent<LineRenderer>();
+        LineRenderer lr;
+        try {
+            // try to reuse line renderer 
+            lr = linesDrawn[lineIndex];
+        } catch (System.ArgumentOutOfRangeException){
+            lr = Instantiate(linePrefab, transform).GetComponent<LineRenderer>();
+            linesDrawn.Add(lr);
+        }
 
         // leave a margin 
         Vector3 margin = (end - start).normalized * 10f;
         lr.SetPosition(0, start + margin);
         lr.SetPosition(1, end - margin);
 
-        linesDrawn.Add(myLine);
+        lineIndex++;
     }
-
 
 
     private Vector3 getStar(int id) {
