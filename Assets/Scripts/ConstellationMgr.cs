@@ -11,7 +11,6 @@ public struct ConstellationData {
 public class ConstellationMgr : MonoBehaviour {
     bool _drawLineEnabled;
 
-    [SerializeField]
     public bool drawLineEnabled {
         get { return _drawLineEnabled; }
         set {
@@ -30,8 +29,7 @@ public class ConstellationMgr : MonoBehaviour {
 
     private StarData[] starDataSet;
 
-    public Transform linesParentObjTransform; // parent object for all drawn lines
-    public Material lineMaterial;
+    public GameObject linePrefab;
     private List<GameObject> linesDrawn;
 
 
@@ -42,7 +40,7 @@ public class ConstellationMgr : MonoBehaviour {
 	}
 	
 	void Update () {
-        if (!drawLineEnabled) return;
+        if (!_drawLineEnabled) return;
 
         foreach (GameObject go in linesDrawn) {
             Destroy(go);
@@ -91,18 +89,8 @@ public class ConstellationMgr : MonoBehaviour {
 
 
     void drawLine(Vector3 start, Vector3 end, Color color) {
-        GameObject myLine = new GameObject();
-        myLine.transform.parent = linesParentObjTransform.transform;
-        myLine.transform.position = start;
-        myLine.AddComponent<LineRenderer>();
+        GameObject myLine = Instantiate(linePrefab, transform);
         LineRenderer lr = myLine.GetComponent<LineRenderer>();
-        lr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-        lr.receiveShadows = false;
-        lr.material = lineMaterial;
-        lr.startColor = color;
-        lr.endColor = lr.startColor;
-        lr.startWidth = .4f;
-        lr.endWidth = lr.startWidth;
 
         // leave a margin 
         Vector3 margin = (end - start).normalized * 10f;
