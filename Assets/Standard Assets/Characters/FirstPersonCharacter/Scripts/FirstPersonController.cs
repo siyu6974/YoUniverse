@@ -94,10 +94,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private void FixedUpdate()
         {
-            float speed;
+            float speed, upSpeed;
             GetInput(out speed);
+			upSpeed = 0;
+//			Fly (out upSpeed);
             // always move along the camera forward as it is the direction that it being aimed at
-            Vector3 desiredMove = transform.forward*m_Input.y + transform.right*m_Input.x;
+			Vector3 desiredMove = transform.forward*m_Input.y + transform.right*m_Input.x;
 
             // get a normal for the surface that is being touched to move along it
             RaycastHit hitInfo;
@@ -108,27 +110,26 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_MoveDir.x = desiredMove.x*speed;
             m_MoveDir.z = desiredMove.z*speed;
 
+			if (upSpeed != 0 && GetComponent<Rigidbody>().useGravity == true) {
+				if (m_CharacterController.isGrounded) {
+					m_MoveDir.y = -m_StickToGroundForce;
 
-            if (m_CharacterController.isGrounded)
-            {
-                m_MoveDir.y = -m_StickToGroundForce;
-
-                if (m_Jump)
-                {
-                    m_MoveDir.y = m_JumpSpeed;
-                    PlayJumpSound();
-                    m_Jump = false;
-                    m_Jumping = true;
-                }
-            }
-            else
-            {
-                m_MoveDir += Physics.gravity*m_GravityMultiplier*Time.fixedDeltaTime;
-            }
+					if (m_Jump) {
+						m_MoveDir.y = m_JumpSpeed;
+						PlayJumpSound ();
+						m_Jump = false;
+						m_Jumping = true;
+					}
+				} else {
+					m_MoveDir += Physics.gravity * m_GravityMultiplier * Time.fixedDeltaTime;
+				}
+			} else {
+				m_MoveDir.y = Vector3.up.y * upSpeed;
+			}
             m_CollisionFlags = m_CharacterController.Move(m_MoveDir*Time.fixedDeltaTime);
 
             ProgressStepCycle(speed);
-            UpdateCameraPosition(speed);
+			UpdateCameraPosition(speed);
 
             m_MouseLook.UpdateCursorLock();
         }
@@ -177,7 +178,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         }
 
 
-        private void UpdateCameraPosition(float speed)
+		private void UpdateCameraPosition(float speed)
         {
             Vector3 newCameraPosition;
             if (!m_UseHeadBob)
@@ -200,6 +201,17 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_Camera.transform.localPosition = newCameraPosition;
         }
 
+		private void Fly(out float upSpeed) {
+			Rigidbody rb = GetComponent<Rigidbody> ();
+//			Transform tf = GetComponent<Transform> ();
+//			rb.isKinematic = true;
+			rb.useGravity = false;
+			if (Input.GetKey (KeyCode.F)) {
+//				tf.position = tf.position + (Vector3.up * 1.0f * Time.deltaTime);
+				upSpeed = 1.0f;
+			} else
+				upSpeed = 0;
+		}
 
         private void GetInput(out float speed)
         {
