@@ -59,14 +59,11 @@ public class StarGenerator : MonoBehaviour {
             if (starSize >= 20) {
                 starSize = 20;
             }
-            //points[i].startLifetime = 5000;
-            //particleStars[i].remainingLifetime = Mathf.Infinity;
 
             //UNDONE: Add no mesh collider only prefab for raycasting
 
             starParticles[i].startColor = starDataSet[i].Color * luminanceFactor;
             
-            //Debug.Log(starParticles[i].startColor);
             starParticles[i].startSize = starSize;
 
         }
