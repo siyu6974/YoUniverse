@@ -9,7 +9,7 @@ public struct StarData {
     public float AbsMag;
     public string Spectrum;
     public Color Color;
-    public float X, Y, Z;
+    public float X, Y, Z; // in parsec / 3260 OR 10^-2 lr
 
     // var
     public float Mag;
@@ -49,7 +49,7 @@ public class StarGenerator : MonoBehaviour {
             Vector3 starRelativePos = new Vector3(starDataSet[i].X-pos.x, starDataSet[i].Z-pos.y, starDataSet[i].Y-pos.z);
             starParticles[i].position = pos + starRelativePos.normalized * Camera.main.farClipPlane * 0.9f;
             starDataSet[i].drawnPos = starParticles[i].position;
-            
+
             starDataSet[i].Mag = adaptMagitude(starRelativePos.magnitude, starDataSet[i].AbsMag);
 
             starSize = adaptLuminanceScaledLn(pointSourceMagToLnLuminance(starDataSet[i].Mag), .6f);
@@ -63,7 +63,7 @@ public class StarGenerator : MonoBehaviour {
             //UNDONE: Add no mesh collider only prefab for raycasting
 
             starParticles[i].startColor = starDataSet[i].Color * luminanceFactor;
-            
+
             starParticles[i].startSize = starSize;
 
         }
@@ -123,13 +123,13 @@ public class StarGenerator : MonoBehaviour {
 
 
     float adaptMagitude(float distance, float M) {
-        return (float)(M - 5 * Math.Log10(10 / distance));
+        return (float)(M - 5 * Math.Log10(32600f / distance));
     }
 
     // Compute the ln of the luminance for a point source with the given mag for the current FOV
     float pointSourceMagToLnLuminance(float mag){
         return -0.92103f*(mag + 12.12331f) + lnfovFactor;
-    }   
+    }
 
     float adaptLuminanceScaledLn(float lnWorldLuminance, float pFact = 0.5f) {
         const float lnPix0p0001 = -8.0656104861f;
