@@ -60,10 +60,7 @@ public class StarGenerator : MonoBehaviour {
                 starSize = 20;
             }
 
-            //UNDONE: Add no mesh collider only prefab for raycasting
-
             starParticles[i].startColor = starDataSet[i].Color * luminanceFactor;
-
             starParticles[i].startSize = starSize;
 
         }
