@@ -510,6 +510,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   starCSV: {fileID: 4900000, guid: 607c88b6c8a50458696d60318b5ac3dd, type: 3}
   ps: {fileID: 1083175137}
+  starPrefab: {fileID: 1912079216440404, guid: 9b9c687012f924c2dabb1a95496eb23a, type: 2}
   starsMax: 3000
 --- !u!198 &1083175137
 ParticleSystem:

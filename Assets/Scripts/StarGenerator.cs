@@ -27,6 +27,8 @@ public class StarGenerator : MonoBehaviour {
     public ParticleSystem ps;
     private ParticleSystem.Particle[] starParticles;
 
+    public GameObject starPrefab;
+
     public int starsMax = 100;
     private float starSize = 1;
 
