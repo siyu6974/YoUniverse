@@ -14,6 +14,7 @@ public class HandController : MonoBehaviour {
         starDataSet = sg.starDataSet;
         starsMax = sg.starsMax;
         lr = GetComponent<LineRenderer>();
+        lr.enabled = false;
     }
 
     // Update is called once per frame
