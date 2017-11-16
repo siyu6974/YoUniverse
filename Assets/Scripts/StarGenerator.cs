@@ -28,6 +28,7 @@ public class StarGenerator : MonoBehaviour {
     private ParticleSystem.Particle[] starParticles;
 
     public GameObject starPrefab;
+    private GameObject nearestStar;
 
     public int starsMax = 100;
     private float starSize = 1;
@@ -49,6 +50,16 @@ public class StarGenerator : MonoBehaviour {
             //particleStars[i].position = Random.insideUnitSphere * 10f;
             //points[i].position = Random.insideUnitSphere * 10;
             Vector3 starRelativePos = new Vector3(starDataSet[i].X-pos.x, starDataSet[i].Z-pos.y, starDataSet[i].Y-pos.z);
+            if (nearestStar == null) {
+                if (starRelativePos.magnitude < 632f) {
+                    // < 1 AU, 
+                    nearestStar = Instantiate(starPrefab, pos + starRelativePos, Quaternion.identity);
+                } else {
+                    Destroy(nearestStar);
+                    nearestStar = null;
+                } 
+            }
+
             starParticles[i].position = pos + starRelativePos.normalized * Camera.main.farClipPlane * 0.9f;
             starDataSet[i].drawnPos = starParticles[i].position;
 
