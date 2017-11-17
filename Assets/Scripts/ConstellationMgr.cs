@@ -9,23 +9,27 @@ public struct ConstellationData {
 }
 
 public class ConstellationMgr : MonoBehaviour {
-    bool _drawLineEnabled;
 
-    public bool drawLineEnabled {
-        get { return _drawLineEnabled; }
-        set {
-            if (value == false) {
-                foreach (LineRenderer lr in linesDrawn) {
-                    Destroy(lr.gameObject);
-                }
-                linesDrawn.Clear();
-            }
-            _drawLineEnabled = value;
+    private int drawMode; // 0 disabled, 1 std 88, 2 custom;
+
+    private void toggleDrawMode() {
+        foreach (LineRenderer lr in linesDrawn) {
+            Destroy(lr.gameObject);
+        }
+        linesDrawn.Clear();
+        drawMode = (drawMode+1) % 3;
+        Debug.Log(userContellationDataSet.Count);
+        if (userContellationDataSet.Count == 0 && drawMode == 2) {
+            drawMode = 0;
         }
     }
 
+
     [HideInInspector]
     public ConstellationData[] contellationDataSet;
+
+    [HideInInspector]
+    public List<ConstellationData> userContellationDataSet;
 
     private StarData[] starDataSet;
 
@@ -35,26 +39,38 @@ public class ConstellationMgr : MonoBehaviour {
 
 	void Start () {
         load_data();
+        userContellationDataSet = new List<ConstellationData>();
         linesDrawn = new List<LineRenderer>();
 	}
 	
 	void Update () {
         if (Input.GetKeyDown(KeyCode.M)) {
-            drawLineEnabled = !drawLineEnabled;
+            toggleDrawMode();
         }
-        if (!_drawLineEnabled) return;
+        if (drawMode == 0) return;
         lineIndex = 0;
 
-        // if contellationData not ready, skip this frame
-        if (contellationDataSet == null) return;
+        if (drawMode == 1) {
+            // if contellationData not ready, skip this frame
+            if (contellationDataSet == null) return;
 
-        for (int i = 0; i < contellationDataSet.Length;i++) {
-            ConstellationData c = contellationDataSet[i];
-            for (int j = 0; j < c.links.GetLength(0); j++) {
-                Vector3 a = getStar(c.links[j, 0]);
-                Vector3 b = getStar(c.links[j, 1]);
-                if (a != Vector3.zero && b!=Vector3.zero)
-                    drawLine(a, b, Color.white);
+            for (int i = 0; i < contellationDataSet.Length; i++) {
+                ConstellationData c = contellationDataSet[i];
+                for (int j = 0; j < c.links.GetLength(0); j++) {
+                    Vector3 a = getStar(c.links[j, 0]);
+                    Vector3 b = getStar(c.links[j, 1]);
+                    if (a != Vector3.zero && b != Vector3.zero)
+                        drawLine(a, b, Color.white);
+                }
+            }
+        } else if (drawMode == 2) {
+            foreach (ConstellationData c in userContellationDataSet) {
+                for (int j = 0; j < c.links.GetLength(0); j++) {
+                    Vector3 a = getStar(c.links[j, 0]);
+                    Vector3 b = getStar(c.links[j, 1]);
+                    if (a != Vector3.zero && b != Vector3.zero)
+                        drawLine(a, b, Color.white);
+                }
             }
         }
 	}

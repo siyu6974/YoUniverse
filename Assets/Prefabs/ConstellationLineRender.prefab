@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4733948587870326}
   - component: {fileID: 120896394846514368}
   m_Layer: 0
-  m_Name: LinePrefab
+  m_Name: ConstellationLineRender
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

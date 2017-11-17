@@ -8,11 +8,9 @@ public class HandController : MonoBehaviour {
     public Text starInfoText;
     private int starsMax;
     private LineRenderer lr;
+    private ConstellationCreater constellationCreater;
 
     void Start() {
-        StarGenerator sg = GameObject.Find("_StarGenerator").GetComponent<StarGenerator>();
-        starDataSet = sg.starDataSet;
-        starsMax = sg.starsMax;
         lr = GetComponent<LineRenderer>();
         lr.enabled = false;
     }
@@ -28,7 +26,7 @@ public class HandController : MonoBehaviour {
 
         if (Input.GetMouseButton(0)) {
             Vector3 ray = Input.mousePosition;
-            ray.z = 10f;
+            ray.z = Camera.main.farClipPlane * 0.9f;
             ray = Camera.main.ScreenToWorldPoint(ray).normalized;
 
             drawLine(transform.position, ray * Camera.main.farClipPlane * 0.9f);
@@ -37,6 +35,11 @@ public class HandController : MonoBehaviour {
             for (int i = 0; i < starsMax; i++) {
                 if (Vector3.Angle(starDataSet[i].drawnPos - transform.position, ray) < 1f) {
                     showStarInfo(starDataSet[i]);
+
+                    if (constellationCreater == null) {
+                        constellationCreater = GameObject.Find("_ConstellationMgr").GetComponent<ConstellationCreater>();    
+                    }
+                    constellationCreater.SendMessage("constructConstellation", starDataSet[i]);
                     break;
                 }
                 // if no star is found, disable the text label
