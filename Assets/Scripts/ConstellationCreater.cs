@@ -24,7 +24,7 @@ public class ConstellationCreater : MonoBehaviour {
     }
 
 
-    private Vector3 starDrawingPos;
+    private Vector3 startDrawingPos;
 
     void Update() {
         if (isCreating && lr != null) {
@@ -32,7 +32,7 @@ public class ConstellationCreater : MonoBehaviour {
             ray.z = Camera.main.farClipPlane * 0.9f;
             ray = Camera.main.ScreenToWorldPoint(ray).normalized;
 
-            drawLine(starDrawingPos, ray * Camera.main.farClipPlane * 0.9f);
+            drawLine(startDrawingPos, ray * Camera.main.farClipPlane * 0.9f);
         } 
 
         if (isCreating && Input.GetKeyDown(KeyCode.O)) {
@@ -57,10 +57,11 @@ public class ConstellationCreater : MonoBehaviour {
                 isCreating = true;
                 lr = Instantiate(lrPrefab, transform);
                 linesDrawn.Add(lr);
-                starDrawingPos = star.drawnPos;
+                startDrawingPos = star.drawnPos;
                 tmpStarPair[0] = starHIP;
             }
         } else if (Input.GetMouseButtonUp(1) && tmpStarPair[0] != -1) {
+            drawLine(startDrawingPos, star.drawnPos); // leave this segment with a correct line
             lr = null;
             tmpStarPair[1] = starHIP;
             if (tmpConstellation == null) {
