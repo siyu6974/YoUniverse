@@ -18,7 +18,6 @@ public class ConstellationMgr : MonoBehaviour {
         }
         linesDrawn.Clear();
         drawMode = (drawMode+1) % 3;
-        Debug.Log(userContellationDataSet.Count);
         if (userContellationDataSet.Count == 0 && drawMode == 2) {
             drawMode = 0;
         }
