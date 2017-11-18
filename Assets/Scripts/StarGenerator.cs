@@ -9,7 +9,7 @@ public struct StarData {
     public float AbsMag;
     public string Spectrum;
     public Color Color;
-    public Vector3 coord; // in parsec / 32600 OR 10^-3 lr
+    public Vector3 coord; // in parsec/326 OR 10^-1 lr
 
     // var
     public float Mag;
