@@ -9,7 +9,7 @@ public struct StarData {
     public float AbsMag;
     public string Spectrum;
     public Color Color;
-    public float X, Y, Z; // in parsec / 3260 OR 10^-2 lr
+    public float X, Y, Z; // in parsec / 32600 OR 10^-3 lr
 
     // var
     public float Mag;
@@ -133,7 +133,7 @@ public class StarGenerator : MonoBehaviour {
 
 
     float adaptMagitude(float distance, float M) {
-        return (float)(M - 5 * Math.Log10(32600f / distance));
+        return (float)(M - 5 * Math.Log10(3260f / distance));
     }
 
     // Compute the ln of the luminance for a point source with the given mag for the current FOV
