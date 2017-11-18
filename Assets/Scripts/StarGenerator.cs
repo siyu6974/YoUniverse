@@ -9,7 +9,7 @@ public struct StarData {
     public float AbsMag;
     public string Spectrum;
     public Color Color;
-    public float X, Y, Z; // in parsec / 32600 OR 10^-3 lr
+    public Vector3 coord; // in parsec / 32600 OR 10^-3 lr
 
     // var
     public float Mag;
@@ -30,8 +30,7 @@ public class StarGenerator : MonoBehaviour {
     public GameObject starPrefab;
     private GameObject nearestStar;
 
-    public int starsMax = 100;
-    private float starSize = 1;
+    public int starsMax;
 
 
     float starLinearScale = 19.569f * 2f;
@@ -40,7 +39,16 @@ public class StarGenerator : MonoBehaviour {
     // Use this for initialization
     void Start() {
         load_data();
-        createStars(new Vector3(0,0,0));
+    }
+
+
+    // Update is called once per frame
+    void Update() {
+        float fov = Camera.main.fieldOfView / 180f;
+        double powFactor = Math.Pow(60f / Math.Max(0.7f, fov), 0.8f);
+
+        lnfovFactor = (float)Math.Log(1f / 50f * 2025000f * 60f * 60f / (fov * fov) / (EYE_RESOLUTION * EYE_RESOLUTION) / powFactor / 1.4f);
+        createStars(Camera.main.transform.position);
     }
 
 
@@ -49,7 +57,7 @@ public class StarGenerator : MonoBehaviour {
         for (int i = 0; i < starsMax; i++) {
             //particleStars[i].position = Random.insideUnitSphere * 10f;
             //points[i].position = Random.insideUnitSphere * 10;
-            Vector3 starRelativePos = new Vector3(starDataSet[i].X-pos.x, starDataSet[i].Z-pos.y, starDataSet[i].Y-pos.z);
+            Vector3 starRelativePos = starDataSet[i].coord - pos;
             if (nearestStar == null) {
                 if (starRelativePos.magnitude < 632f) {
                     // < 1 AU, 
@@ -65,7 +73,7 @@ public class StarGenerator : MonoBehaviour {
 
             starDataSet[i].Mag = adaptMagitude(starRelativePos.magnitude, starDataSet[i].AbsMag);
 
-            starSize = adaptLuminanceScaledLn(pointSourceMagToLnLuminance(starDataSet[i].Mag), .6f);
+            float starSize = adaptLuminanceScaledLn(pointSourceMagToLnLuminance(starDataSet[i].Mag), .6f);
             starSize *= starLinearScale;
 
             float luminanceFactor = 1f;
@@ -75,7 +83,6 @@ public class StarGenerator : MonoBehaviour {
 
             starParticles[i].startColor = starDataSet[i].Color * luminanceFactor;
             starParticles[i].startSize = starSize;
-
         }
         ps.SetParticles(starParticles, starParticles.Length);
     }
@@ -84,8 +91,9 @@ public class StarGenerator : MonoBehaviour {
     // BV < -0.4,+2.0 >
     // Returns Color with RGB <0,1>
     // https://stackoverflow.com/questions/21977786/star-b-v-color-index-to-apparent-rgb-color
-    private Color getColor(float bv) {
-        return indexToColor(bVToIndex(bv));
+    private Color getColor(float bV) {
+        int colorIndex = (int)((bV + .5f) / (4f / 127f));
+        return colorTable[colorIndex]; // from Stellarium
         //float t, r = 0.0f, g = 0.0f, b = 0.0f;
         //if (bv < -0.4) bv = -0.4f; if (bv > 2.0) bv = 2.0f;
         //    if ((bv >= -.4f) && (bv < .0f)) { t = (bv + .4f) / (.0f + .4f); r = 0.61f + (0.11f * t) + (0.1f * t * t); } else if ((bv >= .0f) && (bv < .4f)) { t = (bv - .0f) / (.4f - .0f); r = 0.83f + (0.17f * t); } else if ((bv >= .4f) && (bv < 2.10f)) { t = (bv - .4f) / (2.10f - .4f); r = 1.00f; }
@@ -95,15 +103,6 @@ public class StarGenerator : MonoBehaviour {
         //return new Color(temp.x, temp.y, temp.z, 2555555f);
     }
 
-
-    // Update is called once per frame
-    void Update() {
-        float fov = Camera.main.fieldOfView / 180f;
-        double powFactor = Math.Pow(60f / Math.Max(0.7f, fov), 0.8f);
-
-        lnfovFactor = (float)Math.Log(1f / 50f * 2025000f * 60f * 60f / (fov * fov) / (EYE_RESOLUTION * EYE_RESOLUTION) / powFactor / 1.4f);
-        createStars(Camera.main.transform.position);
-    }
 
     void load_data() {
         string[] lines = starCSV.text.Split('\n');
@@ -124,9 +123,9 @@ public class StarGenerator : MonoBehaviour {
             } catch {
                 starDataSet[i].Color = Color.white;
             }
-            starDataSet[i].X = float.Parse(components[6]);
-            starDataSet[i].Y = float.Parse(components[7]);
-            starDataSet[i].Z = float.Parse(components[8]);
+            starDataSet[i].coord.x = float.Parse(components[6]);
+            starDataSet[i].coord.z = float.Parse(components[7]);
+            starDataSet[i].coord.y = float.Parse(components[8]);
         }
         starCSV = null;
     }
@@ -144,15 +143,6 @@ public class StarGenerator : MonoBehaviour {
     float adaptLuminanceScaledLn(float lnWorldLuminance, float pFact = 0.5f) {
         const float lnPix0p0001 = -8.0656104861f;
         return (float)Math.Exp(((lnWorldLuminance+lnPix0p0001)*1)*pFact);
-    }
-
-    private int bVToIndex(float bV) {
-        return (int)((bV + .5f) / (4f / 127f));
-    }
-
-    // from Stellarium
-    private Color indexToColor(int bV) {
-        return colorTable[bV];
     }
 
 
