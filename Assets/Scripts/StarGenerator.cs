@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Linq;
 
 public struct StarData {
     // invar
@@ -32,6 +33,7 @@ public class StarGenerator : MonoBehaviour {
 
     public int starsMax;
 
+    public float test;
 
     float starLinearScale = 19.569f * 2f;
     float lnfovFactor;
@@ -39,36 +41,45 @@ public class StarGenerator : MonoBehaviour {
     // Use this for initialization
     void Start() {
         load_data();
+        CoordinateManager.starDataSet = starDataSet;
     }
 
 
     // Update is called once per frame
     void Update() {
+        test = starDataSet.Select(s => Vector3.Magnitude(s.coord - Camera.main.transform.position)).ToList().Min();
+
         float fov = Camera.main.fieldOfView / 180f;
         double powFactor = Math.Pow(60f / Math.Max(0.7f, fov), 0.8f);
 
         lnfovFactor = (float)Math.Log(1f / 50f * 2025000f * 60f * 60f / (fov * fov) / (EYE_RESOLUTION * EYE_RESOLUTION) / powFactor / 1.4f);
-        createStars(Camera.main.transform.position);
+        createStars(CoordinateManager.transformPosition(Camera.main.transform.position));
     }
 
 
-    private void createStars(Vector3 pos) {
+    private void createStars(OmniPosition omniPos) {
+        if (omniPos.stellar != null) {
+            if (nearestStar == null) {
+                Vector3 starObjPos = (Vector3)(omniPos.stellar - CoordinateManager.stellarSysEntryPt);
+                Debug.Log(starObjPos);
+                nearestStar = Instantiate(starPrefab, starObjPos, Quaternion.identity);
+            } else {
+                // move and scale it
+            }
+            return;
+        }
+        if (nearestStar != null) {
+            // just exit
+            Destroy(nearestStar);
+            nearestStar = null;
+        }
+        Vector3 pos = omniPos.galactic; 
         // TODO: USE absMag to get more stars!
         for (int i = 0; i < starsMax; i++) {
-            //particleStars[i].position = Random.insideUnitSphere * 10f;
-            //points[i].position = Random.insideUnitSphere * 10;
             Vector3 starRelativePos = starDataSet[i].coord - pos;
-            if (nearestStar == null) {
-                if (starRelativePos.magnitude < 632f) {
-                    // < 1 AU, 
-                    nearestStar = Instantiate(starPrefab, pos + starRelativePos, Quaternion.identity);
-                } else {
-                    Destroy(nearestStar);
-                    nearestStar = null;
-                } 
-            }
 
-            starParticles[i].position = pos + starRelativePos.normalized * Camera.main.farClipPlane * 0.9f;
+            Camera cam = Camera.main;
+            starParticles[i].position = cam.transform.position + starRelativePos.normalized * cam.farClipPlane * 0.9f;
             starDataSet[i].drawnPos = starParticles[i].position;
 
             starDataSet[i].Mag = adaptMagitude(starRelativePos.magnitude, starDataSet[i].AbsMag);
