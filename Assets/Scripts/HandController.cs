@@ -71,6 +71,6 @@ public class HandController : MonoBehaviour {
             info += "Name: " + star.ProperName;
         starInfoText.text = info;
         starInfoText.enabled = true;
-		Debug.Log (info);
+		//Debug.Log (info);
     }
 }

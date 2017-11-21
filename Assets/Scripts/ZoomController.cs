@@ -18,10 +18,12 @@ public class ZoomController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		bool vrCtr = false;
-		if (Vector3.Distance(InputTracking.GetLocalPosition (VRNode.LeftHand), InputTracking.GetLocalPosition (VRNode.LeftEye)) < .1f)
-			vrCtr = true;
-		if ((vrCtr || Input.GetKeyDown (KeyCode.P)) && flag == false)
+
+        bool vrCtr = (InputTracking.GetLocalPosition(VRNode.LeftHand) != Vector3.zero);
+
+        bool vrInput = (Vector3.Distance(InputTracking.GetLocalPosition(VRNode.LeftHand), InputTracking.GetLocalPosition(VRNode.LeftEye)) < .1f);
+
+        if ((vrCtr && vrInput) || Input.GetKeyDown (KeyCode.P) && flag == false)
 		{
 			Debug.Log ("Zoom in");
 			initPos = bodyPivot.transform.position;
@@ -30,7 +32,7 @@ public class ZoomController : MonoBehaviour {
 			flag = true;
 			sg.ignoreMovement = true;
 		}
-		if ((!vrCtr || Input.GetKeyUp (KeyCode.P)) && flag == true)
+        if (((vrCtr && !vrCtr) || Input.GetKeyUp (KeyCode.P)) && flag == true)
 		{
 			Debug.Log ("Zoom out");
 			bodyPivot.transform.position = initPos;
