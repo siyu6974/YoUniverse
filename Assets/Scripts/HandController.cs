@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.VR;
 
 public class HandController : MonoBehaviour {
     private StarData[] starDataSet;
@@ -9,6 +10,7 @@ public class HandController : MonoBehaviour {
     private int starsMax;
     private LineRenderer lr;
     private ConstellationCreater constellationCreater;
+	private Vector3 rightHandPos;
 
     void Start() {
         lr = GetComponent<LineRenderer>();
@@ -24,16 +26,19 @@ public class HandController : MonoBehaviour {
             return;
         }
 
-        if (Input.GetMouseButton(0)) {
-            Vector3 ray = Input.mousePosition;
-            ray.z = Camera.main.farClipPlane * 0.9f;
-            ray = Camera.main.ScreenToWorldPoint(ray).normalized;
+		transform.rotation = InputTracking.GetLocalRotation (VRNode.LeftHand);
+//		Debug.Log(Input.GetAxis ("Axis1D.PrimaryIndexTrigger"));
+//		Debug.Log(Input.GetButton("Fire1"));
+		if (Input.GetButton("Fire1")) {
+			Vector3 ray = transform.forward * Camera.main.farClipPlane * 0.9f;
+//            ray.z = Camera.main.farClipPlane * 0.9f;
+//            ray = Camera.main.ScreenToWorldPoint(ray).normalized;
 
-            drawLine(transform.position, ray * Camera.main.farClipPlane * 0.9f);
+            drawLine(transform.position, ray );
             lr.enabled = true;
 
             for (int i = 0; i < starsMax; i++) {
-                if (Vector3.Angle(starDataSet[i].drawnPos - transform.position, ray) < 1f) {
+				if (Vector3.Angle(starDataSet[i].drawnPos, ray) < 1f) {
                     showStarInfo(starDataSet[i]);
 
                     if (constellationCreater == null) {
@@ -45,7 +50,7 @@ public class HandController : MonoBehaviour {
                 // if no star is found, disable the text label
                 starInfoText.enabled = false;
             }
-        } else if (Input.GetMouseButtonUp(0)) {
+		} else if (Input.GetButtonUp("Fire1")) {
             lr.enabled = false;
             starInfoText.enabled = false;
         }
@@ -60,11 +65,12 @@ public class HandController : MonoBehaviour {
 
     void showStarInfo(StarData star) {
         Vector3 starDrawPosition = star.drawnPos;
-        starInfoText.rectTransform.position = Camera.main.WorldToScreenPoint(starDrawPosition) + new Vector3(3f, 3f, 1f);
+//        starInfoText.rectTransform.position = Camera.main.WorldToScreenPoint(starDrawPosition) + new Vector3(3f, 3f, 1f);
         string info = "HIP: " + star.HIP + "\n";
         if (star.ProperName != "")
             info += "Name: " + star.ProperName;
         starInfoText.text = info;
         starInfoText.enabled = true;
+		Debug.Log (info);
     }
 }

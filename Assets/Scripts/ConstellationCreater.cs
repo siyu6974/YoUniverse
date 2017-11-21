@@ -19,6 +19,7 @@ public class ConstellationCreater : MonoBehaviour {
     private CustomConstellation tmpConstellation = new CustomConstellation();
     private List<ConstellationData> userContellationDataSet;
 
+	public Transform pointerDirection;
 
     void Start() {
     }
@@ -28,11 +29,9 @@ public class ConstellationCreater : MonoBehaviour {
 
     void Update() {
         if (isCreating && lr != null) {
-            Vector3 ray = Input.mousePosition;
-            ray.z = Camera.main.farClipPlane * 0.9f;
-            ray = Camera.main.ScreenToWorldPoint(ray).normalized;
-
-            drawLine(startDrawingPos, ray * Camera.main.farClipPlane * 0.9f);
+			Vector3 ray = pointerDirection.forward * Camera.main.farClipPlane * 0.9f;
+           
+            drawLine(startDrawingPos, ray);
         } 
 
         if (isCreating && Input.GetKeyDown(KeyCode.O)) {
@@ -52,7 +51,7 @@ public class ConstellationCreater : MonoBehaviour {
 
     public void constructConstellation(StarData star) {
         int starHIP = star.HIP;
-        if (Input.GetMouseButtonDown(1)) {
+		if (Input.GetButtonDown("Fire2")) {
             if (tmpStarPair[0] == -1) {
                 isCreating = true;
                 lr = Instantiate(lrPrefab, transform);
@@ -60,7 +59,7 @@ public class ConstellationCreater : MonoBehaviour {
                 startDrawingPos = star.drawnPos;
                 tmpStarPair[0] = starHIP;
             }
-        } else if (Input.GetMouseButtonUp(1) && tmpStarPair[0] != -1) {
+		} else if (Input.GetButtonUp("Fire2") && tmpStarPair[0] != -1) {
             drawLine(startDrawingPos, star.drawnPos); // leave this segment with a correct line
             lr = null;
             tmpStarPair[1] = starHIP;

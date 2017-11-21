@@ -1,36 +1,41 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VR;
 
 public class ZoomController : MonoBehaviour {
-	CharacterController controller;
-	float rate = 3.0f;
+	float rate = 500.0f;
 	bool flag = false;
 	Vector3 initPos = Vector3.zero;
 	Vector3 aimedPos = Vector3.zero;
 
+	public GameObject bodyPivot; // cameras
+	public StarGenerator sg;
+
 	// Use this for initialization
 	void Start () {
-		controller = GetComponent<CharacterController> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
-		if (Input.GetKeyDown (KeyCode.P))
+		bool vrCtr = false;
+		if (Vector3.Distance(InputTracking.GetLocalPosition (VRNode.LeftHand), InputTracking.GetLocalPosition (VRNode.LeftEye)) < .1f)
+			vrCtr = true;
+		if ((vrCtr || Input.GetKeyDown (KeyCode.P)) && flag == false)
 		{
 			Debug.Log ("Zoom in");
-			initPos = controller.transform.position;
+			initPos = bodyPivot.transform.position;
 			aimedPos = initPos + Camera.main.transform.forward * rate;
-			controller.transform.position = aimedPos;
+			bodyPivot.transform.position = aimedPos;
 			flag = true;
-
+			sg.ignoreMovement = true;
 		}
-		if (Input.GetKeyUp (KeyCode.P) && flag == true)
+		if ((!vrCtr || Input.GetKeyUp (KeyCode.P)) && flag == true)
 		{
 			Debug.Log ("Zoom out");
-			controller.transform.position = initPos;
+			bodyPivot.transform.position = initPos;
 			flag = false;
+			sg.ignoreMovement = false;
 		}
 	}
 }
