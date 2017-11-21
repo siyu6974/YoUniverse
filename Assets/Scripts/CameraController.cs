@@ -14,15 +14,16 @@ public class CameraController : MonoBehaviour {
     enum characterStates { flying = 1, inSpace = 2, landing = 3, onOrbit = 4 };
     characterStates state;
 
-    RaycastHit hitInfo;
+    RaycastHit? hitInfo;
     Ray ray;
-    bool rayCasted;
 
     public Camera cam;
-
+    int layerMask;
     // Use this for initialization
     void Start() {
         state = characterStates.onOrbit;
+        layerMask = 1 << 8;
+        layerMask = ~layerMask;
     }
 
     void Update() {
@@ -30,25 +31,29 @@ public class CameraController : MonoBehaviour {
     }
 
     void useRay(Vector3 direction) {
-        ray = new Ray(transform.position, cam.transform.forward);
-        Debug.DrawRay(transform.position, ray.direction * 1000f, Color.red);
-        rayCasted = Physics.Raycast(ray, out hitInfo);
+        ray = new Ray(cam.transform.position, direction);
+        Debug.DrawRay(cam.transform.position, ray.direction * 1000f, Color.red);
+        RaycastHit hit;
+        bool rayCasted = Physics.Raycast(ray, out hit, cam.farClipPlane, layerMask);
+        if (rayCasted)
+            hitInfo = hit;
+        else
+            hitInfo = null;
     }
 
     float getHeightToSurface() {
         float distance = -1.0f;
         Vector3 localDown = -transform.TransformDirection(Vector3.up);
         useRay(localDown);
-        if (rayCasted) {
-            distance = hitInfo.distance;
-        }
+        //distance = hitInfo?.distance;
+        if (hitInfo != null)
+            distance = ((RaycastHit)hitInfo).distance;
         return distance;
     }
 
     bool detectToLand() {
         useRay(Camera.main.transform.forward);
-        Debug.Log(hitInfo.distance);
-        if (hitInfo.distance <= distanceForLanding)
+        if (hitInfo != null && ((RaycastHit)hitInfo).distance <= distanceForLanding)
             return true;
         else
             return false;
@@ -57,7 +62,7 @@ public class CameraController : MonoBehaviour {
     void changeCharacterState() {
         switch (state) {
             case characterStates.flying: {
-                    if (Input.GetAxis("Updown") <= 0.000001) {
+                    if (Mathf.Abs(Input.GetAxis("Updown")) <= 0.000001) {
                         state = characterStates.inSpace;
                     } else {
                         height = getHeightToSurface();
@@ -75,9 +80,8 @@ public class CameraController : MonoBehaviour {
                         if (toLand) {
                             // Character already stopped in this frame
                             // All informations we need for landing are already in hitInfo
-                            if (hitInfo.transform == null) break;
-                            Vector3 o = hitInfo.transform.position;
-                            Vector3 p = hitInfo.point;
+                            Vector3 o = ((RaycastHit)hitInfo).transform.position;
+                            Vector3 p = ((RaycastHit)hitInfo).point;
                             Vector3 op = p - o;
                             // Rotate character for landing
                             Vector3 localUp = transform.TransformDirection(Vector3.up);
@@ -95,19 +99,20 @@ public class CameraController : MonoBehaviour {
                 break;
             case characterStates.landing: {
                     // Landing
+                    Debug.Log("landing");
                     height = getHeightToSurface();
                     if (height <= offsetHeight) {
                         state = characterStates.onOrbit;
                     } else {
-                        Vector3 down = Vector3.up * (-1);
-                        moveDirection = transform.TransformDirection(down);
+                        //Vector3 down = Vector3.up * (-1);
+                        moveDirection = transform.TransformDirection(Vector3.up);
                         moveDirection *= speed;
                         transform.Translate(moveDirection * Time.deltaTime);
                     }
                 }
                 break;
             case characterStates.onOrbit: {
-                    if (Input.GetAxis("Updown") <= 0.000001) { // flying_condition to change
+                    if (Mathf.Abs(Input.GetAxis("Updown")) <= 0.000001) { // flying_condition to change
                         state = characterStates.flying;
                     }
                     // Walking on orbit
