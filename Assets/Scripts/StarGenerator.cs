@@ -64,17 +64,19 @@ public class StarGenerator : MonoBehaviour {
                 //Debug.Log(omniPos.stellar);
                 //Debug.Log(CoordinateManager.stellarSysEntryPt);
                 Vector3 starObjPos = - (Vector3)(CoordinateManager.stellarSysEntryPt);
-                starObjPos = starObjPos.normalized * Camera.main.farClipPlane * 100f;
-                //Debug.Log(starObjPos);
+                starObjPos = starObjPos.normalized * Camera.main.farClipPlane * 0.88f;
+
                 nearestStar = Instantiate(starPrefab, starObjPos, Quaternion.identity);
+                Debug.Log(nearestStar);
             } else {
                 // move and scale it
                 float scaleMod = Vector3.Magnitude(nearestStar.transform.position.normalized*100-(Vector3)omniPos.stellar);
-                nearestStar.transform.localScale = Vector3.one * scaleMod;
+                //nearestStar.transform.localScale = Vector3.one * scaleMod;
             }
             //return;
         }
-        if (nearestStar != null) {
+        if (omniPos.stellar == null && nearestStar != null) {
+            Debug.Log("Destory");
             // just exit
             Destroy(nearestStar);
             nearestStar = null;
@@ -83,7 +85,7 @@ public class StarGenerator : MonoBehaviour {
         // TODO: USE absMag to get more stars!
         for (int i = 0; i < starsMax; i++) {
             Vector3 starRelativePos = starDataSet[i].coord - pos;
-
+            if (Vector3.Magnitude(starRelativePos) < 0.00001f) continue;
             Camera cam = Camera.main;
             starParticles[i].position = cam.transform.position + starRelativePos.normalized * cam.farClipPlane * 0.9f;
             starDataSet[i].drawnPos = starParticles[i].position;
