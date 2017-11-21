@@ -42,6 +42,7 @@ public class StarGenerator : MonoBehaviour {
     void Start() {
         load_data();
         CoordinateManager.starDataSet = starDataSet;
+        CoordinateManager.virtualPos.galactic = Camera.main.transform.position;
     }
 
 
@@ -60,13 +61,18 @@ public class StarGenerator : MonoBehaviour {
     private void createStars(OmniPosition omniPos) {
         if (omniPos.stellar != null) {
             if (nearestStar == null) {
-                Vector3 starObjPos = (Vector3)(omniPos.stellar - CoordinateManager.stellarSysEntryPt);
-                Debug.Log(starObjPos);
+                //Debug.Log(omniPos.stellar);
+                //Debug.Log(CoordinateManager.stellarSysEntryPt);
+                Vector3 starObjPos = - (Vector3)(CoordinateManager.stellarSysEntryPt);
+                starObjPos = starObjPos.normalized * Camera.main.farClipPlane * 100f;
+                //Debug.Log(starObjPos);
                 nearestStar = Instantiate(starPrefab, starObjPos, Quaternion.identity);
             } else {
                 // move and scale it
+                float scaleMod = Vector3.Magnitude(nearestStar.transform.position.normalized*100-(Vector3)omniPos.stellar);
+                nearestStar.transform.localScale = Vector3.one * scaleMod;
             }
-            return;
+            //return;
         }
         if (nearestStar != null) {
             // just exit

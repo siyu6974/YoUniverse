@@ -9,7 +9,7 @@ public struct OmniPosition {
     // origin: Sun
 
     public Vector3? stellar; 
-    // 1 unit = 10^-5 AU
+    // 1 unit = 10^-4 AU
     // origin: entry point
 }
 
@@ -31,9 +31,14 @@ static public class CoordinateManager {
     static public OmniPosition transformPosition(Vector3 realWorldPos) {
         List<Vector3> l = new List<Vector3>();
         for (int i = 0; i < starDataSet.Length; i++) {
-            Vector3 starRelativePos = starDataSet[i].coord - realWorldPos;
-            if (Vector3.Magnitude(starRelativePos) <= 2) {
-                // if < 20x distance sun-pluto, use stellar system
+            Vector3 starRelativePos = starDataSet[i].coord - virtualPos.galactic;
+            //Debug.Log(starDataSet[i].coord);
+            //Debug.Log("g");
+            //Debug.Log(virtualPos.galactic);
+            //Debug.Log("s");
+            //Debug.Log(virtualPos.stellar);
+            if (Vector3.Magnitude(starRelativePos) < 1) {
+                // if < 20x distance sun-pluto, use stellar system == 632 AU
                 if (stellarSysEntryPt == null) {
                     Debug.Log("Entering");
                     // just enter the system
@@ -41,7 +46,9 @@ static public class CoordinateManager {
                     virtualPos.galactic = starDataSet[i].coord; 
                 }
                 virtualPos.stellar = realWorldPos - stellarSysEntryPt;
-
+                // exit the system if distance > 1AU
+                if (Vector3.Magnitude((Vector3)virtualPos.stellar) > MyConstants.STELLAR_SYSTEM_BORDER)
+                    break;
                 return virtualPos;
             }
         }
@@ -50,11 +57,12 @@ static public class CoordinateManager {
             Debug.Log("Exiting");
             // just exit the system
             stellarSysExitPt.r = realWorldPos;
-            stellarSysExitPt.v = virtualPos.galactic;
+            stellarSysExitPt.v = virtualPos.galactic + new Vector3(1f, 0.1f, 0.1f);
             stellarSysEntryPt = null;
             virtualPos.stellar = null;
         }
         virtualPos.galactic = realWorldPos - stellarSysExitPt.r + stellarSysExitPt.v;
+
         return virtualPos;
     }
 
