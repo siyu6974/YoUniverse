@@ -28,7 +28,7 @@ static public class CoordinateManager {
         v = Vector3.zero, r = Vector3.zero
     };
 
-    static public OmniPosition transformPosition(Vector3 realWorldPos) {
+    static public void transformPosition(Vector3 realWorldPos) {
         List<Vector3> l = new List<Vector3>();
         for (int i = 0; i < starDataSet.Length; i++) {
             Vector3 starRelativePos = starDataSet[i].coord - virtualPos.galactic;
@@ -49,7 +49,7 @@ static public class CoordinateManager {
                 // exit the system if distance > 1AU
                 if (Vector3.Magnitude((Vector3)virtualPos.stellar) > MyConstants.STELLAR_SYSTEM_BORDER)
                     break;
-                return virtualPos;
+                return;
             }
         }
 
@@ -62,8 +62,6 @@ static public class CoordinateManager {
             virtualPos.stellar = null;
         }
         virtualPos.galactic = realWorldPos - stellarSysExitPt.r + stellarSysExitPt.v;
-
-        return virtualPos;
     }
 
 }

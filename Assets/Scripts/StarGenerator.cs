@@ -54,7 +54,8 @@ public class StarGenerator : MonoBehaviour {
         double powFactor = Math.Pow(60f / Math.Max(0.7f, fov), 0.8f);
 
         lnfovFactor = (float)Math.Log(1f / 50f * 2025000f * 60f * 60f / (fov * fov) / (EYE_RESOLUTION * EYE_RESOLUTION) / powFactor / 1.4f);
-        createStars(CoordinateManager.transformPosition(Camera.main.transform.position));
+        CoordinateManager.transformPosition(Camera.main.transform.position);
+        createStars(CoordinateManager.virtualPos);
     }
 
 
