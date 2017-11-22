@@ -11,6 +11,7 @@ public class HandController : MonoBehaviour {
     private LineRenderer lr;
     private ConstellationCreater constellationCreater;
     private Vector3 rightHandPos;
+    Vector3 ray;
 
     void Start() {
         lr = GetComponent<LineRenderer>();
@@ -34,13 +35,10 @@ public class HandController : MonoBehaviour {
         //		Debug.Log(Input.GetAxis ("Axis1D.PrimaryIndexTrigger"));
         //		Debug.Log(Input.GetButton("Fire1"));
         if (Input.GetButton("Fire1")) {
-            Vector3 ray = transform.forward * Camera.main.farClipPlane * 0.9f;
+            ray = transform.forward * Camera.main.farClipPlane * 0.9f;
             //            ray.z = Camera.main.farClipPlane * 0.9f;
             //            ray = Camera.main.ScreenToWorldPoint(ray).normalized;
-
-            drawLine(transform.position, ray);
             lr.enabled = true;
-
             for (int i = 0; i < starsMax; i++) {
                 if (Vector3.Angle(starDataSet[i].drawnPos, ray) < 1f) {
                     showStarInfo(starDataSet[i]);
@@ -58,6 +56,12 @@ public class HandController : MonoBehaviour {
             lr.enabled = false;
             starInfoText.enabled = false;
         }
+    }
+
+    private void LateUpdate()
+    {
+        if (lr.enabled)
+            drawLine(transform.position, ray);
     }
 
     void drawLine(Vector3 start, Vector3 end) {
