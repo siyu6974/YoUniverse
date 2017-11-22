@@ -27,10 +27,7 @@ public class HandController : MonoBehaviour {
             return;
         }
 
-        if (!VRModeDetector.isInVR)
-            // Not using VR
-            transform.parent.transform.rotation = Camera.main.transform.rotation;
-        else
+        if (VRModeDetector.isInVR)
             transform.rotation = InputTracking.GetLocalRotation(VRNode.RightHand);
         //		Debug.Log(Input.GetAxis ("Axis1D.PrimaryIndexTrigger"));
         //		Debug.Log(Input.GetButton("Fire1"));

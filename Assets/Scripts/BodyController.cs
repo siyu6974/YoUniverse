@@ -14,5 +14,7 @@ public class BodyController : MonoBehaviour {
 
 	void Update () {
         transform.position = master.transform.position + offset;
+        if (!VRModeDetector.isInVR)
+            transform.rotation = master.transform.rotation;
 	}
 }
