@@ -19,7 +19,7 @@ public class ZoomController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        bool vrCtr = (InputTracking.GetLocalPosition(VRNode.LeftHand) != Vector3.zero);
+        bool vrCtr = VRModeDetector.isInVR;
 
         bool vrInput = (Vector3.Distance(InputTracking.GetLocalPosition(VRNode.LeftHand), InputTracking.GetLocalPosition(VRNode.LeftEye)) < .1f);
 
