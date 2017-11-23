@@ -51,8 +51,10 @@ public class CameraController : MonoBehaviour {
 
         RaycastHit hit;
         bool rayCasted = Physics.Raycast(ray, out hit, cam.farClipPlane, layerMask);
-        if (rayCasted)
+        if (rayCasted) {
+            targetStar = hit.transform;
             hitInfo = hit;
+        }
         else
             hitInfo = null;
     }
@@ -164,7 +166,7 @@ public class CameraController : MonoBehaviour {
                     } else if (phase == landingPhases.getingDown) {
                         Debug.Log("Geting down");
                         height = getHeightToSurface ();
-                        if (height > offsetHeight) {
+                        if (height >= offsetHeight) {
                         	Debug.Log ("Moving down : height = " + height);
 							Vector3 dir = transform.up * (-1);
 							dir *= 0.5f;
@@ -172,6 +174,11 @@ public class CameraController : MonoBehaviour {
                         } else {
                         	phase = landingPhases.notLanding;
                         	state = characterStates.onOrbit;
+                            if (VRModeDetector.isInVR) {
+                                orbitEntryPoint = InputTracking.GetLocalPosition(VRNode.CenterEye);
+                            } else {
+                                orbitEntryPoint = GameObject.Find("TestTrackingObj").transform.position;
+                            }
                         	Debug.Log ("Finish landing");
                         }
 
@@ -197,14 +204,41 @@ public class CameraController : MonoBehaviour {
                         state = characterStates.flying;
                     }
                     // Walking on orbit
-					if (targetPosition != Vector3.zero) {
-						Vector3 dirRef = targetPosition - transform.position;
-						Quaternion rot = Quaternion.FromToRotation(transform.up * (-1), dirRef);
-						transform.Rotate (rot.eulerAngles);
-					}
+                    //if (targetPosition != Vector3.zero) {
+                    //	Vector3 dirRef = targetPosition - transform.position;
+                    //	Quaternion rot = Quaternion.FromToRotation(transform.up * (-1), dirRef);
+                    //	transform.Rotate (rot.eulerAngles);
+                    //}
+                    if (orbitEntryPoint != null) {
+                        Vector3 entryPoint = (Vector3)orbitEntryPoint;
+                        Vector3 currentPos;
+                        if (VRModeDetector.isInVR) {
+                            currentPos = InputTracking.GetLocalPosition(VRNode.CenterEye);
+                        } else {
+                            currentPos = GameObject.Find("TestTrackingObj").transform.position;
+                        }
+                        float theta = (currentPos.x - entryPoint.x) * (2 * Mathf.PI / 3f);
+                        float phi = (currentPos.z - entryPoint.z) * (2 * Mathf.PI / 3f);
+
+                        Vector3 transformedPos = new Vector3();
+                        //transformedPos.x = 3*Mathf.Sin(currentPos.x - entryPoint.x);
+                        //transformedPos.z = 3*Mathf.Sin(currentPos.z - entryPoint.z);
+                        transformedPos.x = offsetHeight * Mathf.Sin(theta) * Mathf.Cos(phi);
+                        transformedPos.y = offsetHeight * Mathf.Sin(theta) * Mathf.Sin(phi);
+                        transformedPos.z = -offsetHeight * Mathf.Cos(theta);
+
+                        transform.position = transformedPos + targetStar.position;
+                        transform.up = (transform.position - targetStar.position).normalized;
+                        //transform.LookAt(targetStar.position);
+                    }
+
                 }
                 break;
         }
     }
 
+    // real world tracking position just after landing / beginning of orbiting
+    Vector3? orbitEntryPoint;
+    Transform targetStar;
+    
 }
