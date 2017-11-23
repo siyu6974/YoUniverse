@@ -77,11 +77,22 @@ public class CameraController : MonoBehaviour {
 
     bool detectToLand() {
         //        useRay(Camera.main.transform.forward);
-        useRay(transform.forward);
-        if (hitInfo != null && ((RaycastHit)hitInfo).distance <= distanceForLanding)
-            return true;
-        else
-            return false;
+		Vector3 pos, d;
+		bool flag = false;
+
+		useRay(transform.forward);
+		if (hitInfo != null) {
+			pos = ((RaycastHit)hitInfo).transform.position;
+			d = pos - transform.position;
+			if (d.magnitude <= distanceForLanding) {
+				flag = true;
+			}
+		}
+//        if (hitInfo != null && ((RaycastHit)hitInfo).distance <= distanceForLanding)
+//            return true;
+//        else
+//            return false;
+		return flag;
     }
 
 
@@ -101,7 +112,6 @@ public class CameraController : MonoBehaviour {
                         //                        	moveDirection *= speed;
                         //                        	transform.Translate (moveDirection * Time.deltaTime);
                         //                        } else {
-
                         moveDirection = Camera.main.transform.forward;
                         moveDirection *= speed;
                         transform.Translate(moveDirection * Time.deltaTime);
@@ -129,14 +139,11 @@ public class CameraController : MonoBehaviour {
                         // Character already stopped in this frame
                         // All informations we need for landing are already in hitInfo
                         Vector3 o = ((RaycastHit)hitInfo).transform.position;
-                        //						Vector3 p = cam.transform.position;
                         Vector3 p = transform.position;
                         Vector3 po = o - p;
                         // Debug for checking po direction
-                        //						Debug.DrawRay (cam.transform.position, po * 1000f, Color.white);
                         Debug.DrawRay(transform.position, po * 1000f, Color.white);
 
-                        //						Vector3 directionDown = Camera.main.transform.up * (-1);
                         Vector3 directionDown = transform.up * (-1);
                         targetRotation = Quaternion.FromToRotation(directionDown, po);
                         targetPosition = o;
@@ -148,7 +155,6 @@ public class CameraController : MonoBehaviour {
                     } else if (phase == landingPhases.turing) {
                         if (transform.rotation == targetRotation) {
                             Debug.Log("Finish turning");
-                            //							targetRotation = Quaternion.identity;
                             phase = landingPhases.getingDown;
                         } else {
                             Debug.Log("turning");
@@ -157,26 +163,20 @@ public class CameraController : MonoBehaviour {
                         }
                     } else if (phase == landingPhases.getingDown) {
                         Debug.Log("Geting down");
-                        //						height = getHeightToSurface ();
-                        //						if (height > offsetHeight) {
-                        //							Debug.Log ("Moving down : height = " + height);
-                        ////							moveDirection = (targetPosition - transform.position).normalized;
-                        //							moveDirection = Camera.main.transform.up * (-1);
-                        //							moveDirection *= speed * 0.5f;
-                        //							transform.Translate (moveDirection * Time.deltaTime);
-                        //						} else {
-                        //							phase = landingPhases.notLanding;
-                        //							state = characterStates.onOrbit;
-                        //							Debug.Log ("Finish landing");
-                        //						}
+                        height = getHeightToSurface ();
+                        if (height > offsetHeight) {
+                        	Debug.Log ("Moving down : height = " + height);
+							Vector3 dir = transform.up * (-1);
+							dir *= 0.5f;
+							transform.Translate(dir * Time.deltaTime, Space.World);
+                        } else {
+                        	phase = landingPhases.notLanding;
+                        	state = characterStates.onOrbit;
+                        	Debug.Log ("Finish landing");
+                        }
 
                         //						moveDirection = transform.TransformDirection (transform.up);
-                        Vector3 dir = transform.up * (-1);
-                        Debug.DrawRay(transform.position, dir, Color.green);
-                        //						moveDirection *= (speed) * 0.5f;
-                        //						transform.Translate (moveDirection * Time.deltaTime);
-                        dir *= 0.5f;
-                        transform.Translate(dir * Time.deltaTime, Space.World);
+
                     }
 
                     //                    height = getHeightToSurface();
@@ -197,6 +197,11 @@ public class CameraController : MonoBehaviour {
                         state = characterStates.flying;
                     }
                     // Walking on orbit
+					if (targetPosition != Vector3.zero) {
+						Vector3 dirRef = targetPosition - transform.position;
+						Quaternion rot = Quaternion.FromToRotation(transform.up * (-1), dirRef);
+						transform.Rotate (rot.eulerAngles);
+					}
                 }
                 break;
         }
