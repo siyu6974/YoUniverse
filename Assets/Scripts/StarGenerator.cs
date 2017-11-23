@@ -33,7 +33,6 @@ public class StarGenerator : MonoBehaviour {
 
     public int starsMax;
 
-    public float test;
 
     float starLinearScale = 19.569f * 2f;
     float lnfovFactor;
@@ -51,8 +50,6 @@ public class StarGenerator : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        test = starDataSet.Select(s => Vector3.Magnitude(s.coord - Camera.main.transform.position)).ToList().Min();
-
         float fov = Camera.main.fieldOfView / 180f;
         double powFactor = Math.Pow(60f / Math.Max(0.7f, fov), 0.8f);
 
