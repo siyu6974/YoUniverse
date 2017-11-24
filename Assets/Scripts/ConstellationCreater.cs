@@ -19,9 +19,12 @@ public class ConstellationCreater : MonoBehaviour {
     private CustomConstellation tmpConstellation = new CustomConstellation();
     private List<ConstellationData> userContellationDataSet;
 
+    private MenuSelector ms;
+
 	public Transform pointerDirection;
 
     void Start() {
+        ms = GetComponent<MenuSelector>();
     }
 
 
@@ -32,7 +35,16 @@ public class ConstellationCreater : MonoBehaviour {
 			Vector3 ray = pointerDirection.forward * Camera.main.farClipPlane * 0.9f;
            
             drawLine(startDrawingPos, ray);
-        } 
+        }
+        if (Input.GetButtonDown("RMenu")) {
+            if (ms.enabled) {
+                ms.enabled = false;
+                ms.hideMenu();
+            } else {
+                ms.enabled = true;
+                ms.showMenu();
+            }
+        }
     }
 
     void drawLine(Vector3 start, Vector3 end) {
@@ -70,7 +82,17 @@ public class ConstellationCreater : MonoBehaviour {
     }
 
 
-    private void saveConstellation(CustomConstellation cc) {
+    private void discardDrawing(CustomConstellation cc) {
+        Debug.Log("Discard");
+        foreach (LineRenderer l in linesDrawn) {
+            Destroy(l.gameObject);
+        }
+        linesDrawn.Clear();
+        tmpStarPair = new int[2] { -1, -1 };
+        cc = null;
+    }
+
+    private void saveDrawing(CustomConstellation cc) {
         Debug.Log("save");
         ConstellationData c = new ConstellationData();
         c.name = cc.name;
@@ -87,14 +109,22 @@ public class ConstellationCreater : MonoBehaviour {
             Destroy(l.gameObject);
         }
         linesDrawn.Clear();
+        tmpStarPair = new int[2] { -1, -1 };
         cc = null;
     }
 
+    public void discardDrawing() {
+        if (!isCreating) return;
+        isCreating = false;
 
-    public void saveConstellation() {
-        if (isCreating) {
-            isCreating = false; // done creating 
-            saveConstellation(tmpConstellation);
-        }
+        discardDrawing(tmpConstellation);
+    }
+
+    public void saveDrawing() {
+        if (!isCreating) return;
+        isCreating = false;
+
+        saveDrawing(tmpConstellation);
     }
 }
+

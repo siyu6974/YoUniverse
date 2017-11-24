@@ -166,7 +166,7 @@ public class CameraController : MonoBehaviour {
                         Debug.Log("Geting down");
                         height = getHeightToSurface();
                         if (height >= offsetHeight) {
-                            Debug.Log("Moving down : height = " + height);
+                            //Debug.Log("Moving down : height = " + height);
                             Vector3 dir = transform.up * (-1);
                             dir *= 0.5f;
                             transform.Translate(dir * Time.deltaTime, Space.World);
