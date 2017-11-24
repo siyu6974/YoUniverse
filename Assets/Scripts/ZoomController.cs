@@ -21,7 +21,8 @@ public class ZoomController : MonoBehaviour {
 
         bool vrCtr = VRModeDetector.isInVR;
 
-        bool vrInput = (Vector3.Distance(InputTracking.GetLocalPosition(VRNode.LeftHand), InputTracking.GetLocalPosition(VRNode.LeftEye)) < .1f);
+        bool vrInput = (Vector3.Distance(InputTracking.GetLocalPosition(VRNode.LeftHand), InputTracking.GetLocalPosition(VRNode.LeftEye)) < .3f) &&
+            (Vector3.Distance(InputTracking.GetLocalPosition(VRNode.RightHand), InputTracking.GetLocalPosition(VRNode.RightEye)) < .3f);
 
         if ((vrCtr && vrInput) || Input.GetKeyDown(KeyCode.P) && zoomed == false) {
             Debug.Log("Zoom in");
