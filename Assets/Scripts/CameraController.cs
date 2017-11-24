@@ -45,17 +45,16 @@ public class CameraController : MonoBehaviour {
     }
 
     void useRay(Vector3 direction) {
-        ray = new Ray(cam.transform.position, direction);
+        ray = new Ray(transform.position, direction);
         // Debug for checking forward direction for character
-        Debug.DrawRay(cam.transform.position, ray.direction * 1000f, Color.red);
+        Debug.DrawRay(transform.position, ray.direction * 1000f, Color.red);
 
         RaycastHit hit;
         bool rayCasted = Physics.Raycast(ray, out hit, cam.farClipPlane, layerMask);
         if (rayCasted) {
-            targetStar = hit.transform;
+            targetSubOrbitPos = hit.point;
             hitInfo = hit;
-        }
-        else
+        } else
             hitInfo = null;
     }
 
@@ -79,22 +78,22 @@ public class CameraController : MonoBehaviour {
 
     bool detectToLand() {
         //        useRay(Camera.main.transform.forward);
-		Vector3 pos, d;
-		bool flag = false;
+        Vector3 pos, d;
+        bool flag = false;
 
-		useRay(transform.forward);
-		if (hitInfo != null) {
-			pos = ((RaycastHit)hitInfo).transform.position;
-			d = pos - transform.position;
-			if (d.magnitude <= distanceForLanding) {
-				flag = true;
-			}
-		}
-//        if (hitInfo != null && ((RaycastHit)hitInfo).distance <= distanceForLanding)
-//            return true;
-//        else
-//            return false;
-		return flag;
+        useRay(transform.forward);
+        if (hitInfo != null) {
+            pos = ((RaycastHit)hitInfo).point;
+            d = pos - transform.position;
+            if (d.magnitude <= distanceForLanding) {
+                flag = true;
+            }
+        }
+        //        if (hitInfo != null && ((RaycastHit)hitInfo).distance <= distanceForLanding)
+        //            return true;
+        //        else
+        //            return false;
+        return flag;
     }
 
 
@@ -104,7 +103,7 @@ public class CameraController : MonoBehaviour {
         switch (state) {
             case characterStates.flying: {
                     Debug.Log("Flying");
-				if (!isFlying()) {
+                    if (!isFlying()) {
                         state = characterStates.inSpace;
                     } else {
                         //                        height = getHeightToSurface();
@@ -128,7 +127,7 @@ public class CameraController : MonoBehaviour {
                 break;
             case characterStates.inSpace: {
                     Debug.Log("In Space");
-				if (isFlying()) {
+                    if (isFlying()) {
                         state = characterStates.flying;
                     }
                 }
@@ -165,21 +164,21 @@ public class CameraController : MonoBehaviour {
                         }
                     } else if (phase == landingPhases.getingDown) {
                         Debug.Log("Geting down");
-                        height = getHeightToSurface ();
+                        height = getHeightToSurface();
                         if (height >= offsetHeight) {
-                        	Debug.Log ("Moving down : height = " + height);
-							Vector3 dir = transform.up * (-1);
-							dir *= 0.5f;
-							transform.Translate(dir * Time.deltaTime, Space.World);
+                            Debug.Log("Moving down : height = " + height);
+                            Vector3 dir = transform.up * (-1);
+                            dir *= 0.5f;
+                            transform.Translate(dir * Time.deltaTime, Space.World);
                         } else {
-                        	phase = landingPhases.notLanding;
-                        	state = characterStates.onOrbit;
+                            phase = landingPhases.notLanding;
+                            state = characterStates.onOrbit;
                             if (VRModeDetector.isInVR) {
                                 orbitEntryPoint = InputTracking.GetLocalPosition(VRNode.CenterEye);
                             } else {
                                 orbitEntryPoint = GameObject.Find("TestTrackingObj").transform.position;
                             }
-                        	Debug.Log ("Finish landing");
+                            Debug.Log("Finish landing");
                         }
 
                         //						moveDirection = transform.TransformDirection (transform.up);
@@ -200,7 +199,7 @@ public class CameraController : MonoBehaviour {
                 break;
             case characterStates.onOrbit: {
                     Debug.Log("OnOrbit");
-				if (isFlying()) { // flying_condition to change
+                    if (isFlying()) { // flying_condition to change
                         state = characterStates.flying;
                     }
                     // Walking on orbit
@@ -227,9 +226,12 @@ public class CameraController : MonoBehaviour {
                         transformedPos.y = offsetHeight * Mathf.Sin(theta) * Mathf.Sin(phi);
                         transformedPos.z = -offsetHeight * Mathf.Cos(theta);
 
-                        transform.position = transformedPos + targetStar.position;
-                        transform.up = (transform.position - targetStar.position).normalized;
-                        //transform.LookAt(targetStar.position);
+                        //Debug.Log(transformedPos);
+                        //Debug.Log(offsetHeight);
+                        //Debug.Log(Mathf.Cos(theta));
+                        transform.position = transformedPos + targetSubOrbitPos;
+                        //transform.up = (transform.position - targetSubOrbitPos).normalized;
+                        //transform.LookAt(targetSubOrbitPos.position);
                     }
 
                 }
@@ -237,15 +239,15 @@ public class CameraController : MonoBehaviour {
         }
     }
 
-	bool isFlying() {
-		Debug.Log( Input.GetButton ("Left Controller Trigger (Touch)") && Input.GetButton ("Right Controller Trigger (Touch)")
-			&& Input.GetButton ("Left Controller Trackpad (Press)") && Input.GetButton ("Right Controller Trackpad (Press)"));
-		return Input.GetButton ("Left Controller Trigger (Touch)") && Input.GetButton ("Right Controller Trigger (Touch)")
-			&& Input.GetButton ("Left Controller Trackpad (Press)") && Input.GetButton ("Right Controller Trackpad (Press)");
-	}
+    bool isFlying() {
+        //		Debug.Log( Input.GetButton ("Left Controller Trigger (Touch)") && Input.GetButton ("Right Controller Trigger (Touch)"));
+        //			Debug.Log(Input.GetButton ("Left Controller Trackpad (Press)") && Input.GetButton ("Right Controller Trackpad (Press)"));
+        return Input.GetKey(KeyCode.O) || Input.GetButton("Left Controller Trigger (Touch)")
+            && Input.GetButton("Left Controller Trackpad (Press)") && Input.GetButton("Right Controller Trackpad (Press)");
+    }
 
     // real world tracking position just after landing / beginning of orbiting
     Vector3? orbitEntryPoint;
-    Transform targetStar;
-    
+    Vector3 targetSubOrbitPos;
+
 }
