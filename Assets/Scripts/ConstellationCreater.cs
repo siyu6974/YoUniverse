@@ -33,13 +33,11 @@ public class ConstellationCreater : MonoBehaviour {
            
             drawLine(startDrawingPos, ray);
         } 
-
-
     }
 
     void drawLine(Vector3 start, Vector3 end) {
         // leave a margin 
-        Vector3 margin = (end - start).normalized * 1f;
+        Vector3 margin = (end - start).normalized * 10f;
         lr.SetPosition(0, start + margin);
         lr.SetPosition(1, end - margin);
         lr.enabled = true;
