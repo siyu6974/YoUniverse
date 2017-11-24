@@ -216,8 +216,8 @@ public class CameraController : MonoBehaviour {
                         } else {
                             currentPos = GameObject.Find("TestTrackingObj").transform.position;
                         }
-                        float theta = (currentPos.x - entryPoint.x) * (2 * Mathf.PI / 3f);
-                        float phi = (currentPos.z - entryPoint.z) * (2 * Mathf.PI / 3f);
+                        float theta = (currentPos.x - entryPoint.x) * (2 * Mathf.PI / 5f);
+                        float phi = (currentPos.z - entryPoint.z) * (2 * Mathf.PI / 5f);
 
                         Vector3 transformedPos = new Vector3();
                         //transformedPos.x = 3*Mathf.Sin(currentPos.x - entryPoint.x);
