@@ -8,6 +8,8 @@ public static class VRModeDetector {
 	// Use this for initialization
     static VRModeDetector () {
         isInVR = InputTracking.GetLocalPosition(VRNode.LeftHand) != Vector3.zero;
+		isInVR = true;
+		Debug.Log (isInVR);
 	}
 	
 }

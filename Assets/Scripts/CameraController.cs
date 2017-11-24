@@ -104,7 +104,7 @@ public class CameraController : MonoBehaviour {
         switch (state) {
             case characterStates.flying: {
                     Debug.Log("Flying");
-                    if (Mathf.Abs(Input.GetAxis("Updown")) <= 0.000001) {
+				if (!isFlying()) {
                         state = characterStates.inSpace;
                     } else {
                         //                        height = getHeightToSurface();
@@ -128,7 +128,7 @@ public class CameraController : MonoBehaviour {
                 break;
             case characterStates.inSpace: {
                     Debug.Log("In Space");
-                    if (Input.GetAxis("Updown") > 0.000001) {
+				if (isFlying()) {
                         state = characterStates.flying;
                     }
                 }
@@ -200,7 +200,7 @@ public class CameraController : MonoBehaviour {
                 break;
             case characterStates.onOrbit: {
                     Debug.Log("OnOrbit");
-                    if (Mathf.Abs(Input.GetAxis("Updown")) > 0.1) { // flying_condition to change
+				if (isFlying()) { // flying_condition to change
                         state = characterStates.flying;
                     }
                     // Walking on orbit
@@ -236,6 +236,13 @@ public class CameraController : MonoBehaviour {
                 break;
         }
     }
+
+	bool isFlying() {
+		Debug.Log( Input.GetButton ("Left Controller Trigger (Touch)") && Input.GetButton ("Right Controller Trigger (Touch)")
+			&& Input.GetButton ("Left Controller Trackpad (Press)") && Input.GetButton ("Right Controller Trackpad (Press)"));
+		return Input.GetButton ("Left Controller Trigger (Touch)") && Input.GetButton ("Right Controller Trigger (Touch)")
+			&& Input.GetButton ("Left Controller Trackpad (Press)") && Input.GetButton ("Right Controller Trackpad (Press)");
+	}
 
     // real world tracking position just after landing / beginning of orbiting
     Vector3? orbitEntryPoint;
