@@ -66,7 +66,7 @@ public class StarGenerator : MonoBehaviour {
             if (nearestStar == null) {
                 //Debug.Log(omniPos.stellar);
                 //Debug.Log(CoordinateManager.stellarSysEntryPt);
-                Vector3 starObjPos = - (Vector3)(CoordinateManager.stellarSysEntryPt);
+                Vector3 starObjPos = (Vector3)(CoordinateManager.stellarSysEntryPt);
                 starObjPos = starObjPos.normalized * Camera.main.farClipPlane * 0.88f;
 
                 nearestStar = Instantiate(starPrefab, starObjPos, Quaternion.identity);

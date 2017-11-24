@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.VR;
 
 public class CameraController : MonoBehaviour {
-    float speed = 2.0f;
+    float speed = 4.0f;
     float height;
     float offsetHeight = 3.0f;
     //    float flyPreparationHeight = 2.0f;
@@ -27,7 +27,7 @@ public class CameraController : MonoBehaviour {
     int layerMask;
     // Use this for initialization
     void Start() {
-        state = characterStates.onOrbit;
+        state = characterStates.inSpace;
         phase = landingPhases.notLanding;
         layerMask = 1 << 8;
         layerMask = ~layerMask;
