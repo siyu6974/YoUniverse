@@ -4,7 +4,9 @@ using UnityEngine;
 using UnityEngine.VR;
 
 public class CameraController : MonoBehaviour {
-    float speed = 4.0f;
+    const float defaultSpeed = 4f;
+
+    float speed ;
     float height;
     float offsetHeight = 3.0f;
     //    float flyPreparationHeight = 2.0f;
@@ -29,6 +31,7 @@ public class CameraController : MonoBehaviour {
     void Start() {
         state = characterStates.inSpace;
         phase = landingPhases.notLanding;
+        speed = defaultSpeed;
         layerMask = 1 << 8;
         layerMask = ~layerMask;
     }
@@ -40,7 +43,6 @@ public class CameraController : MonoBehaviour {
         Vector3 directionDown = transform.up * (-1);
         //		landingDirection = directionDown;
         Debug.DrawRay(transform.position, directionDown * 1000f, Color.blue);
-
         changeCharacterState();
     }
 
@@ -104,6 +106,7 @@ public class CameraController : MonoBehaviour {
             case characterStates.flying: {
                     Debug.Log("Flying");
                     if (!isFlying()) {
+                        speed = defaultSpeed;
                         state = characterStates.inSpace;
                     } else {
                         //                        height = getHeightToSurface();
@@ -114,11 +117,15 @@ public class CameraController : MonoBehaviour {
                         //                        	transform.Translate (moveDirection * Time.deltaTime);
                         //                        } else {
                         moveDirection = Camera.main.transform.forward;
+
+                        speed += (InputTracking.GetLocalPosition(VRNode.RightHand).y - InputTracking.GetLocalPosition(VRNode.CenterEye).y);
+
                         moveDirection *= speed;
                         transform.Translate(moveDirection * Time.deltaTime);
                         //}
                         bool toLand = detectToLand();
                         if (toLand) {
+                            speed = defaultSpeed;
                             state = characterStates.landing;
                             phase = landingPhases.preparing;
                         }
