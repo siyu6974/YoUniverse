@@ -34,10 +34,7 @@ public class ConstellationCreater : MonoBehaviour {
             drawLine(startDrawingPos, ray);
         } 
 
-        if (isCreating && Input.GetKeyDown(KeyCode.O)) {
-            isCreating = false; // done creating 
-            saveConstellation(tmpConstellation);
-        }
+
     }
 
     void drawLine(Vector3 start, Vector3 end) {
@@ -95,4 +92,11 @@ public class ConstellationCreater : MonoBehaviour {
         cc = null;
     }
 
+
+    public void saveConstellation() {
+        if (isCreating) {
+            isCreating = false; // done creating 
+            saveConstellation(tmpConstellation);
+        }
+    }
 }
