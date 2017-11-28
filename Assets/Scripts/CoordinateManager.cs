@@ -6,7 +6,7 @@ using System.Linq;
 public struct OmniPosition {
     public Vector3 galactic; 
     // 1 unit = 0.1 lr = 632.41077 AU ~= 20x distance between the Sun and pluto
-    // origin: Sun
+    // origin: Earth
 
     public Vector3? stellar; 
     // 1 unit = 10^-4 AU

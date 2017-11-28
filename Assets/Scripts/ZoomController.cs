@@ -9,7 +9,7 @@ public class ZoomController : MonoBehaviour {
     Vector3 initPos = Vector3.zero;
     Vector3 aimedPos = Vector3.zero;
 
-    public GameObject bodyPivot; // cameras
+    public GameObject bodyPivot;
     public StarGenerator sg;
 
     // Use this for initialization

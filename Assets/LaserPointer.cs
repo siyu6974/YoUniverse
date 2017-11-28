@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.VR;
 
-public class HandController : MonoBehaviour {
+public class LaserPointer : MonoBehaviour {
     private StarData[] starDataSet;
     public Text starInfoText;
     private int starsMax;
@@ -29,8 +29,8 @@ public class HandController : MonoBehaviour {
 
         if (VRModeDetector.isInVR)
             transform.rotation = InputTracking.GetLocalRotation(VRNode.RightHand);
-        //		Debug.Log(Input.GetAxis ("Axis1D.PrimaryIndexTrigger"));
-        //		Debug.Log(Input.GetButton("Fire1"));
+        //      Debug.Log(Input.GetAxis ("Axis1D.PrimaryIndexTrigger"));
+        //      Debug.Log(Input.GetButton("Fire1"));
         if (Input.GetButton("Fire1")) {
             ray = transform.forward * Camera.main.farClipPlane * 0.9f;
             //            ray.z = Camera.main.farClipPlane * 0.9f;
