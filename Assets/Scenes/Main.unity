@@ -699,6 +699,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   starInfoText: {fileID: 1860003800}
+  constellationCreater: {fileID: 1037490425}
+  constellationMgr: {fileID: 1037490424}
 --- !u!114 &753185661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4687,7 +4689,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1651802953}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: acddf9e40c48b4513acb3312ab3248f9, type: 3}
   m_Name: 

@@ -13,10 +13,7 @@ public class ConstellationMgr : MonoBehaviour {
     private int drawMode; // 0 disabled, 1 std 88, 2 custom;
 
     private void toggleDrawMode() {
-        foreach (LineRenderer lr in linesDrawn) {
-            Destroy(lr.gameObject);
-        }
-        linesDrawn.Clear();
+        clearDrawing();
         drawMode = (drawMode+1) % 3;
         if (userContellationDataSet.Count == 0 && drawMode == 2) {
             drawMode = 0;
@@ -47,31 +44,8 @@ public class ConstellationMgr : MonoBehaviour {
             toggleDrawMode();
         }
         if (drawMode == 0) return;
-        lineIndex = 0;
 
-        if (drawMode == 1) {
-            // if contellationData not ready, skip this frame
-            if (contellationDataSet == null) return;
-
-            for (int i = 0; i < contellationDataSet.Length; i++) {
-                ConstellationData c = contellationDataSet[i];
-                for (int j = 0; j < c.links.GetLength(0); j++) {
-                    Vector3 a = getStar(c.links[j, 0]);
-                    Vector3 b = getStar(c.links[j, 1]);
-                    if (a != Vector3.zero && b != Vector3.zero)
-                        drawLine(a, b, Color.white);
-                }
-            }
-        } else if (drawMode == 2) {
-            foreach (ConstellationData c in userContellationDataSet) {
-                for (int j = 0; j < c.links.GetLength(0); j++) {
-                    Vector3 a = getStar(c.links[j, 0]);
-                    Vector3 b = getStar(c.links[j, 1]);
-                    if (a != Vector3.zero && b != Vector3.zero)
-                        drawLine(a, b, Color.white);
-                }
-            }
-        }
+        drawAll();
 	}
 
 
@@ -102,7 +76,36 @@ public class ConstellationMgr : MonoBehaviour {
     }
 
 
-    int lineIndex = 0;
+    private int lineIndex;
+    private void drawAll() {
+        lineIndex = 0;
+
+        if (drawMode == 1) {
+            // if contellationData not ready, skip this frame
+            if (contellationDataSet == null) return;
+
+            for (int i = 0; i < contellationDataSet.Length; i++) {
+                ConstellationData c = contellationDataSet[i];
+                drawConstellation(c);
+            }
+        } else if (drawMode == 2) {
+            foreach (ConstellationData c in userContellationDataSet) {
+                drawConstellation(c);
+            }
+        }
+    }
+
+
+    private void drawConstellation(ConstellationData c) {
+        for (int j = 0; j < c.links.GetLength(0); j++) {
+            Vector3 a = getStarDrawnPosition(c.links[j, 0]);
+            Vector3 b = getStarDrawnPosition(c.links[j, 1]);
+            if (a != Vector3.zero && b != Vector3.zero)
+                drawLine(a, b, Color.white);
+        }
+    }
+
+
     void drawLine(Vector3 start, Vector3 end, Color color) {
         LineRenderer lr;
         try {
@@ -112,6 +115,7 @@ public class ConstellationMgr : MonoBehaviour {
             lr = Instantiate(linePrefab, transform).GetComponent<LineRenderer>();
             linesDrawn.Add(lr);
         }
+        lr.material.color = color;
 
         // leave a margin 
         Vector3 margin = (end - start).normalized * 10f;
@@ -122,7 +126,22 @@ public class ConstellationMgr : MonoBehaviour {
     }
 
 
-    private Vector3 getStar(int id) {
+    public void drawConstellationOfSelectedStar(int HIP) {
+        clearDrawing();
+        for (int i = 0; i < contellationDataSet.Length; i++) {
+            ConstellationData c = contellationDataSet[i];
+
+            for (int j = 0; j < c.links.GetLength(0); j++) {
+                if (c.links[j, 0] == HIP || c.links[j, 1] == HIP) {
+                    drawConstellation(c);
+                    return;
+                }
+            }
+        }
+    }
+
+
+    private Vector3 getStarDrawnPosition(int id) {
         if (starDataSet == null) starDataSet = GameObject.Find("_StarGenerator").GetComponent<StarGenerator>().starDataSet;
 
         for (int i = 0; i < starDataSet.Length; i++) {
@@ -131,5 +150,42 @@ public class ConstellationMgr : MonoBehaviour {
             }
         }
         return Vector3.zero;
+    }
+
+
+    private void clearDrawing() {
+        foreach (LineRenderer lr in linesDrawn) {
+            Destroy(lr.gameObject);
+        }
+        linesDrawn.Clear();
+        lineIndex = 0;
+    }
+
+
+    public void clearDrawingWithFadeOut() {
+        foreach (LineRenderer lr in linesDrawn) {
+            StartCoroutine(fadeOut(lr, 1.3f));
+        }
+        linesDrawn.Clear();
+        lineIndex = 0;
+    }
+
+
+    private IEnumerator fadeOut(LineRenderer lr, float duration) {
+        // Execute this loop once per frame until the timer exceeds the duration.
+        float timer = 0f;
+        Color startCol = lr.material.color;
+        Color endCol = startCol;
+        endCol.a = 0;
+
+        while (timer <= duration) {
+            // Set the colour based on the normalised time.
+            lr.material.color = Color.Lerp(startCol, endCol, timer / duration);
+
+            // Increment the timer by the time between frames and return next frame.
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        Destroy(lr.gameObject);
     }
 }

@@ -9,8 +9,8 @@ public class LaserPointer : MonoBehaviour {
     public Text starInfoText;
     private int starsMax;
     private LineRenderer lr;
-    private ConstellationCreater constellationCreater;
-    private Vector3 rightHandPos;
+    public ConstellationCreater constellationCreater;
+    public ConstellationMgr constellationMgr;
     Vector3 ray;
 
     void Start() {
@@ -40,9 +40,8 @@ public class LaserPointer : MonoBehaviour {
                 if (Vector3.Angle(starDataSet[i].drawnPos, ray) < 1f) {
                     showStarInfo(starDataSet[i]);
 
-                    if (constellationCreater == null) {
-                        constellationCreater = GameObject.Find("_ConstellationMgr").GetComponent<ConstellationCreater>();
-                    }
+                    constellationMgr.drawConstellationOfSelectedStar(starDataSet[i].HIP);
+
                     constellationCreater.SendMessage("constructConstellation", starDataSet[i]);
                     break;
                 }
@@ -52,6 +51,8 @@ public class LaserPointer : MonoBehaviour {
         } else if (Input.GetButtonUp("Fire1")) {
             lr.enabled = false;
             starInfoText.enabled = false;
+
+            constellationMgr.clearDrawingWithFadeOut();
         }
     }
 

@@ -133,7 +133,7 @@ public class CameraController : MonoBehaviour {
                 }
                 break;
             case characterStates.inSpace: {
-                    Debug.Log("In Space");
+                    //Debug.Log("In Space");
                     if (isFlying()) {
                         state = characterStates.flying;
                     }
