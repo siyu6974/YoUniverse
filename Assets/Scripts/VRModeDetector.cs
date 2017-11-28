@@ -8,9 +8,9 @@ public static class VRModeDetector {
 	// Use this for initialization
     static VRModeDetector () {
 
-        isInVR = Vector3.Distance(InputTracking.GetLocalPosition(VRNode.LeftHand), InputTracking.GetLocalPosition(VRNode.RightHand)) > 0.00001f;
+        isInVR = Vector3.Distance(InputTracking.GetLocalPosition(VRNode.LeftHand), InputTracking.GetLocalPosition(VRNode.RightHand)) > 0.0001f;
 		//isInVR = true;
-		Debug.Log (isInVR);
+        Debug.LogWarning("VRMode: " + isInVR);
 	}
 	
 }
