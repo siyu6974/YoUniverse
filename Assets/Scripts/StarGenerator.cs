@@ -73,7 +73,7 @@ public class StarGenerator : MonoBehaviour {
                 Debug.Log(nearestStar);
             } else {
                 // move and scale it
-                float scaleMod = Vector3.Magnitude(nearestStar.transform.position.normalized*100-(Vector3)omniPos.stellar);
+                //float scaleMod = Vector3.Magnitude(nearestStar.transform.position.normalized*100-(Vector3)omniPos.stellar);
                 //nearestStar.transform.localScale = Vector3.one * scaleMod;
             }
             //return;

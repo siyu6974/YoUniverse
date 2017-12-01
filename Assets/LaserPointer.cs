@@ -70,7 +70,7 @@ public class LaserPointer : MonoBehaviour {
     }
 
     void showStarInfo(StarData star) {
-        Vector3 starDrawPosition = star.drawnPos;
+        //Vector3 starDrawPosition = star.drawnPos;
         //        starInfoText.rectTransform.position = Camera.main.WorldToScreenPoint(starDrawPosition) + new Vector3(3f, 3f, 1f);
         string info = "HIP: " + star.HIP + "\n";
         if (star.ProperName != "")

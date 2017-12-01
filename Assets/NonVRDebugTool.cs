@@ -14,6 +14,7 @@ public class NonVRDebugTool : MonoBehaviour {
 
     private void Start() {
         mouseLook.Init(transform, cam.transform);
+        trackingOffset = cam.transform.position - debugTracking.position;
     }
 
 
