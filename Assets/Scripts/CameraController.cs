@@ -5,17 +5,20 @@ using UnityEngine.VR;
 
 public class CameraController : MonoBehaviour {
     const float defaultSpeed = 4f;
+	const float landingSpeed = 0.5f;
+    float speed;
 
-    float speed ;
     float height;
     float offsetHeight = 3.0f;
-    //    float flyPreparationHeight = 2.0f;
+    
     float distanceForLanding = 5.0f;
     Vector3 moveDirection = Vector3.zero;
     Vector3 targetPosition = Vector3.zero;
     Quaternion targetRotation;
-
     Vector3 landingDirection;
+
+	Quaternion turningStart;
+	float turningTimer;
 
     enum characterStates { flying = 1, inSpace = 2, landing = 3, onOrbit = 4 };
     characterStates state;
@@ -27,6 +30,7 @@ public class CameraController : MonoBehaviour {
 
     public Camera cam;
     int layerMask;
+
     // Use this for initialization
     void Start() {
         state = characterStates.inSpace;
@@ -38,16 +42,15 @@ public class CameraController : MonoBehaviour {
 
     void FixedUpdate() {
         // Debug for checking down direction for character
-        //		Vector3 directionDown = Camera.main.transform.up * (-1);
-        //		Debug.DrawRay(cam.transform.position, directionDown * 1000f, Color.blue);
         Vector3 directionDown = transform.up * (-1);
-        //		landingDirection = directionDown;
         Debug.DrawRay(transform.position, directionDown * 1000f, Color.blue);
+
         changeCharacterState();
     }
 
     void useRay(Vector3 direction) {
         ray = new Ray(transform.position, direction);
+
         // Debug for checking forward direction for character
         Debug.DrawRay(transform.position, ray.direction * 1000f, Color.red);
 
@@ -72,14 +75,13 @@ public class CameraController : MonoBehaviour {
         else
             hitInfo = null;
 
-        //        distance = hitInfo?.distance;
         if (hitInfo != null)
             distance = ((RaycastHit)hitInfo).distance;
+		
         return distance;
     }
 
     bool detectToLand() {
-        //        useRay(Camera.main.transform.forward);
         Vector3 pos, d;
         bool flag = false;
 
@@ -91,16 +93,10 @@ public class CameraController : MonoBehaviour {
                 flag = true;
             }
         }
-        //        if (hitInfo != null && ((RaycastHit)hitInfo).distance <= distanceForLanding)
-        //            return true;
-        //        else
-        //            return false;
+
         return flag;
     }
-
-
-    Quaternion turningStart;
-    float turningTimer;
+		
     void changeCharacterState() {
         switch (state) {
             case characterStates.flying: {
@@ -109,20 +105,13 @@ public class CameraController : MonoBehaviour {
                         speed = defaultSpeed;
                         state = characterStates.inSpace;
                     } else {
-                        //                        height = getHeightToSurface();
-                        //                        if (height < flyPreparationHeight) {
-                        //                        	moveDirection = new Vector3 (0, Input.GetAxis ("Updown"), 0);
-                        //                        	moveDirection = transform.TransformDirection (moveDirection);
-                        //                        	moveDirection *= speed;
-                        //                        	transform.Translate (moveDirection * Time.deltaTime);
-                        //                        } else {
                         moveDirection = Camera.main.transform.forward;
 
                         speed += (InputTracking.GetLocalPosition(VRNode.RightHand).y - InputTracking.GetLocalPosition(VRNode.CenterEye).y);
 
                         moveDirection *= speed;
                         transform.Translate(moveDirection * Time.deltaTime);
-                        //}
+                        
                         bool toLand = detectToLand();
                         if (toLand) {
                             speed = defaultSpeed;
@@ -156,6 +145,7 @@ public class CameraController : MonoBehaviour {
                         targetRotation = Quaternion.FromToRotation(directionDown, po);
                         targetPosition = o;
                         landingDirection = po;
+
                         phase = landingPhases.turing;
                         turningStart = transform.rotation;
                         turningTimer = 0;
@@ -173,9 +163,8 @@ public class CameraController : MonoBehaviour {
                         Debug.Log("Geting down");
                         height = getHeightToSurface();
                         if (height >= offsetHeight) {
-                            //Debug.Log("Moving down : height = " + height);
                             Vector3 dir = transform.up * (-1);
-                            dir *= 0.5f;
+							dir *= landingSpeed;
                             transform.Translate(dir * Time.deltaTime, Space.World);
                         } else {
                             phase = landingPhases.notLanding;
@@ -187,34 +176,15 @@ public class CameraController : MonoBehaviour {
                             }
                             Debug.Log("Finish landing");
                         }
-
-                        //						moveDirection = transform.TransformDirection (transform.up);
-
                     }
-
-                    //                    height = getHeightToSurface();
-                    //                    if (height <= offsetHeight) {
-                    //                        state = characterStates.onOrbit;
-                    //                    } else {
-                    //                        //Vector3 down = Vector3.up * (-1);
-                    //                        moveDirection = transform.TransformDirection(Vector3.up);
-                    //                        moveDirection *= speed;
-                    //                        transform.Translate(moveDirection * Time.deltaTime);
-                    //                    }
-
                 }
                 break;
             case characterStates.onOrbit: {
                     Debug.Log("OnOrbit");
-                    if (isFlying()) { // flying_condition to change
+                    if (isFlying()) {
                         state = characterStates.flying;
                     }
                     // Walking on orbit
-                    //if (targetPosition != Vector3.zero) {
-                    //	Vector3 dirRef = targetPosition - transform.position;
-                    //	Quaternion rot = Quaternion.FromToRotation(transform.up * (-1), dirRef);
-                    //	transform.Rotate (rot.eulerAngles);
-                    //}
                     if (orbitEntryPoint != null) {
                         Vector3 entryPoint = (Vector3)orbitEntryPoint;
                         Vector3 currentPos;
@@ -227,28 +197,18 @@ public class CameraController : MonoBehaviour {
                         float phi = (currentPos.z - entryPoint.z) * (2 * Mathf.PI / 5f);
 
                         Vector3 transformedPos = new Vector3();
-                        //transformedPos.x = 3*Mathf.Sin(currentPos.x - entryPoint.x);
-                        //transformedPos.z = 3*Mathf.Sin(currentPos.z - entryPoint.z);
                         transformedPos.x = offsetHeight * Mathf.Sin(theta) * Mathf.Cos(phi);
                         transformedPos.y = offsetHeight * Mathf.Sin(theta) * Mathf.Sin(phi);
                         transformedPos.z = -offsetHeight * Mathf.Cos(theta);
 
-                        //Debug.Log(transformedPos);
-                        //Debug.Log(offsetHeight);
-                        //Debug.Log(Mathf.Cos(theta));
                         transform.position = transformedPos + targetSubOrbitPos;
-                        //transform.up = (transform.position - targetSubOrbitPos).normalized;
-                        //transform.LookAt(targetSubOrbitPos.position);
                     }
-
                 }
                 break;
         }
     }
 
     bool isFlying() {
-        //		Debug.Log( Input.GetButton ("Left Controller Trigger (Touch)") && Input.GetButton ("Right Controller Trigger (Touch)"));
-        //			Debug.Log(Input.GetButton ("Left Controller Trackpad (Press)") && Input.GetButton ("Right Controller Trackpad (Press)"));
         return Input.GetKey(KeyCode.O) || Input.GetButton("Left Controller Trigger (Touch)")
             && Input.GetButton("Left Controller Trackpad (Press)") && Input.GetButton("Right Controller Trackpad (Press)");
     }
