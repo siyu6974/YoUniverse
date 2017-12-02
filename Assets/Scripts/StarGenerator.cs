@@ -13,6 +13,7 @@ public struct StarData {
     public Vector3 coord; // in parsec/326 OR 10^-1 lr
 
     // var
+    public float distance;
     public float Mag;
     public Vector3 drawnPos;
 }
@@ -73,7 +74,7 @@ public class StarGenerator : MonoBehaviour {
                 Debug.Log(nearestStar);
             } else {
                 // move and scale it
-                float scaleMod = Vector3.Magnitude(nearestStar.transform.position.normalized*100-(Vector3)omniPos.stellar);
+                //float scaleMod = Vector3.Magnitude(nearestStar.transform.position.normalized*100-(Vector3)omniPos.stellar);
                 //nearestStar.transform.localScale = Vector3.one * scaleMod;
             }
             //return;
@@ -88,7 +89,9 @@ public class StarGenerator : MonoBehaviour {
         // TODO: USE absMag to get more stars!
         for (int i = 0; i < starsMax; i++) {
             Vector3 starRelativePos = starDataSet[i].coord - pos;
-            if (Vector3.Magnitude(starRelativePos) < 0.00001f) continue;
+            float distance = Vector3.Magnitude(starRelativePos);
+            starDataSet[i].distance = distance;
+            if (distance < 0.00001f) continue;
             Camera cam = Camera.main;
             starParticles[i].position = cam.transform.position + starRelativePos.normalized * cam.farClipPlane * 0.9f;
             starDataSet[i].drawnPos = starParticles[i].position;

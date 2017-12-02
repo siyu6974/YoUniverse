@@ -1,9 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.VR;
 
-public class test : MonoBehaviour {
+public class TargetLocker : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
@@ -12,6 +11,6 @@ public class test : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		transform.position = InputTracking.GetLocalPosition (VRNode.RightHand);
+		
 	}
 }

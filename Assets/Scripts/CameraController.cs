@@ -13,9 +13,7 @@ public class CameraController : MonoBehaviour {
     
     float distanceForLanding = 5.0f;
     Vector3 moveDirection = Vector3.zero;
-    Vector3 targetPosition = Vector3.zero;
     Quaternion targetRotation;
-    Vector3 landingDirection;
 
 	Quaternion turningStart;
 	float turningTimer;
@@ -143,8 +141,6 @@ public class CameraController : MonoBehaviour {
 
                         Vector3 directionDown = transform.up * (-1);
                         targetRotation = Quaternion.FromToRotation(directionDown, po);
-                        targetPosition = o;
-                        landingDirection = po;
 
                         phase = landingPhases.turing;
                         turningStart = transform.rotation;

@@ -20,7 +20,7 @@ namespace UnityStandardAssets.Characters.FirstPerson {
             if (Mathf.Abs(Time.timeScale) < float.Epsilon) return;
 
             // get the rotation before it's changed
-            float oldYRotation = transform.eulerAngles.y;
+            //float oldYRotation = transform.eulerAngles.y;
 
             mouseLook.LookRotation(transform, cam.transform);
 
