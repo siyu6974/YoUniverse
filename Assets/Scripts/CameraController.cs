@@ -217,4 +217,20 @@ public class CameraController : MonoBehaviour {
     Vector3? orbitEntryPoint;
     Vector3 targetSubOrbitPos;
 
+	public float getSpeed() {
+		return speed;
+	}
+
+	public int getState() {
+		return (int)state;
+	}
+
+	public int getPhase() {
+		return (int)phase;
+	}
+
+	public Vector3 getPosition() {
+		return transform.position;
+	}
+
 }

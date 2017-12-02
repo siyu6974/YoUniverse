@@ -21,15 +21,15 @@ public class ZoomController : MonoBehaviour {
 
         bool vrCtr = VRModeDetector.isInVR;
 
-        bool vrInput = (Vector3.Distance(InputTracking.GetLocalPosition(VRNode.LeftHand), InputTracking.GetLocalPosition(VRNode.LeftEye)) < .3f) &&
-            (Vector3.Distance(InputTracking.GetLocalPosition(VRNode.RightHand), InputTracking.GetLocalPosition(VRNode.RightEye)) < .3f);
+        bool vrInput = (Vector3.Distance(InputTracking.GetLocalPosition(VRNode.LeftHand), InputTracking.GetLocalPosition(VRNode.LeftEye)) < .18f) &&
+            (Vector3.Distance(InputTracking.GetLocalPosition(VRNode.RightHand), InputTracking.GetLocalPosition(VRNode.RightEye)) < .18f);
 
-        if ((vrCtr && vrInput) || Input.GetKeyDown(KeyCode.P) && zoomed == false) {
+		if (((vrCtr && vrInput) || Input.GetKeyDown(KeyCode.P)) && zoomed == false) {
             Debug.Log("Zoom in");
             initPos = bodyPivot.transform.position;
             zoomed = true;
             sg.ignoreMovement = true;
-        } else if (((vrCtr && !vrCtr) || Input.GetKeyUp(KeyCode.P)) && zoomed == true) {
+        } else if (((vrCtr && !vrInput) || Input.GetKeyUp(KeyCode.P)) && zoomed == true) {
             Debug.Log("Zoom out");
             bodyPivot.transform.position = initPos;
             zoomed = false;

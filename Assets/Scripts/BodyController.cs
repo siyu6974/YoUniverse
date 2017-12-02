@@ -5,11 +5,12 @@ using UnityEngine.VR;
 
 public class BodyController : MonoBehaviour {
 	public GameObject head;
-	private Vector3? offset;
+	private Vector3 offset;
 
 	// Use this for initialization
 	void Start () {
-        offset = transform.position - head.transform.position;
+//        offset = transform.position - head.transform.position;
+		offset = Vector3.zero;
 		Debug.Log (offset);
 	}
 
@@ -17,7 +18,6 @@ public class BodyController : MonoBehaviour {
         if (offset == null) return;
 
         transform.position = head.transform.position + (Vector3)offset;
-        if (!VRModeDetector.isInVR)
-            transform.rotation = head.transform.rotation;
+        transform.rotation = head.transform.rotation;
 	}
 }
