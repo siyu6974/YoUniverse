@@ -43,7 +43,7 @@ public class Radar : MonoBehaviour {
         if (starDataSet == null) starDataSet = GameObject.Find("_StarGenerator").GetComponent<StarGenerator>().starDataSet;
 
         clearMarker();
-        // find stars within 10 light year
+        // find stars within 10 light year, but not within 0.1 lr
         IEnumerable<StarData> ns = from s in starDataSet where s.distance < 100 && s.distance > 1 select s;
         if (ns.Count() == 0) {
             StarData nearestStar = starDataSet.Aggregate((minItem, nextItem) => (minItem.distance < nextItem.distance && minItem.distance > 1) ? minItem : nextItem);
@@ -70,7 +70,7 @@ public class Radar : MonoBehaviour {
                 if (!m.isOnSight) {
                     // just get in sight
                     if (m.marker != null) 
-                        Destroy(m.marker.gameObject);
+                        Destroy(m.marker);
                 }
                 Vector3 pos = Vector3.ClampMagnitude(m.star.drawnPos - cam.transform.position, 30);
                 Debug.DrawRay(cam.transform.position, pos * 1000, Color.red);
@@ -86,7 +86,7 @@ public class Radar : MonoBehaviour {
                 if (m.isOnSight) {
                     // just get out of sight
                     if (m.marker != null)
-                        Destroy(m.marker.gameObject);
+                        Destroy(m.marker);
                 }
                 if (m.marker == null) {
                     m.marker = Instantiate(arrowPref, pos, Quaternion.identity);
@@ -104,7 +104,7 @@ public class Radar : MonoBehaviour {
 
     void clearMarker() {
         foreach (Marker mm in nearStars) {
-            Destroy(mm.marker.gameObject);
+            Destroy(mm.marker);
         }
         nearStars.Clear();
     }
