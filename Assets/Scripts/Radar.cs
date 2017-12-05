@@ -42,25 +42,19 @@ public class Radar : MonoBehaviour {
     public void scanEnvironment() {
         if (starDataSet == null) starDataSet = GameObject.Find("_StarGenerator").GetComponent<StarGenerator>().starDataSet;
 
+        clearMarker();
         // find stars within 10 light year
-        //IEnumerable<StarData> ns = from s in starDataSet where s.distance < 100 select s;
-        //if (ns.Count() == 0) {
-        //    StarData nearestStar = starDataSet.Aggregate((minItem, nextItem) => minItem.distance < nextItem.distance ? minItem : nextItem);
-        //    nearStars.Add(nearestStar);
-        //} else {
-        //    nearStars = ns.ToList();
-        //}
-        //Debug.Log(starDataSet[1].ProperName);
-        foreach (Marker mm in nearStars) {
-            Destroy(mm.marker.gameObject);
+        IEnumerable<StarData> ns = from s in starDataSet where s.distance < 100 && s.distance > 1 select s;
+        if (ns.Count() == 0) {
+            StarData nearestStar = starDataSet.Aggregate((minItem, nextItem) => (minItem.distance < nextItem.distance && minItem.distance > 1) ? minItem : nextItem);
+            Marker m = new Marker {star = nearestStar};
+            nearStars.Add(m);
+        } else {
+            foreach (StarData s in ns) {
+                Marker m = new Marker {star = s};
+                nearStars.Add(m);
+            }
         }
-        nearStars.Clear();
-        Marker m = new Marker();
-        m.star = starDataSet[2];
-        nearStars.Add(m);
-        m = new Marker();
-        m.star = starDataSet[1];
-        nearStars.Add(m);
     }
 
     public void showMarker() {
@@ -107,4 +101,11 @@ public class Radar : MonoBehaviour {
 
     }
 
+
+    void clearMarker() {
+        foreach (Marker mm in nearStars) {
+            Destroy(mm.marker.gameObject);
+        }
+        nearStars.Clear();
+    }
 }
