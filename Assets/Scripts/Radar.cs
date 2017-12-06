@@ -64,9 +64,11 @@ public class Radar : MonoBehaviour {
             Camera cam = Camera.main;
             Vector3 dir = m.star.drawnPos - cam.transform.position - cam.transform.forward * (cam.farClipPlane * 0.9f);
 
+            Vector3 dirProjectionOnScreen = Vector3.ProjectOnPlane(dir, cam.transform.forward);
+
             Vector3 starScreenPos = cam.WorldToViewportPoint(m.star.drawnPos);
             if (starScreenPos.z > 0 && starScreenPos.x > 0 && starScreenPos.x < 1 && starScreenPos.y > 0 && starScreenPos.y < 1) {
-                Debug.Log("on sight");
+                // draw circle
                 if (!m.isOnSight) {
                     // just get in sight
                     if (m.marker != null) 
@@ -82,6 +84,7 @@ public class Radar : MonoBehaviour {
                 m.isOnSight = true;
 
             } else {
+                // draw arrow
                 Vector3 pos = cam.transform.forward * 10 + Camera.main.transform.position;
                 if (m.isOnSight) {
                     // just get out of sight
@@ -91,7 +94,7 @@ public class Radar : MonoBehaviour {
                 if (m.marker == null) {
                     m.marker = Instantiate(arrowPref, pos, Quaternion.identity);
                 }
-                m.marker.transform.LookAt(dir, cam.transform.forward * -1);
+                m.marker.transform.LookAt(dirProjectionOnScreen, cam.transform.forward * -1);
                 m.marker.transform.position = pos + m.marker.transform.forward * 5;
                 m.isOnSight = false;
 
