@@ -11,6 +11,7 @@ public struct OmniPosition {
     public Vector3? stellar; 
     // 1 unit = 10^-4 AU
     // origin: entry point
+    // stellar = null ==> is in interstellar space
 }
 
 static public class CoordinateManager {

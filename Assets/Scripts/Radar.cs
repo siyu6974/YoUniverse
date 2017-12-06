@@ -7,9 +7,7 @@ public class Radar : MonoBehaviour {
     public GameObject arrowPref;
     public GameObject circlePref;
 
-
     StarData[] starDataSet;
-    List<Marker> nearStars = new List<Marker>();
 
     // not using struct because marker need to be changed later
     class Marker {
@@ -17,8 +15,9 @@ public class Radar : MonoBehaviour {
         public bool isOnSight;
         public GameObject marker;
     }
+    List<Marker> markers = new List<Marker>();
 
-	// Use this for initialization
+    // Use this for initialization
 	void Start () {
         starDataSet = GameObject.Find("_StarGenerator").GetComponent<StarGenerator>().starDataSet;
         //StartCoroutine(test());
@@ -45,18 +44,18 @@ public class Radar : MonoBehaviour {
         if (ns.Count() == 0) {
             StarData nearestStar = starDataSet.Aggregate((minItem, nextItem) => (minItem.distance < nextItem.distance && minItem.distance > 1) ? minItem : nextItem);
             Marker m = new Marker {star = nearestStar};
-            nearStars.Add(m);
+            markers.Add(m);
         } else {
             foreach (StarData s in ns) {
                 Marker m = new Marker {star = s};
-                nearStars.Add(m);
+                markers.Add(m);
             }
         }
     }
 
     public void showMarker() {
-        for (int i = 0; i < nearStars.Count(); i++) {
-            Marker m = nearStars[i];
+        for (int i = 0; i < markers.Count(); i++) {
+            Marker m = markers[i];
 
             Camera cam = Camera.main;
             Vector3 dir = m.star.drawnPos - cam.transform.position - cam.transform.forward * (cam.farClipPlane * 0.9f);
@@ -96,16 +95,14 @@ public class Radar : MonoBehaviour {
                 m.isOnSight = false;
 
             }
-
         }
-
     }
 
 
     void clearMarker() {
-        foreach (Marker mm in nearStars) {
+        foreach (Marker mm in markers) {
             Destroy(mm.marker);
         }
-        nearStars.Clear();
+        markers.Clear();
     }
 }
