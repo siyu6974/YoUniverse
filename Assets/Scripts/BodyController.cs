@@ -15,9 +15,7 @@ public class BodyController : MonoBehaviour {
 	}
 
     void LateUpdate () {
-        if (offset == null) return;
-
-        transform.position = head.transform.position + (Vector3)offset;
+        transform.position = head.transform.position + offset;
         transform.rotation = head.transform.rotation;
 	}
 }

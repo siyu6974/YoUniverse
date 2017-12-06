@@ -10,9 +10,6 @@ public class Radar : MonoBehaviour {
 
     StarData[] starDataSet;
     List<Marker> nearStars = new List<Marker>();
-    List<GameObject> offSightMarkers = new List<GameObject>();
-    List<GameObject> onSightMarkers = new List<GameObject>();
-
 
     // not using struct because marker need to be changed later
     class Marker {
