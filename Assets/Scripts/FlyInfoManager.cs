@@ -18,7 +18,7 @@ public class FlyInfoManager : MonoBehaviour {
 
 	Vector3 position;
 
-	public CameraController controller;
+    public FlightController controller;
 
 	// Use this for initialization
 	void Start () {

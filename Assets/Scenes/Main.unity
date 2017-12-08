@@ -4833,8 +4833,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1651802955}
-  - component: {fileID: 1651802954}
   - component: {fileID: 1651802957}
+  - component: {fileID: 1651802954}
   m_Layer: 0
   m_Name: CameraPivot
   m_TagString: Untagged
@@ -4850,7 +4850,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1651802953}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c21449ee149b50c459971aafd35060a0, type: 3}
+  m_Script: {fileID: 11500000, guid: d0911348964234b49a52539b3cb40a56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 586036338}
@@ -5277,7 +5277,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68626d70c7e523b4c8a0947a4efe49c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 1651802954}
+  controller: {fileID: 0}
 --- !u!1 &1967769478
 GameObject:
   m_ObjectHideFlags: 0
