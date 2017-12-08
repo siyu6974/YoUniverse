@@ -67,9 +67,8 @@ public class StarGenerator : MonoBehaviour {
             if (nearestStar == null) {
                 //Debug.Log(omniPos.stellar);
                 //Debug.Log(CoordinateManager.stellarSysEntryPt);
-                Vector3 starObjPos = (Vector3)(CoordinateManager.stellarSysEntryPt);
-                starObjPos = starObjPos.normalized * Camera.main.farClipPlane * 0.88f;
-
+                Vector3 dir = -CoordinateManager.starSysEntryPt.v.normalized;
+                Vector3 starObjPos = Camera.main.transform.position + dir * Camera.main.farClipPlane * 0.88f;
                 nearestStar = Instantiate(starPrefab, starObjPos, Quaternion.identity);
                 Debug.Log(nearestStar);
             } else {
@@ -91,7 +90,7 @@ public class StarGenerator : MonoBehaviour {
             Vector3 starRelativePos = starDataSet[i].coord - pos;
             float distance = Vector3.Magnitude(starRelativePos);
             starDataSet[i].distance = distance;
-            if (distance < 0.00001f) continue;
+            if (distance < MyConstants.STAR_SYSTEM_BORDER_ENTRY) continue;
             Camera cam = Camera.main;
             starParticles[i].position = cam.transform.position + starRelativePos.normalized * cam.farClipPlane * 0.9f;
             starDataSet[i].drawnPos = starParticles[i].position;

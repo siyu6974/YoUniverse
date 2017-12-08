@@ -1,3 +1,5 @@
 public static class MyConstants {
-    public const float STELLAR_SYSTEM_BORDER = 10000f;  // 1AU in stellar coord
+    public const float STAR_SYSTEM_BORDER_EXIT = 400000f;  // in stellar coord = 40AU 
+    public const float STAR_SYSTEM_BORDER_ENTRY = 1f;  // in galatic coord = 632AU
+
 }

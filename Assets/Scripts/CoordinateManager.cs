@@ -6,26 +6,31 @@ using System.Linq;
 public struct OmniPosition {
     public Vector3 galactic; 
     // 1 unit = 0.1 lr = 632.41077 AU ~= 20x distance between the Sun and pluto
-    // origin: Earth
+    // origin: Sun. X:?, Y:?, Z:?
 
     public Vector3? stellar; 
     // 1 unit = 10^-4 AU
-    // origin: entry point
+    // origin: the sun, X->entrypoint,
     // stellar = null ==> is in interstellar space
 }
 
 static public class CoordinateManager {
     static public StarData[] starDataSet;
 
-    static public OmniPosition virtualPos;
+    static public OmniPosition virtualPos = new OmniPosition {
+        stellar = new Vector3(10000, 0, 0)
+    };
 
-    public struct RVCoordinateBridge {
+    public class RVCoordinateBridge {
         public Vector3 r;
         public Vector3 v;
     }
 
-    static public Vector3? stellarSysEntryPt; // in the real world
-    static private RVCoordinateBridge stellarSysExitPt = new RVCoordinateBridge {
+    static public RVCoordinateBridge starSysEntryPt = new RVCoordinateBridge {
+        v = new Vector3(MyConstants.STAR_SYSTEM_BORDER_EXIT, 0, 0) // const
+    };
+
+    static public RVCoordinateBridge starSysExitPt = new RVCoordinateBridge {
         v = Vector3.zero, r = Vector3.zero
     };
 
@@ -38,31 +43,34 @@ static public class CoordinateManager {
             //Debug.Log(virtualPos.galactic);
             //Debug.Log("s");
             //Debug.Log(virtualPos.stellar);
-            if (Vector3.Magnitude(starRelativePos) < 1) {
-                // if < 20x distance sun-pluto, use stellar system == 632 AU
-                if (stellarSysEntryPt == null) {
+            if (Vector3.Magnitude(starRelativePos) < MyConstants.STAR_SYSTEM_BORDER_ENTRY) {
+                if (starSysEntryPt == null) {
                     Debug.Log("Entering");
                     // just enter the system
-                    stellarSysEntryPt = realWorldPos; // record entry point as ref
+                    starSysEntryPt = new RVCoordinateBridge {
+                        v = new Vector3(MyConstants.STAR_SYSTEM_BORDER_EXIT, 0, 0),
+                        r = realWorldPos // record entry point as ref
+                    };
+
                     virtualPos.galactic = starDataSet[i].coord; 
                 }
-                virtualPos.stellar = realWorldPos - stellarSysEntryPt;
+                virtualPos.stellar = realWorldPos - starSysEntryPt.r;
                 // exit the system if distance > 1AU
-                if (Vector3.Magnitude((Vector3)virtualPos.stellar) > MyConstants.STELLAR_SYSTEM_BORDER)
+                if (Vector3.Magnitude((Vector3)virtualPos.stellar) > MyConstants.STAR_SYSTEM_BORDER_EXIT)
                     break;
                 return;
             }
         }
 
-        if (stellarSysEntryPt != null) {
+        if (starSysEntryPt != null) {
             Debug.Log("Exiting");
             // just exit the system
-            stellarSysExitPt.r = realWorldPos;
-            stellarSysExitPt.v = virtualPos.galactic + new Vector3(1f, 0.1f, 0.1f);
-            stellarSysEntryPt = null;
+            starSysExitPt.r = realWorldPos;
+            starSysExitPt.v = (Vector3)virtualPos.stellar;
+            starSysEntryPt = null;
             virtualPos.stellar = null;
         }
-        virtualPos.galactic = realWorldPos - stellarSysExitPt.r + stellarSysExitPt.v;
+        virtualPos.galactic = realWorldPos - starSysExitPt.r + starSysExitPt.v;
     }
 
 }
