@@ -18,8 +18,10 @@ static public class CoordinateManager {
     static public StarData[] starDataSet;
 
     static public OmniPosition virtualPos = new OmniPosition {
-        stellar = new Vector3(10000, 0, 0)
+        //stellar = new Vector3(10000, 0, 0) // init at Earth
+        stellar = new Vector3(10, 0, 0) // init around the Sun
     };
+    static public OmniPosition prevVirtualPos = new OmniPosition();
 
     public class RVCoordinateBridge {
         public Vector3 r;
@@ -47,8 +49,9 @@ static public class CoordinateManager {
                 if (starSysEntryPt == null) {
                     Debug.Log("Entering");
                     // just enter the system
+                    Vector3 flyingDir = (virtualPos.galactic - prevVirtualPos.galactic).normalized;
                     starSysEntryPt = new RVCoordinateBridge {
-                        v = new Vector3(MyConstants.STAR_SYSTEM_BORDER_EXIT, 0, 0),
+                        v = flyingDir * MyConstants.STAR_SYSTEM_BORDER_EXIT,
                         r = realWorldPos // record entry point as ref
                     };
 
@@ -71,6 +74,8 @@ static public class CoordinateManager {
             virtualPos.stellar = null;
         }
         virtualPos.galactic = realWorldPos - starSysExitPt.r + starSysExitPt.v;
+
+        prevVirtualPos = virtualPos;
     }
 
 }

@@ -4,7 +4,8 @@ using UnityStandardAssets.Characters.FirstPerson;
 
 public class NonVRDebugTool : MonoBehaviour {
     public Camera cam;
-    public GameObject body;
+    public GameObject pivot;
+    FlightController fc;
 
     public Transform debugTracking;
     private Vector3? trackingOffset;
@@ -14,14 +15,18 @@ public class NonVRDebugTool : MonoBehaviour {
 
     private void Start() {
         mouseLook.Init(transform, cam.transform);
+        mouseLook.MaximumX = 45;
+        mouseLook.MinimumX = -45;
+
         trackingOffset = cam.transform.position - debugTracking.position;
+        fc = pivot.GetComponent<FlightController>();
     }
 
 
     private void Update() {
         RotateView();
-        if (trackingOffset != null)
-            cam.transform.position = debugTracking.position - (Vector3)trackingOffset;
+        //if (trackingOffset != null && fc.getState() != CharacterStates.flying)
+            //cam.transform.localPosition = debugTracking.position - (Vector3)trackingOffset;
     }
 
 
@@ -30,6 +35,6 @@ public class NonVRDebugTool : MonoBehaviour {
         if (Mathf.Abs(Time.timeScale) < float.Epsilon) return;
 
         mouseLook.LookRotation(transform, cam.transform);
-        body.transform.rotation = cam.transform.rotation;
+        pivot.transform.rotation = cam.transform.rotation;
     }
 }

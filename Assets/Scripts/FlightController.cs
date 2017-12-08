@@ -1,26 +1,29 @@
 ﻿using UnityEngine;
 using UnityEngine.VR;
 
+public enum CharacterStates { flying = 1, inSpace = 2, landing = 3, onOrbit = 4, landed, takingOff };
+public enum LandingPhases { notLanding = 0, preparing = 1, turing = 2, getingDown = 3 };
+
+
 public class FlightController : MonoBehaviour {
     const float defaultSpeed = 4f;
-	const float landingSpeed = 0.5f;
-    const float maxOrbitHeight = 100f;
+	const float landingSpeed = 2f;
+    const float maxOrbitHeight = 50f;
+
     float speed;
 
     float height;
     float offsetHeight = 3.0f;
     
-    float distanceForLanding = 5.0f;
+    float distanceForLanding = 20f;
     Vector3 moveDirection = Vector3.zero;
     Quaternion targetRotation;
 
 	Quaternion turningStart;
 	float turningTimer;
 
-    enum characterStates { flying = 1, inSpace = 2, landing = 3, onOrbit = 4, landed, takingOff};
-    characterStates state;
-    enum landingPhases { notLanding = 0, preparing = 1, turing = 2, getingDown = 3 };
-    landingPhases phase;
+    CharacterStates state;
+    LandingPhases phase;
 
     RaycastHit? hitInfo;
     Ray ray;
@@ -30,8 +33,8 @@ public class FlightController : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        state = characterStates.inSpace;
-        phase = landingPhases.notLanding;
+        state = CharacterStates.inSpace;
+        phase = LandingPhases.notLanding;
         speed = defaultSpeed;
         layerMask = 1 << 8;
         layerMask = ~layerMask;
@@ -96,39 +99,40 @@ public class FlightController : MonoBehaviour {
 		
     void changeCharacterState() {
         switch (state) {
-            case characterStates.flying: {
+            case CharacterStates.flying: {
                     Debug.Log("Flying");
                     if (!isFlying()) {
                         speed = defaultSpeed;
-                        state = characterStates.inSpace;
+                        state = CharacterStates.inSpace;
                     } else {
                         moveDirection = Camera.main.transform.forward;
-
-                        speed += (InputTracking.GetLocalPosition(VRNode.RightHand).y - InputTracking.GetLocalPosition(VRNode.CenterEye).y);
-
+                        if (VRModeDetector.isInVR)
+                            speed += (InputTracking.GetLocalPosition(VRNode.RightHand).y - InputTracking.GetLocalPosition(VRNode.CenterEye).y);
+                        else
+                            speed += 0.3f;
                         moveDirection *= speed;
-                        transform.Translate(moveDirection * Time.deltaTime);
-                        
+                        transform.position += (moveDirection * Time.deltaTime);
+
                         bool toLand = detectToLand();
                         if (toLand) {
                             speed = defaultSpeed;
-                            state = characterStates.landing;
-                            phase = landingPhases.preparing;
+                            state = CharacterStates.landing;
+                            phase = LandingPhases.preparing;
                         }
                     }
                 }
                 break;
-            case characterStates.inSpace: {
+            case CharacterStates.inSpace: {
                     //Debug.Log("In Space");
                     if (isFlying()) {
-                        state = characterStates.flying;
+                        state = CharacterStates.flying;
                     }
                 }
                 break;
-            case characterStates.landing: {
+            case CharacterStates.landing: {
                     // Landing
                     Debug.Log("Landing");
-                    if (phase == landingPhases.preparing) {
+                    if (phase == LandingPhases.preparing) {
                         Debug.Log("Preparing");
                         // Character already stopped in this frame
                         // All informations we need for landing are already in hitInfo
@@ -141,20 +145,20 @@ public class FlightController : MonoBehaviour {
                         Vector3 directionDown = transform.up * (-1);
                         targetRotation = Quaternion.FromToRotation(directionDown, po);
 
-                        phase = landingPhases.turing;
+                        phase = LandingPhases.turing;
                         turningStart = transform.rotation;
                         turningTimer = 0;
 
-                    } else if (phase == landingPhases.turing) {
+                    } else if (phase == LandingPhases.turing) {
                         if (transform.rotation == targetRotation) {
                             Debug.Log("Finish turning");
-                            phase = landingPhases.getingDown;
+                            phase = LandingPhases.getingDown;
                         } else {
                             Debug.Log("turning");
                             turningTimer += Time.fixedDeltaTime;
                             transform.rotation = Quaternion.Slerp(turningStart, targetRotation, turningTimer);
                         }
-                    } else if (phase == landingPhases.getingDown) {
+                    } else if (phase == LandingPhases.getingDown) {
                         Debug.Log("Geting down");
                         height = getHeightToSurface();
                         if (height >= offsetHeight) {
@@ -162,17 +166,17 @@ public class FlightController : MonoBehaviour {
 							dir *= landingSpeed;
                             transform.Translate(dir * Time.deltaTime, Space.World);
                         } else {
-                            phase = landingPhases.notLanding;
-                            state = characterStates.landed;
+                            phase = LandingPhases.notLanding;
+                            state = CharacterStates.landed;
                             Debug.Log("Finish landing");
                         }
                     }
                 }
                 break;
-            case characterStates.onOrbit: {
+            case CharacterStates.onOrbit: {
                     Debug.Log("OnOrbit");
                     if (isFlying()) {
-                        state = characterStates.takingOff;
+                        state = CharacterStates.takingOff;
                         break;
                     }
                     // Walking on orbit
@@ -203,20 +207,20 @@ public class FlightController : MonoBehaviour {
                     }
                 }
                 break;
-            case characterStates.landed: {
+            case CharacterStates.landed: {
                     if (isFlying()) {
-                        state = characterStates.takingOff;
+                        state = CharacterStates.takingOff;
                         break;
                     }
                 }
                 break;
-            case characterStates.takingOff: {
+            case CharacterStates.takingOff: {
                     if (!isFlying()) {
                         speed = defaultSpeed;
                         if (getHeightToSurface() > maxOrbitHeight)
-                            state = characterStates.inSpace;
+                            state = CharacterStates.inSpace;
                         else
-                            state = characterStates.onOrbit;
+                            state = CharacterStates.onOrbit;
                         break;
                     } else {
                         moveDirection = transform.up;
@@ -244,12 +248,12 @@ public class FlightController : MonoBehaviour {
 		return speed;
 	}
 
-	public int getState() {
-		return (int)state;
+    public CharacterStates getState() {
+		return state;
 	}
 
-	public int getPhase() {
-		return (int)phase;
+    public LandingPhases getPhase() {
+		return phase;
 	}
 
 	public Vector3 getPosition() {
