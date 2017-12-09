@@ -6,6 +6,7 @@ using System.Linq;
 public class Radar : MonoBehaviour {
     public GameObject arrowPref;
     public GameObject circlePref;
+	public float rotateSpeed = 6.0f; // deg/s
 
     StarData[] starDataSet;
 
@@ -76,6 +77,7 @@ public class Radar : MonoBehaviour {
                     
                     m.marker = Instantiate(circlePref, cam.transform.position + pos, Quaternion.identity);
                     m.marker.transform.LookAt(cam.transform);
+					m.marker.transform.Rotate (rotateSpeed * m.marker.transform.forward * Time.deltaTime);
                 }
                 m.isOnSight = true;
 
