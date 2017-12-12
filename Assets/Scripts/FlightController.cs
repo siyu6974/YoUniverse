@@ -204,10 +204,11 @@ public class FlightController : MonoBehaviour {
 
                         Vector3 transformedPos = new Vector3();
                         transformedPos.x = offsetHeight * Mathf.Sin(theta) * Mathf.Cos(phi);
-                        transformedPos.y = offsetHeight * Mathf.Sin(theta) * Mathf.Sin(phi);
-                        transformedPos.z = -offsetHeight * Mathf.Cos(theta);
+                        transformedPos.z = offsetHeight * Mathf.Sin(theta) * Mathf.Sin(phi);
+                        transformedPos.y = -offsetHeight * Mathf.Cos(theta);
 
-                        Debug.Log(offsetHeight);
+                        transformedPos = transform.InverseTransformVector(transformedPos);
+
                         transform.position = transformedPos + standingPlanet.position;
                     }
                 }
@@ -227,7 +228,6 @@ public class FlightController : MonoBehaviour {
 
                         Physics.Raycast(r, out hit, cam.farClipPlane, layerMask);
                         float h = hit.distance;
-                        Debug.Log(h);
 
                         if (h > maxOrbitHeight)
                             state = CharacterStates.inSpace;
