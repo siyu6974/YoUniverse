@@ -37,7 +37,6 @@ static public class CoordinateManager {
     };
 
     static public void transformPosition(Vector3 realWorldPos) {
-        List<Vector3> l = new List<Vector3>();
         for (int i = 0; i < starDataSet.Length; i++) {
             Vector3 starRelativePos = starDataSet[i].coord - virtualPos.galactic;
             //Debug.Log(starDataSet[i].coord);

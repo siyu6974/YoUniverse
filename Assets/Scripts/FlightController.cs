@@ -59,7 +59,6 @@ public class FlightController : MonoBehaviour {
         RaycastHit hit;
         bool rayCasted = Physics.Raycast(ray, out hit, cam.farClipPlane, layerMask);
         if (rayCasted) {
-            targetSubOrbitPos = hit.point;
             hitInfo = hit;
         } else
             hitInfo = null;
@@ -258,7 +257,6 @@ public class FlightController : MonoBehaviour {
 
     // real world tracking position just after landing / beginning of orbiting
     Vector3? orbitEntryPoint;
-    Vector3 targetSubOrbitPos;
 
     public float getSpeed() {
         return speed;
