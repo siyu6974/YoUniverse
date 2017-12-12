@@ -4,18 +4,19 @@ using UnityEngine;
 using UnityEngine.VR;
 
 public class RightHandController : MonoBehaviour {
-	public GameObject bodyPivot;
-	// Use this for initialization
-	void Start () {
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		bool vrCtr = VRModeDetector.isInVR;
+    Vector3 offset;
+    // Use this for initialization
+    void Start() {
+        offset = InputTracking.GetLocalPosition(VRNode.RightHand) - new Vector3(.501f, 0f, .35f);
+    }
 
-		if (vrCtr) {
-			transform.position = InputTracking.GetLocalPosition (VRNode.RightHand);
-			transform.rotation = InputTracking.GetLocalRotation (VRNode.RightHand);
-		}
-	}
+    // Update is called once per frame
+    void Update() {
+        bool vrCtr = VRModeDetector.isInVR;
+
+        if (vrCtr) {
+            transform.localPosition = InputTracking.GetLocalPosition(VRNode.RightHand) - offset;
+            transform.rotation = InputTracking.GetLocalRotation(VRNode.RightHand);
+        }
+    }
 }

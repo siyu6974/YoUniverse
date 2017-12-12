@@ -27,8 +27,7 @@ public class LaserPointer : MonoBehaviour {
             return;
         }
 
-        if (VRModeDetector.isInVR)
-            transform.rotation = InputTracking.GetLocalRotation(VRNode.RightHand);
+
         //      Debug.Log(Input.GetAxis ("Axis1D.PrimaryIndexTrigger"));
         //      Debug.Log(Input.GetButton("Fire1"));
         if (Input.GetButton("Fire1")) {

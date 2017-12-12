@@ -7,26 +7,28 @@ public enum LandingPhases { notLanding = 0, preparing = 1, turing = 2, getingDow
 
 public class FlightController : MonoBehaviour {
     const float defaultSpeed = 4f;
-	const float landingSpeed = 2f;
+    const float landingSpeed = 2f;
     const float maxOrbitHeight = 50f;
 
     float speed;
 
     float height;
     float offsetHeight = 3.0f;
-    
+
     float distanceForLanding = 20f;
     Vector3 moveDirection = Vector3.zero;
     Quaternion targetRotation;
 
-	Quaternion turningStart;
-	float turningTimer;
+    Quaternion turningStart;
+    float turningTimer;
 
     CharacterStates state;
     LandingPhases phase;
 
     RaycastHit? hitInfo;
     Ray ray;
+
+    public Transform standingPlanet;
 
     public Camera cam;
     int layerMask;
@@ -77,7 +79,7 @@ public class FlightController : MonoBehaviour {
 
         if (hitInfo != null)
             distance = ((RaycastHit)hitInfo).distance;
-		
+
         return distance;
     }
 
@@ -96,7 +98,7 @@ public class FlightController : MonoBehaviour {
 
         return flag;
     }
-		
+
     void changeCharacterState() {
         switch (state) {
             case CharacterStates.flying: {
@@ -136,7 +138,8 @@ public class FlightController : MonoBehaviour {
                         Debug.Log("Preparing");
                         // Character already stopped in this frame
                         // All informations we need for landing are already in hitInfo
-                        Vector3 o = ((RaycastHit)hitInfo).transform.position;
+                        standingPlanet = ((RaycastHit)hitInfo).transform;
+                        Vector3 o = standingPlanet.position;
                         Vector3 p = transform.position;
                         Vector3 po = o - p;
                         // Debug for checking po direction
@@ -163,7 +166,7 @@ public class FlightController : MonoBehaviour {
                         height = getHeightToSurface();
                         if (height >= offsetHeight) {
                             Vector3 dir = transform.up * (-1);
-							dir *= landingSpeed;
+                            dir *= landingSpeed;
                             transform.Translate(dir * Time.deltaTime, Space.World);
                         } else {
                             phase = LandingPhases.notLanding;
@@ -179,6 +182,7 @@ public class FlightController : MonoBehaviour {
                         state = CharacterStates.takingOff;
                         break;
                     }
+
                     // Walking on orbit
                     if (orbitEntryPoint == null) {
                         if (VRModeDetector.isInVR) {
@@ -203,7 +207,8 @@ public class FlightController : MonoBehaviour {
                         transformedPos.y = offsetHeight * Mathf.Sin(theta) * Mathf.Sin(phi);
                         transformedPos.z = -offsetHeight * Mathf.Cos(theta);
 
-                        transform.position = transformedPos + targetSubOrbitPos;
+                        Debug.Log(offsetHeight);
+                        transform.position = transformedPos + standingPlanet.position;
                     }
                 }
                 break;
@@ -217,14 +222,25 @@ public class FlightController : MonoBehaviour {
             case CharacterStates.takingOff: {
                     if (!isFlying()) {
                         speed = defaultSpeed;
-                        if (getHeightToSurface() > maxOrbitHeight)
+                        RaycastHit hit;
+                        Ray r = new Ray(transform.position, standingPlanet.position - transform.position);
+
+                        Physics.Raycast(r, out hit, cam.farClipPlane, layerMask);
+                        float h = hit.distance;
+                        Debug.Log(h);
+
+                        if (h > maxOrbitHeight)
                             state = CharacterStates.inSpace;
-                        else
+                        else {
+                            offsetHeight = Vector3.Magnitude(transform.position - hit.transform.position);
+                            orbitEntryPoint = null;
+
                             state = CharacterStates.onOrbit;
+                        }
                         break;
                     } else {
-                        moveDirection = transform.up;
-
+                        moveDirection = transform.position - standingPlanet.position;
+                        moveDirection = moveDirection.normalized;
                         speed += (InputTracking.GetLocalPosition(VRNode.RightHand).y - InputTracking.GetLocalPosition(VRNode.CenterEye).y);
 
                         moveDirection *= speed;
@@ -244,20 +260,20 @@ public class FlightController : MonoBehaviour {
     Vector3? orbitEntryPoint;
     Vector3 targetSubOrbitPos;
 
-	public float getSpeed() {
-		return speed;
-	}
+    public float getSpeed() {
+        return speed;
+    }
 
     public CharacterStates getState() {
-		return state;
-	}
+        return state;
+    }
 
     public LandingPhases getPhase() {
-		return phase;
-	}
+        return phase;
+    }
 
-	public Vector3 getPosition() {
-		return transform.position;
-	}
+    public Vector3 getPosition() {
+        return transform.position;
+    }
 
 }
