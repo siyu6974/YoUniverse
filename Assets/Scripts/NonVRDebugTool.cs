@@ -15,9 +15,8 @@ public class NonVRDebugTool : MonoBehaviour {
 
     private void Start() {
         mouseLook.Init(transform, cam.transform);
-        mouseLook.MaximumX = 45;
-        mouseLook.MinimumX = -45;
-
+        mouseLook.MaximumX = 90;
+        mouseLook.MinimumX = -90;
         trackingOffset = cam.transform.position - debugTracking.position;
         fc = pivot.GetComponent<FlightController>();
     }
@@ -35,6 +34,6 @@ public class NonVRDebugTool : MonoBehaviour {
         if (Mathf.Abs(Time.timeScale) < float.Epsilon) return;
 
         mouseLook.LookRotation(transform, cam.transform);
-        pivot.transform.rotation = cam.transform.rotation;
+        //pivot.transform.rotation = cam.transform.rotation;
     }
 }

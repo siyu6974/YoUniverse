@@ -5,6 +5,8 @@ using UnityEngine.VR;
 
 public class RightHandController : MonoBehaviour {
     Vector3 offset;
+    public Transform pivot;
+
     // Use this for initialization
     void Start() {
         offset = InputTracking.GetLocalPosition(VRNode.RightHand) - new Vector3(.501f, 0f, .35f);
@@ -16,7 +18,7 @@ public class RightHandController : MonoBehaviour {
 
         if (vrCtr) {
             transform.localPosition = InputTracking.GetLocalPosition(VRNode.RightHand) - offset;
-            transform.rotation = InputTracking.GetLocalRotation(VRNode.RightHand);
+            transform.rotation = pivot.rotation * InputTracking.GetLocalRotation(VRNode.RightHand);
         }
     }
 }

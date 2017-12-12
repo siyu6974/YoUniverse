@@ -854,7 +854,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -1101,6 +1101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb6b901b427b67d4fb691e7f0335903c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pivot: {fileID: 1651802955}
 --- !u!1 &811044325
 GameObject:
   m_ObjectHideFlags: 0
@@ -5647,7 +5648,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0911348964234b49a52539b3cb40a56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 0
+  standingPlanet: {fileID: 0}
   cam: {fileID: 586036338}
 --- !u!4 &1651802955
 Transform:
@@ -5669,7 +5670,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1651802953}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: acddf9e40c48b4513acb3312ab3248f9, type: 3}
   m_Name: 
