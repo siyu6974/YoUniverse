@@ -50,9 +50,17 @@ public class ConstellationMgr : MonoBehaviour {
 
 
     public TextAsset dataSource;
+    public TextAsset constellationNameAbbrSource; // abbr to name
 
     void load_data() {
-        string[] lines = dataSource.text.Split('\n');
+        Dictionary<string, string> dict = new Dictionary<string, string>();
+        string[] lines = constellationNameAbbrSource.text.Split('\n');
+        for (int i = 0; i < lines.Length; i++) {
+            string[] components = lines[i].Split(',');
+            dict.Add(components[1], components[0]);
+        }
+
+        lines = dataSource.text.Split('\n');
         contellationDataSet = new ConstellationData[lines.Length];
 
         for (int i = 0; i < lines.Length; i++) {
@@ -64,14 +72,18 @@ public class ConstellationMgr : MonoBehaviour {
                 links[j, 0] = int.Parse(components[3 + j * 2]);
                 links[j, 1] = int.Parse(components[3 + j * 2 + 1]);
             }
-            ConstellationData data = new ConstellationData() {
-                name = "", // TODO
+            ConstellationData data = new ConstellationData {
+                name = "",
                 abbr = components[0],
                 links = links
             };
+            string tmp;
+            if (dict.TryGetValue(data.abbr, out tmp)) 
+                data.name = tmp;
+            
             contellationDataSet[i] = data; 
         }
-
+        constellationNameAbbrSource = null;
         dataSource = null;
     }
 
@@ -126,7 +138,7 @@ public class ConstellationMgr : MonoBehaviour {
     }
 
 
-    public void drawConstellationOfSelectedStar(int HIP) {
+    public string drawConstellationOfSelectedStar(int HIP) {
         clearDrawing();
         for (int i = 0; i < contellationDataSet.Length; i++) {
             ConstellationData c = contellationDataSet[i];
@@ -134,10 +146,11 @@ public class ConstellationMgr : MonoBehaviour {
             for (int j = 0; j < c.links.GetLength(0); j++) {
                 if (c.links[j, 0] == HIP || c.links[j, 1] == HIP) {
                     drawConstellation(c);
-                    return;
+                    return c.name;
                 }
             }
         }
+        return "";
     }
 
 

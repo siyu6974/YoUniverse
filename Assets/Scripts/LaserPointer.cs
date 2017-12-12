@@ -37,9 +37,9 @@ public class LaserPointer : MonoBehaviour {
             lr.enabled = true;
             for (int i = 0; i < starsMax; i++) {
                 if (Vector3.Angle(starDataSet[i].drawnPos, ray) < 1f) {
-                    showStarInfo(starDataSet[i]);
+                    string constellation = constellationMgr.drawConstellationOfSelectedStar(starDataSet[i].HIP);
 
-                    constellationMgr.drawConstellationOfSelectedStar(starDataSet[i].HIP);
+                    showStarInfo(starDataSet[i], constellation);
 
                     constellationCreater.SendMessage("constructConstellation", starDataSet[i]);
                     break;
@@ -68,13 +68,16 @@ public class LaserPointer : MonoBehaviour {
         lr.SetPosition(1, end - margin);
     }
 
-    void showStarInfo(StarData star) {
+    void showStarInfo(StarData star, string constellationName) {
         //Vector3 starDrawPosition = star.drawnPos;
         //        starInfoText.rectTransform.position = Camera.main.WorldToScreenPoint(starDrawPosition) + new Vector3(3f, 3f, 1f);
         string info = "HIP: " + star.HIP + "\n";
         info += "Distance: " + star.distance + "\n";
         if (star.ProperName != "")
-            info += "Name: " + star.ProperName;
+            info += "Name: " + star.ProperName + "\n";
+        if (constellationName != "")
+            info += "Constellation: " + constellationName;
+        
         starInfoText.text = info;
         starInfoText.enabled = true;
         //Debug.Log (info);

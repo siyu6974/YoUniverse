@@ -1553,6 +1553,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   linePrefab: {fileID: 1258967452633082, guid: a9b1f47c241034e4c907dc672daf4ef5, type: 2}
   dataSource: {fileID: 4900000, guid: 4b2a6d4d74e934ee2abb6270f7ce6b7d, type: 3}
+  constellationNameAbbrSource: {fileID: 4900000, guid: 99e93d3b6c3c748c4a395fe6bc016751,
+    type: 3}
 --- !u!114 &1037490425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6108,8 +6110,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -170, y: 30}
-  m_SizeDelta: {x: 150, y: 211.9}
+  m_AnchoredPosition: {x: -146, y: -24}
+  m_SizeDelta: {x: 198, y: 320}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1860003800
 MonoBehaviour:
@@ -6132,7 +6134,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 20
+    m_FontSize: 18
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -6141,7 +6143,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 'HIP: 122222
 
