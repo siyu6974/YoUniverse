@@ -101,7 +101,7 @@ public class FlightController : MonoBehaviour {
     void changeCharacterState() {
         switch (state) {
             case CharacterStates.flying: {
-                    Debug.Log("Flying");
+                    //Debug.Log("Flying");
                     if (!isFlying()) {
                         speed = defaultSpeed;
                         state = CharacterStates.inSpace;
@@ -132,9 +132,9 @@ public class FlightController : MonoBehaviour {
                 break;
             case CharacterStates.landing: {
                     // Landing
-                    Debug.Log("Landing");
+                    //Debug.Log("Landing");
                     if (phase == LandingPhases.preparing) {
-                        Debug.Log("Preparing");
+                        //Debug.Log("Preparing");
                         // Character already stopped in this frame
                         // All informations we need for landing are already in hitInfo
                         standingPlanet = ((RaycastHit)hitInfo).transform;
@@ -153,15 +153,15 @@ public class FlightController : MonoBehaviour {
 
                     } else if (phase == LandingPhases.turing) {
                         if (transform.rotation == targetRotation) {
-                            Debug.Log("Finish turning");
+                            //Debug.Log("Finish turning");
                             phase = LandingPhases.getingDown;
                         } else {
-                            Debug.Log("turning");
+                            //Debug.Log("turning");
                             turningTimer += Time.fixedDeltaTime;
                             transform.rotation = Quaternion.Slerp(turningStart, targetRotation, turningTimer);
                         }
                     } else if (phase == LandingPhases.getingDown) {
-                        Debug.Log("Geting down");
+                        //Debug.Log("Geting down");
                         height = getHeightToSurface();
                         if (height >= offsetHeight) {
                             Vector3 dir = transform.up * (-1);
@@ -176,7 +176,7 @@ public class FlightController : MonoBehaviour {
                 }
                 break;
             case CharacterStates.onOrbit: {
-                    Debug.Log("OnOrbit");
+                    //Debug.Log("OnOrbit");
                     if (isFlying()) {
                         state = CharacterStates.takingOff;
                         break;
