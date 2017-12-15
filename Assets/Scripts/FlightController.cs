@@ -25,8 +25,6 @@ public class FlightController : MonoBehaviour {
     CharacterStates state;
     LandingPhases phase;
 
-    RaycastHit? hitInfo;
-    Ray ray;
 
     [HideInInspector]
     public Transform standingPlanet;
@@ -52,19 +50,6 @@ public class FlightController : MonoBehaviour {
         changeCharacterState();
     }
 
-    void useRay(Vector3 direction) {
-        ray = new Ray(transform.position, direction);
-
-        // Debug for checking forward direction for character
-        Debug.DrawRay(transform.position, ray.direction * 1000f, Color.red);
-
-        RaycastHit hit;
-        bool rayCasted = Physics.Raycast(ray, out hit, cam.farClipPlane, layerMask);
-        if (rayCasted) {
-            hitInfo = hit;
-        } else
-            hitInfo = null;
-    }
 
     float getHeightToSurface() {
         float distance = -1.0f;
@@ -73,31 +58,33 @@ public class FlightController : MonoBehaviour {
 
         RaycastHit landingHit;
         bool rayCasted = Physics.Raycast(landingRay, out landingHit, cam.farClipPlane, layerMask);
-        if (rayCasted)
-            hitInfo = landingHit;
-        else
-            hitInfo = null;
-
-        if (hitInfo != null)
-            distance = ((RaycastHit)hitInfo).distance;
+        if (rayCasted) {
+            distance = landingHit.distance;
+        }
 
         return distance;
     }
 
     bool detectToLand() {
         Vector3 pos, d;
-        bool flag = false;
 
-        useRay(transform.forward);
-        if (hitInfo != null) {
-            pos = ((RaycastHit)hitInfo).point;
+        Ray forwardRay = new Ray(transform.position, Camera.main.transform.forward);
+
+        // Debug for checking forward direction for character
+        Debug.DrawRay(transform.position, forwardRay.direction * 1000f, Color.red);
+
+        RaycastHit hit;
+        bool rayCasted = Physics.Raycast(forwardRay, out hit, cam.farClipPlane, layerMask);
+        if (rayCasted) {
+            pos = hit.point;
             d = pos - transform.position;
             if (d.magnitude <= distanceForLanding) {
-                flag = true;
+                standingPlanet = hit.transform;
+                return true;
             }
         }
 
-        return flag;
+        return false;
     }
 
     void changeCharacterState() {
@@ -133,47 +120,48 @@ public class FlightController : MonoBehaviour {
                 }
                 break;
             case CharacterStates.landing: {
-                    // Landing
-                    //Debug.Log("Landing");
-                    if (phase == LandingPhases.preparing) {
-                        //Debug.Log("Preparing");
-                        // Character already stopped in this frame
-                        // All informations we need for landing are already in hitInfo
-                        standingPlanet = ((RaycastHit)hitInfo).transform;
-                        Vector3 o = standingPlanet.position;
-                        Vector3 p = transform.position;
-                        Vector3 po = o - p;
-                        // Debug for checking po direction
-                        Debug.DrawRay(transform.position, po * 1000f, Color.white);
+                    switch (phase) {
+                        case LandingPhases.preparing:
+                            //Debug.Log("Preparing");
+                            // Character already stopped in this frame
+                            Vector3 o = standingPlanet.position;
+                            Vector3 p = transform.position;
+                            Vector3 po = o - p;
+                            // Debug for checking po direction
+                            Debug.DrawRay(transform.position, po * 1000f, Color.white);
 
-                        Vector3 directionDown = transform.up * (-1);
-                        targetRotation = Quaternion.FromToRotation(directionDown, po);
+                            Vector3 directionDown = transform.up * (-1);
+                            targetRotation = Quaternion.FromToRotation(directionDown, po);
 
-                        phase = LandingPhases.turing;
-                        turningStart = transform.rotation;
-                        turningTimer = 0;
+                            phase = LandingPhases.turing;
+                            turningStart = transform.rotation;
+                            turningTimer = 0;
+                            break;
+                        case LandingPhases.turing:
+                            if (transform.rotation == targetRotation) {
+                                //Debug.Log("Finish turning");
+                                phase = LandingPhases.getingDown;
+                            } else {
+                                //Debug.Log("turning");
+                                turningTimer += Time.fixedDeltaTime;
+                                transform.rotation = Quaternion.Slerp(turningStart, targetRotation, turningTimer);
+                            }
 
-                    } else if (phase == LandingPhases.turing) {
-                        if (transform.rotation == targetRotation) {
-                            //Debug.Log("Finish turning");
-                            phase = LandingPhases.getingDown;
-                        } else {
-                            //Debug.Log("turning");
-                            turningTimer += Time.fixedDeltaTime;
-                            transform.rotation = Quaternion.Slerp(turningStart, targetRotation, turningTimer);
-                        }
-                    } else if (phase == LandingPhases.getingDown) {
-                        //Debug.Log("Geting down");
-                        height = getHeightToSurface();
-                        if (height >= offsetHeight) {
-                            Vector3 dir = transform.up * (-1);
-                            dir *= landingSpeed;
-                            transform.Translate(dir * Time.deltaTime, Space.World);
-                        } else {
-                            phase = LandingPhases.notLanding;
-                            state = CharacterStates.landed;
-                            Debug.Log("Finish landing");
-                        }
+                            break;
+                        case LandingPhases.getingDown:
+                            //Debug.Log("Geting down");
+                            height = getHeightToSurface();
+                            if (height >= offsetHeight) {
+                                Vector3 dir = transform.up * (-1);
+                                dir *= landingSpeed;
+                                transform.Translate(dir * Time.deltaTime, Space.World);
+                            } else {
+                                phase = LandingPhases.notLanding;
+                                state = CharacterStates.landed;
+                                Debug.Log("Finish landing");
+                            }
+
+                            break;
                     }
                 }
                 break;
@@ -200,8 +188,8 @@ public class FlightController : MonoBehaviour {
                         } else {
                             currentPos = GameObject.Find("TestTrackingObj").transform.position;
                         }
-                        float theta = (currentPos.x - entryPoint.x) * (2 * Mathf.PI / 5f);
-                        float phi = (currentPos.z - entryPoint.z) * (2 * Mathf.PI / 5f);
+                        float theta = (currentPos.x - entryPoint.x) * (2 * Mathf.PI / 10f);
+                        float phi = (currentPos.z - entryPoint.z) * (2 * Mathf.PI / 10f);
 
                         Vector3 transformedPos = new Vector3();
                         transformedPos.x = offsetHeight * Mathf.Sin(theta) * Mathf.Cos(phi);
@@ -242,10 +230,11 @@ public class FlightController : MonoBehaviour {
                     } else {
                         moveDirection = transform.position - standingPlanet.position;
                         moveDirection = moveDirection.normalized;
+                        Debug.DrawLine(transform.position, moveDirection*1000, Color.cyan);
                         speed += (InputTracking.GetLocalPosition(VRNode.RightHand).y - InputTracking.GetLocalPosition(VRNode.CenterEye).y);
 
                         moveDirection *= speed;
-                        transform.Translate(moveDirection * Time.deltaTime);
+                        transform.Translate(moveDirection * Time.deltaTime, Space.World);
                     }
                 }
                 break;

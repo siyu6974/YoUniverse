@@ -14,8 +14,6 @@ public class FlyInfoManager : MonoBehaviour {
 	CharacterStates state;
 	LandingPhases phase;
 
-	Vector3 position;
-
     public FlightController controller;
 
 	// Use this for initialization
