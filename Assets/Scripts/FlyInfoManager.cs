@@ -45,9 +45,15 @@ public class FlyInfoManager : MonoBehaviour {
     string getPosition() {
         Vector3? stellar = CoordinateManager.virtualPos.stellar;
         Vector3 galactic = CoordinateManager.virtualPos.galactic;
+        StarData? star = CoordinateManager.currentStar; 
         string r = "Galactic: " + galactic.ToString() + "\n";
-        if (stellar != null)
+        if (stellar != null) {
             r += "Stellar: " + stellar.ToString() + "\n";
+            if (!((StarData)star).ProperName.Equals("")) 
+                r += "Around star : " + ((StarData)star).ProperName;
+            else 
+                r += "Around star : " + ((StarData)star).HIP;
+        }
         return r;
     }
 }

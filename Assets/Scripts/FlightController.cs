@@ -40,6 +40,7 @@ public class FlightController : MonoBehaviour {
         speed = defaultSpeed;
         layerMask = 1 << 8;
         layerMask = ~layerMask;
+        CoordinateManager.OnSystemChange += onCoordSystemChange;
     }
 
     void FixedUpdate() {
@@ -270,8 +271,9 @@ public class FlightController : MonoBehaviour {
         return phase;
     }
 
-    public Vector3 getPosition() {
-        return transform.position;
+   
+    void onCoordSystemChange() {
+        speed = defaultSpeed;   
     }
 
 }
