@@ -36,8 +36,9 @@ public class CoordinateManager : MonoBehaviour {
         v = Vector3.zero, r = Vector3.zero
     };
 
-    static public StarData? currentStar = new StarData{
-        ProperName = "Sun"
+    static public StarData? currentStar = new StarData {
+        ProperName = "Sol",
+        HIP = -1
     };
 
 
@@ -59,12 +60,12 @@ public class CoordinateManager : MonoBehaviour {
                 Vector3 flyingDir = ((Vector3)virtualPos.stellar - (Vector3)prevVirtualPos.stellar).normalized;
 
                 starSysExitPt.r = realWorldPos;
-                starSysExitPt.v = (Vector3)virtualPos.stellar;
+                virtualPos.galactic += flyingDir * 2f;
+                starSysExitPt.v = virtualPos.galactic;
                 Debug.Log(starSysExitPt.v);
                 starSysEntryPt = null;
                 virtualPos.stellar = null;
                 currentStar = null;
-                virtualPos.galactic += flyingDir * 2f;
 
                 if (OnSystemChange != null)
                     OnSystemChange();

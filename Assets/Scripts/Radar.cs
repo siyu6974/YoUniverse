@@ -41,7 +41,13 @@ public class Radar : MonoBehaviour {
 
         clearMarker();
         // find stars within 10 light year, but not within 0.1 lr
-        IEnumerable<StarData> ns = from s in starDataSet where s.distance < 100 && s.distance > 1 select s;
+        IEnumerable<StarData> ns;
+        if (CoordinateManager.currentStar != null)
+            ns = from s in starDataSet where s.distance < 100 && s.HIP != ((StarData)CoordinateManager.currentStar).HIP select s;
+        else
+            ns = from s in starDataSet where s.distance < 100 && s.distance > MyConstants.STAR_SYSTEM_BORDER_ENTRY select s;
+         
+            
         if (ns.Count() == 0) {
             StarData nearestStar = starDataSet.Aggregate((minItem, nextItem) => (minItem.distance < nextItem.distance && minItem.distance > 1) ? minItem : nextItem);
             Marker m = new Marker {star = nearestStar};

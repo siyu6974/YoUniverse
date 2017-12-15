@@ -80,10 +80,8 @@ public class StarGenerator : MonoBehaviour {
                 Debug.Log("Create star");
 
                 Vector3 dir = -CoordinateManager.starSysEntryPt.v.normalized;
-                Debug.Log(dir);
                 Vector3 starObjPos = Camera.main.transform.position + dir * Camera.main.farClipPlane * 0.88f;
                 nearestStar = Instantiate(starPrefab, starObjPos, Quaternion.identity);
-                Debug.Log(nearestStar);
             } else {
                 // move and scale it
                 //float scaleMod = Vector3.Magnitude(nearestStar.transform.position.normalized*100-(Vector3)omniPos.stellar);
