@@ -6,23 +6,31 @@ using UnityEngine.UI;
 public class MainMenuSelector : MonoBehaviour {
 	GameObject buttonLookingAt;
 	GameObject lastButtonLookingAt;
-	int layerButton = 9;
-	Vector3 offset;
+
+	int layerButton;
+
 	public GameObject menuCanvas;
+	public GameObject flyingInfo;
+	public GameObject helpBlock;
 
 	// Use this for initialization
 	void Start () {
-		hideMenu ();
+		layerButton = 1 << 9;
 	}
 
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetKeyDown(KeyCode.V)) {
 			Debug.Log ("V pressed");
-			if (!menuCanvas.activeSelf)
+			if (!menuCanvas.activeSelf) {
 				showMenu ();
-			else
+				flyingInfo.SetActive (false);
+			}
+			else {
 				hideMenu ();
+				flyingInfo.SetActive (true);
+			}
+			return;
 		}
 
 //		Camera cam = Camera.main;
@@ -31,18 +39,33 @@ public class MainMenuSelector : MonoBehaviour {
 //		v.y = 0;
 //		menuCanvas.transform.rotation = Quaternion.Euler (v);
 
-		if (menuCanvas != null) {
+		if (menuCanvas.activeSelf) {
+			ajustRotation ();
+
 			Ray rayEyeCast = new Ray (Camera.main.transform.position, Camera.main.transform.forward);
 			//			Debug.DrawRay(Camera.main.transform.position, rayEyeCast.direction * 1000f, Color.cyan);
 			RaycastHit hit;
 
-			bool rayCasted = Physics.Raycast(rayEyeCast, out hit, layerButton);
+			bool rayCasted = Physics.Raycast(rayEyeCast, out hit, 100.0f, layerButton);
 			if (rayCasted) {
 				buttonLookingAt = hit.transform.gameObject;
 				Renderer r = buttonLookingAt.GetComponent<Renderer> ();
-				r.material.color = new Color(0.98f, 0.5f, 0.45f);
+				r.material.color = new Color (0.98f, 0.5f, 0.45f);
+				Debug.Log (hit.transform.gameObject.name);
 
 //				if (Input.GetButtonDown("Right Controller Trackpad (Press)")) {
+				if (Input.GetKeyDown(KeyCode.B)) {
+					string bname = buttonLookingAt.name;
+					if (bname.Equals ("Help")) {
+						Debug.Log (111);
+						helpBlock.transform.position = Camera.main.transform.position + Camera.main.transform.forward * 0.3f;
+						helpBlock.transform.rotation = Camera.main.transform.rotation;
+						helpBlock.SetActive (true);
+
+						hideMenu ();
+
+					}
+				}
 //					string bname = buttonLookingAt.name;
 //					ConstellationCreater cc = GameObject.Find("_ConstellationMgr").GetComponent<ConstellationCreater>();
 //					if (bname.Equals ("Save")) {
@@ -69,6 +92,30 @@ public class MainMenuSelector : MonoBehaviour {
 //				}
 			}
 		}
+
+		if (helpBlock.activeSelf) {
+			Debug.Log ("In helpBlock: ");
+			Ray rayHelpCast = new Ray (Camera.main.transform.position, Camera.main.transform.forward);
+			Debug.DrawRay(Camera.main.transform.position, rayHelpCast.direction * 1000f, Color.cyan);
+			RaycastHit helpHit;
+
+			bool rayHelpCasted = Physics.Raycast (rayHelpCast, out helpHit, 1000.0f, layerButton);
+			if (rayHelpCasted) {
+				GameObject obj = helpHit.transform.gameObject;
+				Renderer r = obj.GetComponent<Renderer> ();
+				r.material.color = Color.gray;
+				Debug.Log (helpHit.transform.gameObject.name);
+
+				//if (Input.GetButtonDown("Right Controller Trackpad (Press)")) {
+				if (Input.GetKeyDown (KeyCode.B)) {
+					string bname = helpHit.transform.gameObject.name;
+					if (bname.Equals ("OK")) {
+						helpBlock.SetActive (false);
+						flyingInfo.SetActive (true);
+					}
+				}
+			}
+		}
 	}
 
 	public void test() {
@@ -86,5 +133,15 @@ public class MainMenuSelector : MonoBehaviour {
 	public void hideMenu() {
 		menuCanvas.SetActive(false);
 //		enabled = false;
+	}
+
+	public void ajustRotation() {
+		Camera cam = Camera.main;
+		Vector3 v1 = cam.transform.rotation.eulerAngles;
+		Vector3 v2 = menuCanvas.transform.rotation.eulerAngles;
+		v2.x = v1.x;
+		v2.z = v1.z;
+		Quaternion q = Quaternion.Euler (v2);
+		menuCanvas.transform.rotation = q;
 	}
 }
