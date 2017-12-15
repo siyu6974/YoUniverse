@@ -8,7 +8,7 @@ public class FlyInfoManager : MonoBehaviour {
 	string speedText, statusText, positionText;
 	string speedTitle = "Speed: ";
 	string statusTitle = "Status: ";
-	string positionTitle = "Position: ";
+	string positionTitle = "Position: \n";
 
 	float speed;
 	CharacterStates state;
@@ -29,7 +29,6 @@ public class FlyInfoManager : MonoBehaviour {
 		speed = controller.getSpeed();
 		state = controller.getState();
 		phase = controller.getPhase();
-		position = controller.getPosition ();
 
 		speedText = speedTitle + speed.ToString() + " Units";
 		if (state == CharacterStates.landing) {
@@ -37,8 +36,18 @@ public class FlyInfoManager : MonoBehaviour {
 		} else {
 			statusText = statusTitle + state.ToString ();
 		}
-		positionText = positionTitle + position.ToString ();
+        positionText = positionTitle + getPosition();
 
 		infos.text = speedText + "\n" + statusText + "\n" + positionText;
 	}
+
+
+    string getPosition() {
+        Vector3? stellar = CoordinateManager.virtualPos.stellar;
+        Vector3 galactic = CoordinateManager.virtualPos.galactic;
+        string r = "Galactic: " + galactic.ToString() + "\n";
+        if (stellar != null)
+            r += "Stellar: " + stellar.ToString() + "\n";
+        return r;
+    }
 }

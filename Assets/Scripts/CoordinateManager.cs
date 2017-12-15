@@ -14,7 +14,7 @@ public struct OmniPosition {
     // stellar = null ==> is in interstellar space
 }
 
-static public class CoordinateManager {
+public class CoordinateManager : MonoBehaviour {
     static public StarData[] starDataSet;
 
     static public OmniPosition virtualPos = new OmniPosition {
@@ -36,45 +36,70 @@ static public class CoordinateManager {
         v = Vector3.zero, r = Vector3.zero
     };
 
+
+    public delegate void SystemChangeAction();
+    public static event SystemChangeAction OnSystemChange;
+
     static public void transformPosition(Vector3 realWorldPos) {
-        for (int i = 0; i < starDataSet.Length; i++) {
-            Vector3 starRelativePos = starDataSet[i].coord - virtualPos.galactic;
-            //Debug.Log(starDataSet[i].coord);
-            //Debug.Log("g");
-            //Debug.Log(virtualPos.galactic);
-            //Debug.Log("s");
-            //Debug.Log(virtualPos.stellar);
-            if (Vector3.Magnitude(starRelativePos) < MyConstants.STAR_SYSTEM_BORDER_ENTRY) {
-                if (starSysEntryPt == null) {
-                    Debug.Log("Entering");
-                    // just enter the system
-                    Vector3 flyingDir = (virtualPos.galactic - prevVirtualPos.galactic).normalized;
-                    starSysEntryPt = new RVCoordinateBridge {
-                        v = flyingDir * MyConstants.STAR_SYSTEM_BORDER_EXIT,
-                        r = realWorldPos // record entry point as ref
-                    };
+        // in a star systme
+        if (virtualPos.stellar != null) {
+            // update position in stellar system 
+            virtualPos.stellar = realWorldPos - starSysEntryPt.r;
 
-                    virtualPos.galactic = starDataSet[i].coord; 
-                }
-                virtualPos.stellar = realWorldPos - starSysEntryPt.r;
-                // exit the system if distance > 1AU
-                if (Vector3.Magnitude((Vector3)virtualPos.stellar) > MyConstants.STAR_SYSTEM_BORDER_EXIT)
-                    break;
-                return;
+            // exit the system if distance > 1AU
+            if (starSysEntryPt != null && Vector3.Magnitude((Vector3)virtualPos.stellar) > MyConstants.STAR_SYSTEM_BORDER_EXIT) {
+                Debug.Log("Exiting");
+                // just exit the system
+                //Debug.Log((Vector3)virtualPos.stellar);
+                //Debug.Log((Vector3)prevVirtualPos.stellar);
+                Vector3 flyingDir = ((Vector3)virtualPos.stellar - (Vector3)prevVirtualPos.stellar).normalized;
+
+                starSysExitPt.r = realWorldPos;
+                starSysExitPt.v = Vector3.zero;
+                starSysEntryPt = null;
+                virtualPos.stellar = null;
+
+                // push the caracter away from prev position
+                virtualPos.galactic += flyingDir * MyConstants.STAR_SYSTEM_BORDER_ENTRY * 1.5f;
+                if (OnSystemChange != null)
+                    OnSystemChange();
             }
-        }
 
-        if (starSysEntryPt != null) {
-            Debug.Log("Exiting");
-            // just exit the system
-            starSysExitPt.r = realWorldPos;
-            starSysExitPt.v = (Vector3)virtualPos.stellar;
-            starSysEntryPt = null;
-            virtualPos.stellar = null;
+        } else {
+            // in interstellar space
+            for (int i = 0; i < starDataSet.Length; i++) {
+                Vector3 starRelativePos = starDataSet[i].coord - virtualPos.galactic;
+                if (Vector3.Magnitude(starRelativePos) < MyConstants.STAR_SYSTEM_BORDER_ENTRY) {
+                    if (starSysEntryPt == null) {
+                        Debug.Log("Entering");
+                        // just enter the system
+                        Vector3 flyingDir = Camera.main.transform.forward;
+                        starSysEntryPt = new RVCoordinateBridge {
+                            v = -flyingDir * MyConstants.STAR_SYSTEM_BORDER_EXIT,
+                            r = realWorldPos // record entry point as ref
+                        };
+                        //Debug.Log(starSysEntryPt.v);
+                        virtualPos.stellar = new Vector3(1, 0, 0) * MyConstants.STAR_SYSTEM_BORDER_EXIT * 0.3f;
+                        virtualPos.galactic = starDataSet[i].coord;
+                        if (OnSystemChange != null)
+                            OnSystemChange();
+                    }
+                    return;
+                }
+            }
+            virtualPos.galactic = realWorldPos - starSysExitPt.r + starSysExitPt.v;
         }
-        virtualPos.galactic = realWorldPos - starSysExitPt.r + starSysExitPt.v;
 
         prevVirtualPos = virtualPos;
     }
 
+
+    public static CoordinateManager instance;//singleton
+
+    void Awake() {
+        //constructor
+        if (instance != null)
+            Debug.LogError("Cood Mgr has already been instantiated");
+        instance = this;
+    }
 }

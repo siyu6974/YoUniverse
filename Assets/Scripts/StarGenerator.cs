@@ -38,6 +38,11 @@ public class StarGenerator : MonoBehaviour {
     float starLinearScale = 19.569f * 2f;
     float lnfovFactor;
 
+
+    public Vector3 stellar;
+    public Vector3 galactic;
+
+
 	[HideInInspector]
 	public bool ignoreMovement = false;
 
@@ -51,13 +56,18 @@ public class StarGenerator : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        CoordinateManager.transformPosition(Camera.main.transform.position);
+        galactic = CoordinateManager.virtualPos.galactic;
+        if (CoordinateManager.virtualPos.stellar != null)
+            stellar = (Vector3)CoordinateManager.virtualPos.stellar;
+
+        if (ignoreMovement)
+            return;
+        
         float fov = Camera.main.fieldOfView / 180f;
         double powFactor = Math.Pow(60f / Math.Max(0.7f, fov), 0.8f);
-
         lnfovFactor = (float)Math.Log(1f / 50f * 2025000f * 60f * 60f / (fov * fov) / (EYE_RESOLUTION * EYE_RESOLUTION) / powFactor / 1.4f);
-		if (ignoreMovement)
-			return;
-        CoordinateManager.transformPosition(Camera.main.transform.position);
+		
         createStars(CoordinateManager.virtualPos);
     }
 
@@ -67,7 +77,10 @@ public class StarGenerator : MonoBehaviour {
             if (nearestStar == null) {
                 //Debug.Log(omniPos.stellar);
                 //Debug.Log(CoordinateManager.stellarSysEntryPt);
+                Debug.Log("Create star");
+
                 Vector3 dir = -CoordinateManager.starSysEntryPt.v.normalized;
+                Debug.Log(dir);
                 Vector3 starObjPos = Camera.main.transform.position + dir * Camera.main.farClipPlane * 0.88f;
                 nearestStar = Instantiate(starPrefab, starObjPos, Quaternion.identity);
                 Debug.Log(nearestStar);
