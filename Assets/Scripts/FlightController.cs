@@ -28,6 +28,7 @@ public class FlightController : MonoBehaviour {
     RaycastHit? hitInfo;
     Ray ray;
 
+    [HideInInspector]
     public Transform standingPlanet;
 
     public Camera cam;
