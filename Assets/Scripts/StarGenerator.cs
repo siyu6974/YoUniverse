@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System;
-using System.Linq;
 
 public struct StarData {
     // invar
@@ -34,8 +33,7 @@ public class StarGenerator : MonoBehaviour {
 
     public int starsMax;
 
-
-    float starLinearScale = 19.569f * 2f;
+    const float starLinearScale = 19.569f * 2f;
     float lnfovFactor;
 
 
@@ -49,6 +47,10 @@ public class StarGenerator : MonoBehaviour {
     // Use this for initialization
     void Start() {
         load_data();
+        float fov = Camera.main.fieldOfView / 180f;
+        double powFactor = Math.Pow(60f / Math.Max(0.7f, fov), 0.8f);
+        lnfovFactor = (float)Math.Log(1f / 50f * 2025000f * 60f * 60f / (fov * fov) / (EYE_RESOLUTION * EYE_RESOLUTION) / powFactor / 1.4f);
+
         CoordinateManager.starDataSet = starDataSet;
         CoordinateManager.virtualPos.galactic = Camera.main.transform.position;
     }
@@ -63,11 +65,7 @@ public class StarGenerator : MonoBehaviour {
 
         if (ignoreMovement)
             return;
-        
-        float fov = Camera.main.fieldOfView / 180f;
-        double powFactor = Math.Pow(60f / Math.Max(0.7f, fov), 0.8f);
-        lnfovFactor = (float)Math.Log(1f / 50f * 2025000f * 60f * 60f / (fov * fov) / (EYE_RESOLUTION * EYE_RESOLUTION) / powFactor / 1.4f);
-		
+
         createStars(CoordinateManager.virtualPos);
     }
 

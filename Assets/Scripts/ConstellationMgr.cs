@@ -48,9 +48,10 @@ public class ConstellationMgr : MonoBehaviour {
         drawAll();
 	}
 
-
-    public TextAsset dataSource;
-    public TextAsset constellationNameAbbrSource; // abbr to name
+    [SerializeField]
+    private TextAsset dataSource;
+    [SerializeField]
+    private TextAsset constellationNameAbbrSource; // abbr to name
 
     void load_data() {
         Dictionary<string, string> dict = new Dictionary<string, string>();

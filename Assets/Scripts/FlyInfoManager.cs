@@ -23,10 +23,9 @@ public class FlyInfoManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-//		infos.text = "test line 1\n" + "test line 2";
-		speed = controller.getSpeed();
-		state = controller.getState();
-		phase = controller.getPhase();
+        speed = controller.speed;
+        state = controller.state;
+        phase = controller.phase;
 
 		speedText = speedTitle + speed.ToString() + " Units";
 		if (state == CharacterStates.landing) {
