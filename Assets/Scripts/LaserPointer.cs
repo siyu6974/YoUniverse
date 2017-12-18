@@ -11,7 +11,11 @@ public class LaserPointer : MonoBehaviour {
     private LineRenderer lr;
     public ConstellationCreater constellationCreater;
     public ConstellationMgr constellationMgr;
-    Vector3 ray;
+
+    private Vector3 ray;
+
+    public StarData? pointed { get; private set; }
+
 
     void Start() {
         lr = GetComponent<LineRenderer>();
@@ -42,11 +46,14 @@ public class LaserPointer : MonoBehaviour {
                     showStarInfo(starDataSet[i], constellation);
 
                     constellationCreater.SendMessage("constructConstellation", starDataSet[i]);
-                    break;
+
+                    pointed = starDataSet[i];
+                    return;
                 }
-                // if no star is found, disable the text label
-                starInfoText.enabled = false;
             }
+            // if no star is found, disable the text label
+            starInfoText.enabled = false;
+            pointed = null;
         } else if (Input.GetButtonUp("Fire1")) {
             lr.enabled = false;
             starInfoText.enabled = false;

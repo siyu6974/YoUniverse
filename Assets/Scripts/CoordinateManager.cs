@@ -15,7 +15,6 @@ public class CoordinateManager : MonoBehaviour {
     static public StarData[] starDataSet;
 
     static public OmniPosition virtualPos = new OmniPosition {
-        //stellar = new Vector3(10000, 0, 0) // init at Earth
         stellar = new Vector3(10, 0, 0) // init around the Sun
     };
     static public OmniPosition prevVirtualPos = new OmniPosition();
