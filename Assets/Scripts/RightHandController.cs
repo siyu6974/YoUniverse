@@ -17,7 +17,7 @@ public class RightHandController : MonoBehaviour {
         bool vrCtr = VRModeDetector.isInVR;
 
         if (vrCtr) {
-            transform.localPosition = InputTracking.GetLocalPosition(VRNode.RightHand) - offset;
+            transform.localPosition = InputTracking.GetLocalPosition(VRNode.RightHand) - transform.InverseTransformVector(offset);
             transform.rotation = pivot.rotation * InputTracking.GetLocalRotation(VRNode.RightHand);
         }
     }
