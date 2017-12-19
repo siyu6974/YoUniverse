@@ -24,16 +24,16 @@ public class Radar : MonoBehaviour {
         //StartCoroutine(test());
 	}
 	
-	// Update is called once per frame
-	void Update () {
-        if (Input.GetMouseButtonDown(0)) {
-            Debug.Log("scan");
-            scanEnvironment();
-        }
-        if (Input.GetMouseButton(1)) {
-            showMarker();
-        }
-	}
+	//// Update is called once per frame
+	//void Update () {
+ //       if (Input.GetMouseButtonDown(0)) {
+ //           Debug.Log("scan");
+ //           scanEnvironment();
+ //       }
+ //       if (Input.GetMouseButton(1)) {
+ //           showMarker();
+ //       }
+	//}
 
 
     public void scanEnvironment() {

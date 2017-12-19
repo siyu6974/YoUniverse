@@ -36,15 +36,15 @@ public class ConstellationCreater : MonoBehaviour {
            
             drawLine(startDrawingPos, ray);
         }
-        if (Input.GetButtonDown("RMenu")) {
-            if (ms.enabled) {
-                ms.enabled = false;
-                ms.hideMenu();
-            } else {
-                ms.enabled = true;
-                ms.showMenu();
-            }
-        }
+        //if (Input.GetButtonDown("RMenu")) {
+        //    if (ms.enabled) {
+        //        ms.enabled = false;
+        //        ms.hideMenu();
+        //    } else {
+        //        ms.enabled = true;
+        //        ms.showMenu();
+        //    }
+        //}
     }
 
     void drawLine(Vector3 start, Vector3 end) {
