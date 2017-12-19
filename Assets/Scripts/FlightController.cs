@@ -26,7 +26,7 @@ public class FlightController : MonoBehaviour {
 
     public Transform standingPlanet { get; private set; }
 
-    public Camera cam;
+    private Camera cam;
     private Transform camT;
     int layerMask;
 
@@ -38,6 +38,7 @@ public class FlightController : MonoBehaviour {
         speed = defaultSpeed;
         layerMask = 1 << 8;
         layerMask = ~layerMask;
+        cam = Camera.main;
         camT = cam.transform;
         CoordinateManager.OnSystemChange += onCoordSystemChange;
     }
