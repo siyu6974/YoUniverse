@@ -11,10 +11,9 @@ public class LaserPointer : MonoBehaviour {
     private LineRenderer lr;
     public ConstellationCreater constellationCreater;
     public ConstellationMgr constellationMgr;
+    public StarData? pointed { get; private set; }
 
     private Vector3 ray;
-
-    public StarData? pointed { get; private set; }
 
 
     void Start() {
@@ -44,10 +43,10 @@ public class LaserPointer : MonoBehaviour {
                     string constellation = constellationMgr.drawConstellationOfSelectedStar(starDataSet[i].HIP);
 
                     showStarInfo(starDataSet[i], constellation);
+					pointed = starDataSet [i];
 
                     constellationCreater.SendMessage("constructConstellation", starDataSet[i]);
 
-                    pointed = starDataSet[i];
                     return;
                 }
             }
