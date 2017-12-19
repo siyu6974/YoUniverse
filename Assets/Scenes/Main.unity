@@ -1414,7 +1414,7 @@ LineRenderer:
     numCapVertices: 0
     alignment: 0
     textureMode: 0
-  m_UseWorldSpace: 0
+  m_UseWorldSpace: 1
   m_Loop: 0
 --- !u!114 &753185663
 MonoBehaviour:
@@ -6352,10 +6352,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0911348964234b49a52539b3cb40a56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0
-  state: 0
-  phase: 0
-  standingPlanet: {fileID: 0}
   cam: {fileID: 586036338}
 --- !u!4 &1651802955
 Transform:
@@ -6377,7 +6373,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1651802953}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: acddf9e40c48b4513acb3312ab3248f9, type: 3}
   m_Name: 
@@ -7033,9 +7029,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68626d70c7e523b4c8a0947a4efe49c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0
-  state: 0
-  phase: 0
   controller: {fileID: 1651802954}
 --- !u!1001 &1934181795
 Prefab:

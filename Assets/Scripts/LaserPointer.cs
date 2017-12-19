@@ -34,7 +34,7 @@ public class LaserPointer : MonoBehaviour {
         //      Debug.Log(Input.GetAxis ("Axis1D.PrimaryIndexTrigger"));
         //      Debug.Log(Input.GetButton("Fire1"));
         if (Input.GetButton("Fire1")) {
-            ray = transform.forward * Camera.main.farClipPlane * 0.9f;
+            ray = transform.position + transform.forward * Camera.main.farClipPlane * 0.9f;
             //            ray.z = Camera.main.farClipPlane * 0.9f;
             //            ray = Camera.main.ScreenToWorldPoint(ray).normalized;
             lr.enabled = true;
