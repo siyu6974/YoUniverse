@@ -36,10 +36,7 @@ public class StarGenerator : MonoBehaviour {
     const float starLinearScale = 19.569f * 2f;
     float lnfovFactor;
 
-
-    public Vector3 stellar;
-    public Vector3 galactic;
-
+    public HyperDrive hyperDrive;
 
 	[HideInInspector]
 	public bool ignoreMovement = false;
@@ -58,15 +55,11 @@ public class StarGenerator : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        CoordinateManager.transformPosition(Camera.main.transform.position);
-        galactic = CoordinateManager.virtualPos.galactic;
-        if (CoordinateManager.virtualPos.stellar != null)
-            stellar = (Vector3)CoordinateManager.virtualPos.stellar;
+        if (!hyperDrive.engaged)
+            CoordinateManager.transformPosition(Camera.main.transform.position);
 
-        if (ignoreMovement)
-            return;
-
-        createStars(CoordinateManager.virtualPos);
+        if (!ignoreMovement)
+            createStars(CoordinateManager.virtualPos);
     }
 
 

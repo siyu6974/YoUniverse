@@ -621,6 +621,47 @@ Transform:
   m_Father: {fileID: 811044326}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: -60, z: 0}
+--- !u!1 &247041833
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 247041834}
+  - component: {fileID: 247041835}
+  m_Layer: 0
+  m_Name: _HyperDrive
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &247041834
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 247041833}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 15
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &247041835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 247041833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4c9633c878e74877b9a15730a59e95d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pointer: {fileID: 753185660}
 --- !u!1 &274350954
 GameObject:
   m_ObjectHideFlags: 0
@@ -1769,7 +1810,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1021181275
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1784,9 +1825,10 @@ MonoBehaviour:
   menuCanvas: {fileID: 811044325}
   flyingInfo: {fileID: 1400771364}
   helpBlock: {fileID: 2029789628}
-  setTargetInfo: {fileID: 131335617}
-  setTargetInfoText: {fileID: 641617846}
+  setTargetInfo: {fileID: 0}
+  setTargetInfoText: {fileID: 0}
   targetSet: 0
+  targetGet: 0
 --- !u!4 &1021181276
 Transform:
   m_ObjectHideFlags: 0
@@ -2039,8 +2081,7 @@ MonoBehaviour:
   ps: {fileID: 1083175137}
   starPrefab: {fileID: 1700586456367890, guid: 5e4e724e9e5c6455fb33ce56b29f6445, type: 2}
   starsMax: 3000
-  stellar: {x: 0, y: 0, z: 0}
-  galactic: {x: 0, y: 0, z: 0}
+  hyperDrive: {fileID: 247041835}
   ignoreMovement: 0
 --- !u!198 &1083175137
 ParticleSystem:

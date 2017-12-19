@@ -53,18 +53,7 @@ public class CoordinateManager : MonoBehaviour {
                 // just exit the system
                 //Debug.Log((Vector3)virtualPos.stellar);
                 //Debug.Log((Vector3)prevVirtualPos.stellar);
-                Vector3 flyingDir = ((Vector3)virtualPos.stellar - (Vector3)prevVirtualPos.stellar).normalized;
-
-                starSysExitPt.r = realWorldPos;
-                virtualPos.galactic += flyingDir * 2f;
-                starSysExitPt.v = virtualPos.galactic;
-                Debug.Log(starSysExitPt.v);
-                starSysEntryPt = null;
-                virtualPos.stellar = null;
-                currentStar = null;
-
-                if (OnSystemChange != null)
-                    OnSystemChange();
+                exit(realWorldPos);
             }
 
         } else {
@@ -104,5 +93,21 @@ public class CoordinateManager : MonoBehaviour {
         if (instance != null)
             Debug.LogError("Cood Mgr has already been instantiated");
         instance = this;
+    }
+
+
+    public static void exit(Vector3 realWorldPos) {
+        Vector3 flyingDir = ((Vector3)virtualPos.stellar - (Vector3)prevVirtualPos.stellar).normalized;
+
+        starSysExitPt.r = realWorldPos;
+        virtualPos.galactic += flyingDir * 2f;
+        starSysExitPt.v = virtualPos.galactic;
+        Debug.Log(starSysExitPt.v);
+        starSysEntryPt = null;
+        virtualPos.stellar = null;
+        currentStar = null;
+
+        if (OnSystemChange != null)
+            OnSystemChange();
     }
 }
