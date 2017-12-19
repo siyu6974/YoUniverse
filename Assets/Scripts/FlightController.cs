@@ -131,14 +131,13 @@ public class FlightController : MonoBehaviour {
                         Debug.DrawRay(camT.position, po * 1000f, Color.white);
 
                         Vector3 directionDown = camT.up * (-1);
-                        targetRotation = Quaternion.FromToRotation(directionDown, po);
-
+                        targetRotation = transform.rotation * Quaternion.FromToRotation(directionDown, po);
                         phase = LandingPhases.turing;
-                        turningStart = camT.rotation;
+                        turningStart = transform.rotation;
                         turningTimer = 0;
                         break;
                     case LandingPhases.turing:
-                        if (camT.rotation == targetRotation) {
+                        if (transform.rotation == targetRotation) {
                             //Debug.Log("Finish turning");
                             phase = LandingPhases.getingDown;
                         } else {
