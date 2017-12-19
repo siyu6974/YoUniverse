@@ -12,10 +12,17 @@ public class MainMenuSelector : MonoBehaviour {
 	public GameObject menuCanvas;
 	public GameObject flyingInfo;
 	public GameObject helpBlock;
+	public GameObject setTargetInfo;
+	public Text setTargetInfoText;
+	[HideInInspector] public bool targetSet;
+	[HideInInspector] public bool targetGet;
+	[HideInInspector] public StarData starTarget;
 
 	// Use this for initialization
 	void Start () {
 		layerButton = 1 << 9;
+		targetGet = false;
+		targetSet = false;
 	}
 
 	// Update is called once per frame
@@ -57,13 +64,16 @@ public class MainMenuSelector : MonoBehaviour {
 				if (Input.GetKeyDown(KeyCode.B)) {
 					string bname = buttonLookingAt.name;
 					if (bname.Equals ("Help")) {
-						Debug.Log (111);
-						helpBlock.transform.position = Camera.main.transform.position + Camera.main.transform.forward * 0.3f;
+						helpBlock.transform.position = Camera.main.transform.position + Camera.main.transform.forward * 0.3f + Camera.main.transform.up * 2.95f;
 						helpBlock.transform.rotation = Camera.main.transform.rotation;
 						helpBlock.SetActive (true);
-
 						hideMenu ();
-
+						return;
+					}
+					if (bname.Equals ("Set Target")) {
+						setTargetInfo.SetActive (true);
+						hideMenu ();
+						return;
 					}
 				}
 //					string bname = buttonLookingAt.name;
@@ -95,24 +105,36 @@ public class MainMenuSelector : MonoBehaviour {
 
 		if (helpBlock.activeSelf) {
 			Debug.Log ("In helpBlock: ");
-			Ray rayHelpCast = new Ray (Camera.main.transform.position, Camera.main.transform.forward);
-			Debug.DrawRay(Camera.main.transform.position, rayHelpCast.direction * 1000f, Color.cyan);
-			RaycastHit helpHit;
-
-			bool rayHelpCasted = Physics.Raycast (rayHelpCast, out helpHit, 1000.0f, layerButton);
-			if (rayHelpCasted) {
-				GameObject obj = helpHit.transform.gameObject;
-				Renderer r = obj.GetComponent<Renderer> ();
-				r.material.color = Color.gray;
-				Debug.Log (helpHit.transform.gameObject.name);
-
-				//if (Input.GetButtonDown("Right Controller Trackpad (Press)")) {
+			//if (Input.GetButtonDown("Right Controller Trackpad (Press)")) {
+			if (Input.GetKeyDown (KeyCode.B)) {
+				helpBlock.SetActive (false);
+				flyingInfo.SetActive (true);
+				return;
+			}
+		}
+		if (setTargetInfo.activeSelf) {
+			Debug.Log ("In setTarget Mode: ");
+			LaserPointer lspointer = GameObject.Find ("RightHand").GetComponent<LaserPointer> ();
+			if (lspointer.starTarget != null) {
+				Debug.Log ("GetStarTarget");
+				starTarget = (StarData) lspointer.starTarget;
+				if (starTarget.ProperName != "") {
+					setTargetInfoText.text = "Target: " + starTarget.ProperName + "\nDistance: " + starTarget.distance + "\nClick 'B' to confirm and fly to it" + "\nClick 'C' to discard and return";
+				}
+				else
+					setTargetInfoText.text = "Target: HIP " + starTarget.HIP + "\nDistance: " + starTarget.distance + "\nClick 'B' to confirm and fly to it" + "\nClick 'C' to discard and return";
+				targetGet = true;
+			}
+			if (targetGet) {
 				if (Input.GetKeyDown (KeyCode.B)) {
-					string bname = helpHit.transform.gameObject.name;
-					if (bname.Equals ("OK")) {
-						helpBlock.SetActive (false);
-						flyingInfo.SetActive (true);
-					}
+					// Fly
+
+				}
+				if (Input.GetKeyDown (KeyCode.C)) {
+					// Discard
+					setTargetInfo.SetActive(false);
+					flyingInfo.SetActive (true);
+					return;
 				}
 			}
 		}
