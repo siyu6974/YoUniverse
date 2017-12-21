@@ -13,7 +13,9 @@ public class MainMenuSelector : MonoBehaviour {
     public GameObject flyingInfo;
     public GameObject helpBlock;
     public GameObject setTargetInfo;
-    public Text setTargetInfoText;
+	public GameObject drawConstellationInfo;
+	public Text setTargetInfoText;
+	public MenuSelector menuSelector;
     [HideInInspector] public bool targetSet;
     [HideInInspector] public bool targetGet;
     [HideInInspector] public StarData starTarget;
@@ -27,7 +29,8 @@ public class MainMenuSelector : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (Input.GetKeyDown(KeyCode.V) || Input.GetButtonDown("RMenu")) {
+		if (Input.GetKeyDown(KeyCode.V)) {
+//        if (Input.GetKeyDown(KeyCode.V) || Input.GetButtonDown("RMenu")) {
             Debug.Log("V pressed");
             if (!menuCanvas.activeSelf) {
                 showMenu();
@@ -60,7 +63,8 @@ public class MainMenuSelector : MonoBehaviour {
                 Debug.Log(hit.transform.gameObject.name);
 
                 //              if (Input.GetButtonDown("Right Controller Trackpad (Press)")) {
-                if (Input.GetKeyDown(KeyCode.B) || Input.GetButtonDown("Fire2")) {
+//                if (Input.GetKeyDown(KeyCode.B) || Input.GetButtonDown("Fire2")) {
+				if (Input.GetKeyDown(KeyCode.B)) {
                     string bname = buttonLookingAt.name;
                     if (bname.Equals("Help")) {
                         helpBlock.transform.position = Camera.main.transform.position + Camera.main.transform.forward * 0.3f + Camera.main.transform.up * 2.95f;
@@ -69,11 +73,16 @@ public class MainMenuSelector : MonoBehaviour {
                         hideMenu();
                         return;
                     }
-                    if (bname.Equals("Set Target")) {
+                    if (bname.Equals("SetTarget")) {
                         setTargetInfo.SetActive(true);
                         hideMenu();
                         return;
                     }
+					if (bname.Equals("DrawConstellation")) {
+						drawConstellationInfo.SetActive(true);
+						hideMenu();
+						return;
+					}
                 }
                 //                  string bname = buttonLookingAt.name;
                 //                  ConstellationCreater cc = GameObject.Find("_ConstellationMgr").GetComponent<ConstellationCreater>();
@@ -136,6 +145,25 @@ public class MainMenuSelector : MonoBehaviour {
                 }
             }
         }
+		if (drawConstellationInfo.activeSelf) {
+			Debug.Log ("In drawConstellation Mode: ");
+			ConstellationCreater cc = GameObject.Find("_ConstellationMgr").GetComponent<ConstellationCreater>();
+			cc.customCreationMode = true;
+			if (!menuSelector.enabled && Input.GetKeyDown (KeyCode.M)) {
+				// Active draw constellation menu
+				menuSelector.enabled = true;
+				menuSelector.showMenu ();
+				return;
+			}
+			if (menuSelector.returnFlag) {
+				// Return to main menu
+				drawConstellationInfo.SetActive(false);
+				menuSelector.returnFlag = false;
+				showMenu ();
+				return;
+			}
+
+		}
     }
 
     public void test() {

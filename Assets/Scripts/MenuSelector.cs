@@ -8,15 +8,17 @@ public class MenuSelector : MonoBehaviour {
 	int layerButton = 9;
 	Vector3 offset;
     public GameObject menuCanvas;
+	[HideInInspector] public bool returnFlag;
 
 
 	// Use this for initialization
 	void Start () {
+		returnFlag = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if (menuCanvas != null) {
+		if (menuCanvas != null) {
 			Ray rayEyeCast = new Ray (Camera.main.transform.position, Camera.main.transform.forward);
 //			Debug.DrawRay(Camera.main.transform.position, rayEyeCast.direction * 1000f, Color.cyan);
 			RaycastHit hit;
@@ -37,7 +39,9 @@ public class MenuSelector : MonoBehaviour {
 						// User can give a name to the new constellation
                     } else if (bname.Equals("Discard")) {
 						// Cancel
+						Debug.Log("Cancel");
                         cc.discardDrawing();
+						returnFlag = true;
 					}
                     hideMenu();
 				}

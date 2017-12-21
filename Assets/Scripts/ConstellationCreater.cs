@@ -23,8 +23,11 @@ public class ConstellationCreater : MonoBehaviour {
 
 	public Transform pointerDirection;
 
+	[HideInInspector] public bool customCreationMode;
+
     void Start() {
         ms = GetComponent<MenuSelector>();
+		customCreationMode = false;
     }
 
 
@@ -58,7 +61,7 @@ public class ConstellationCreater : MonoBehaviour {
 
     public void constructConstellation(StarData star) {
         int starHIP = star.HIP;
-		if (Input.GetButtonDown("Fire2")) {
+		if (Input.GetButtonDown("Fire2") && customCreationMode) {
             if (tmpStarPair[0] == -1) {
                 isCreating = true;
                 lr = Instantiate(lrPrefab, transform);
@@ -66,7 +69,7 @@ public class ConstellationCreater : MonoBehaviour {
                 startDrawingPos = star.drawnPos;
                 tmpStarPair[0] = starHIP;
             }
-		} else if (Input.GetButtonUp("Fire2") && tmpStarPair[0] != -1) {
+		} else if (Input.GetButtonUp("Fire2") && customCreationMode && tmpStarPair[0] != -1) {
             drawLine(startDrawingPos, star.drawnPos); // leave this segment with a correct line
             lr = null;
             tmpStarPair[1] = starHIP;
