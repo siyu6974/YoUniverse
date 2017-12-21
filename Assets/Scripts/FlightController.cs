@@ -188,8 +188,8 @@ public class FlightController : MonoBehaviour {
                     } else {
                         currentPos = GameObject.Find("TestTrackingObj").transform.position;
                     }
-                    float theta = (currentPos.x - entryPoint.x) * (2 * Mathf.PI / 10f);
-                    float phi = (currentPos.z - entryPoint.z) * (2 * Mathf.PI / 10f);
+                    float theta = (currentPos.x - entryPoint.x) * (2 * Mathf.PI / 5f);
+                    float phi = (currentPos.z - entryPoint.z) * (2 * Mathf.PI / 5f);
 
                     Vector3 transformedPos = new Vector3();
                     transformedPos.x = offsetHeight * Mathf.Sin(theta) * Mathf.Cos(phi);
