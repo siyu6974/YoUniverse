@@ -23,16 +23,23 @@ public class FlyInfoManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        speed = controller.speed;
         state = controller.state;
+
+        speed = state == CharacterStates.flying ? controller.speed : 0;
         phase = controller.phase;
 
-		speedText = speedTitle + speed.ToString() + " Units";
-		if (state == CharacterStates.landing) {
-			statusText = statusTitle + state.ToString () + " - " + phase.ToString ();
-		} else {
-			statusText = statusTitle + state.ToString ();
-		}
+
+        if (CoordinateManager.isInStarSystem()) {
+            speedText = speedTitle + (speed*1500).ToString("F1") + " km/s";
+        } else {
+            speedText = speedTitle + (speed/10).ToString("F1") + " ly/s";
+        }
+		
+		//if (state == CharacterStates.landing) {
+		//	statusText = statusTitle + state.ToString () + " - " + phase.ToString ();
+		//} else {
+		//	statusText = statusTitle + state.ToString ();
+		//}
         positionText = positionTitle + getPosition();
 
 		infos.text = speedText + "\n" + statusText + "\n" + positionText;

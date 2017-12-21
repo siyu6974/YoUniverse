@@ -43,7 +43,7 @@ public class CoordinateManager : MonoBehaviour {
 
     static public void transformPosition(Vector3 realWorldPos) {
         // in a star systme
-        if (virtualPos.stellar != null) {
+        if (isInStarSystem()) {
             // update position in stellar system 
             virtualPos.stellar = realWorldPos - starSysEntryPt.r;
 
@@ -109,5 +109,10 @@ public class CoordinateManager : MonoBehaviour {
 
         if (OnSystemChange != null)
             OnSystemChange();
+    }
+
+
+    public static bool isInStarSystem() {
+        return virtualPos.stellar != null;
     }
 }
