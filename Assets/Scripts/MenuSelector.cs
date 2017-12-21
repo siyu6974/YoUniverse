@@ -38,6 +38,7 @@ public class MenuSelector : MonoBehaviour {
 						returnFlag = true;
                     } else if (bname.Equals ("AddName")) {
 						// User can give a name to the new constellation
+						returnFlag = true;
                     } else if (bname.Equals("Discard")) {
 						// Cancel
 						Debug.Log("Cancel");
@@ -53,9 +54,9 @@ public class MenuSelector : MonoBehaviour {
 					Renderer r = lastButtonLookingAt.GetComponent<Renderer> ();
 					r.material.color = Color.white;
 				}
-                if (Input.GetButtonDown("RMenu")) {
-                    hideMenu();
-                }
+//                if (Input.GetButtonDown("RMenu")) {
+//                    hideMenu();
+//                }
 			}
 		}
 	}
@@ -73,6 +74,10 @@ public class MenuSelector : MonoBehaviour {
 
 
     public void hideMenu() {
+		Renderer r = buttonLookingAt.GetComponent<Renderer> ();
+		if (r != null) {
+			r.material.color = Color.white;
+		}
         menuCanvas.SetActive(false);
         enabled = false;
     }
