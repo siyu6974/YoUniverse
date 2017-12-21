@@ -24,6 +24,8 @@ public class MainMenuSelector : MonoBehaviour {
     [HideInInspector] public bool targetGet;
     [HideInInspector] public StarData starTarget;
 
+    public HyperDrive hyperDrive;
+
     // Use this for initialization
     void Start() {
         layerButton = 1 << 9;
@@ -33,8 +35,7 @@ public class MainMenuSelector : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-		if (Input.GetKeyDown(KeyCode.V)) {
-//        if (Input.GetKeyDown(KeyCode.V) || Input.GetButtonDown("RMenu")) {
+        if (Input.GetKeyDown(KeyCode.V) || Input.GetButtonDown("RMenu")) {
             Debug.Log("V pressed");
             if (!menuCanvas.activeSelf) {
                 showMenu();
@@ -66,9 +67,7 @@ public class MainMenuSelector : MonoBehaviour {
                 r.material.color = new Color(0.98f, 0.5f, 0.45f);
                 Debug.Log(hit.transform.gameObject.name);
 
-                //              if (Input.GetButtonDown("Right Controller Trackpad (Press)")) {
-//                if (Input.GetKeyDown(KeyCode.B) || Input.GetButtonDown("Fire2")) {
-				if (Input.GetKeyDown(KeyCode.B)) {
+                if (Input.GetKeyDown(KeyCode.B) || Input.GetButtonDown("Right Controller Trackpad (Press)")) {
                     string bname = buttonLookingAt.name;
                     if (bname.Equals("Help")) {
                         helpBlock.transform.position = Camera.main.transform.position + Camera.main.transform.forward * 0.3f + Camera.main.transform.up * 2.95f;
@@ -105,7 +104,7 @@ public class MainMenuSelector : MonoBehaviour {
         if (helpBlock.activeSelf) {
             Debug.Log("In helpBlock: ");
             //if (Input.GetButtonDown("Right Controller Trackpad (Press)")) {
-            if (Input.GetKeyDown(KeyCode.B) || Input.GetButtonDown("Fire2")) {
+            if (Input.GetKeyDown(KeyCode.B) || Input.GetButtonDown("Right Controller Trackpad (Press)")) {
                 helpBlock.SetActive(false);
                 flyingInfo.SetActive(true);
                 return;
@@ -116,6 +115,7 @@ public class MainMenuSelector : MonoBehaviour {
             LaserPointer lspointer = GameObject.Find("RightHand").GetComponent<LaserPointer>();
             if (lspointer.pointed != null) {
                 Debug.Log("GetStarTarget");
+                hyperDrive.lockStar((StarData)lspointer.pointed);
                 starTarget = (StarData)lspointer.pointed;
                 if (starTarget.ProperName != "") {
                     setTargetInfoText.text = "Target: " + starTarget.ProperName + "\nDistance: " + starTarget.distance + "\nClick 'B' to confirm and fly to it" + "\nClick 'C' to discard and return";
@@ -124,14 +124,14 @@ public class MainMenuSelector : MonoBehaviour {
                 targetGet = true;
             }
             if (targetGet) {
-                if (Input.GetKeyDown(KeyCode.B) || Input.GetButtonDown("Fire2")) {
+                if (Input.GetKeyDown(KeyCode.B) || Input.GetButtonDown("Right Controller Trackpad (Press)")) {
                     // Fly
 					// -> Change to set target fly mode
 					flyToTargetInfo.SetActive(true);
 					setTargetInfo.SetActive (false);
 					return;
                 }
-                if (Input.GetKeyDown(KeyCode.C)) {
+                if (Input.GetKeyDown(KeyCode.C) || Input.GetButtonDown("Left Controller Trackpad (Press)")) {
                     // Discard
                     setTargetInfo.SetActive(false);
                     flyingInfo.SetActive(true);
@@ -141,16 +141,18 @@ public class MainMenuSelector : MonoBehaviour {
             }
         }
 		if (flyToTargetInfo.activeSelf) {
-			Debug.Log ("Now fly to target: ");
-			Vector3 v = transform.position - starTarget.drawnPos;
-			float dist = v.magnitude;
-			flyToTargetInfoText.text = "Target: " + starTarget.ProperName + "\nSpeed: " + "\nDistance: " + dist;
-		}
+			//Debug.Log ("Now fly to target: ");
+			//Vector3 v = transform.position - starTarget.drawnPos;
+			//float dist = v.magnitude;
+			//flyToTargetInfoText.text = "Target: " + starTarget.ProperName + "\nSpeed: " + "\nDistance: " + dist;
+            //StartCoroutine(hyperDrive.startWarp());
+            hyperDrive.StartWarp();
+        }
 		if (drawConstellationInfo.activeSelf) {
 			Debug.Log ("In drawConstellation Mode: ");
 			ConstellationCreater cc = GameObject.Find("_ConstellationMgr").GetComponent<ConstellationCreater>();
 			cc.customCreationMode = true;
-			if (!menuSelector.enabled && Input.GetKeyDown (KeyCode.M)) {
+            if (!menuSelector.enabled && (Input.GetKeyDown (KeyCode.M) || Input.GetButtonDown("RMenu"))) {
 				// Active draw constellation menu
 				menuSelector.enabled = true;
 				menuSelector.showMenu ();
@@ -169,7 +171,7 @@ public class MainMenuSelector : MonoBehaviour {
 			// Call radar functions
 			radar.scanEnvironment();
 			radar.showMarker();
-			if (Input.GetKeyDown(KeyCode.C)) {
+            if (Input.GetKeyDown(KeyCode.C) || Input.GetButtonDown("Left Controller Trackpad (Press)")) {
 				scanInfo.SetActive (false);
 				showMenu ();
 				return;

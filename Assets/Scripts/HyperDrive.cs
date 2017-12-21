@@ -18,31 +18,23 @@ public class HyperDrive : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        lockStar();
 
-        if (lockedStar != null && Input.GetKeyDown(KeyCode.Semicolon)) {
-            StartCoroutine(startWarp());
-        }
 	}
 
 
-    bool lockStar() {
-        if (Input.GetKey(KeyCode.L) && pointer.pointed != null) {
-            lockedStar = (StarData)pointer.pointed;
-            Camera cam = Camera.main;
-            Vector3 pos = Vector3.ClampMagnitude(((StarData)lockedStar).drawnPos - cam.transform.position, 30);
+    public void lockStar(StarData star) {
+        lockedStar = star;
+        Camera cam = Camera.main;
+        Vector3 pos = Vector3.ClampMagnitude(((StarData)lockedStar).drawnPos - cam.transform.position, 30);
 
-            GameObject marker = Instantiate(circlePref, cam.transform.position + pos, Quaternion.identity);
-            marker.transform.LookAt(cam.transform);
-            StartCoroutine(fadeOutMarker(marker, 1f, 2f));
-            Debug.Log("lock");
-            return true;
-        }
-        return false;
+        GameObject marker = Instantiate(circlePref, cam.transform.position + pos, Quaternion.identity);
+        marker.transform.LookAt(cam.transform);
+        StartCoroutine(fadeOutMarker(marker, 1f, 2f));
+        Debug.Log("lock");
     }
 
 
-    IEnumerator startWarp() {
+    private IEnumerator startWarp() {
         engaged = true;
         StarData star = (StarData)lockedStar;
         Vector3 distanceVec = star.coord - CoordinateManager.virtualPos.galactic;
@@ -75,5 +67,10 @@ public class HyperDrive : MonoBehaviour {
             yield return null;
         }
         Destroy(sr.gameObject);
+    }
+
+    public void StartWarp() {
+        if (engaged) return;
+        StartCoroutine(startWarp());
     }
 }
