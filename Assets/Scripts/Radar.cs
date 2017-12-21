@@ -96,6 +96,7 @@ public class Radar : MonoBehaviour {
                 }
                 if (m.marker == null) {
                     m.marker = Instantiate(arrowPref, pos, Quaternion.identity);
+                    StartCoroutine(fadeOutMarker(m, 3f, 2f));
                 }
                 m.marker.transform.LookAt(dirProjectionOnScreen, cam.transform.forward * -1);
                 m.marker.transform.position = pos + m.marker.transform.forward * 5;
@@ -115,11 +116,11 @@ public class Radar : MonoBehaviour {
 
 
     private IEnumerator fadeOutMarker(Marker m, float delay, float duration) {
-        if (m == null) yield break;
         SpriteRenderer sr = m.marker.GetComponent<SpriteRenderer>();
-        if (sr == null) yield break;
+        if (m == null || sr == null) yield break;
         yield return new WaitForSeconds(delay);
         float timer = 0f;
+        if (sr == null) yield break;
         Color startCol = sr.material.color;
         Color endCol = startCol;
         endCol.a = 0;
