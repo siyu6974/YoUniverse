@@ -21,7 +21,6 @@ public class Radar : MonoBehaviour {
     // Use this for initialization
 	void Start () {
         starDataSet = GameObject.Find("_StarGenerator").GetComponent<StarGenerator>().starDataSet;
-        //StartCoroutine(test());
 	}
 	
 	//// Update is called once per frame
@@ -83,7 +82,7 @@ public class Radar : MonoBehaviour {
                     
                     m.marker = Instantiate(circlePref, cam.transform.position + pos, Quaternion.identity);
                     m.marker.transform.LookAt(cam.transform);
-					m.marker.transform.Rotate (rotateSpeed * m.marker.transform.forward * Time.deltaTime);
+                    StartCoroutine(fadeOutMarker(m, 3f, 2f));
                 }
                 m.isOnSight = true;
 
@@ -112,5 +111,26 @@ public class Radar : MonoBehaviour {
             Destroy(mm.marker);
         }
         markers.Clear();
+    }
+
+
+    private IEnumerator fadeOutMarker(Marker m, float delay, float duration) {
+        SpriteRenderer sr = m.marker.GetComponent<SpriteRenderer>();
+        yield return new WaitForSeconds(delay);
+        float timer = 0f;
+        Color startCol = sr.material.color;
+        Color endCol = startCol;
+        endCol.a = 0;
+
+        while (timer <= duration) {
+            // Set the colour based on the normalised time.
+            sr.material.color = Color.Lerp(startCol, endCol, timer / duration);
+
+            // Increment the timer by the time between frames and return next frame.
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        Destroy(sr.gameObject);
+        markers.Remove(m);
     }
 }

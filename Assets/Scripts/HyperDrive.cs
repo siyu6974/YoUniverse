@@ -7,6 +7,7 @@ public class HyperDrive : MonoBehaviour {
     public LaserPointer pointer;
 
     private StarData? lockedStar;
+    public GameObject circlePref;
 
     public bool engaged { get; private set; }
 
@@ -28,6 +29,10 @@ public class HyperDrive : MonoBehaviour {
     bool lockStar() {
         if (Input.GetKey(KeyCode.L) && pointer.pointed != null) {
             lockedStar = (StarData)pointer.pointed;
+            Vector3 relativePos = ((StarData)lockedStar).drawnPos;
+            Camera cam = Camera.main;
+            GameObject marker = Instantiate(circlePref, cam.transform.position + relativePos, Quaternion.identity);
+            marker.transform.LookAt(cam.transform);
             Debug.Log("lock");
             return true;
         }
@@ -41,7 +46,7 @@ public class HyperDrive : MonoBehaviour {
         Vector3 distanceVec = star.coord - CoordinateManager.virtualPos.galactic;
         Vector3 delta = distanceVec / 100f;
         CoordinateManager.exit(Camera.main.transform.position);
-        while (Vector3.Magnitude(distanceVec) > 2 ) {
+        while (Vector3.Magnitude(distanceVec) > 2) {
             CoordinateManager.virtualPos.galactic += delta;
             yield return new WaitForSeconds(0.01f);
             distanceVec = star.coord - CoordinateManager.virtualPos.galactic;
