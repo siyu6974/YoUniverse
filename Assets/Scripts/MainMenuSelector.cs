@@ -36,7 +36,7 @@ public class MainMenuSelector : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         if (Input.GetKeyDown(KeyCode.V) || Input.GetButtonDown("RMenu")) {
-            Debug.Log("V pressed");
+            // Debug.Log("V pressed");
             if (!menuCanvas.activeSelf) {
                 showMenu();
                 flyingInfo.SetActive(false);
@@ -47,17 +47,10 @@ public class MainMenuSelector : MonoBehaviour {
             return;
         }
 
-        //      Camera cam = Camera.main;
-        //      menuCanvas.transform.position = cam.transform.position + cam.transform.forward * 3f;
-        //      Vector3 v = cam.transform.rotation.eulerAngles;
-        //      v.y = 0;
-        //      menuCanvas.transform.rotation = Quaternion.Euler (v);
-
         if (menuCanvas.activeSelf) {
-            //ajustRotation();
+            ajustRotation();
 
             Ray rayEyeCast = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
-            //          Debug.DrawRay(Camera.main.transform.position, rayEyeCast.direction * 1000f, Color.cyan);
             RaycastHit hit;
 
             bool rayCasted = Physics.Raycast(rayEyeCast, out hit, 100.0f, layerButton);
@@ -65,7 +58,7 @@ public class MainMenuSelector : MonoBehaviour {
                 buttonLookingAt = hit.transform.gameObject;
                 Renderer r = buttonLookingAt.GetComponent<Renderer>();
                 r.material.color = new Color(0.98f, 0.5f, 0.45f);
-                Debug.Log(hit.transform.gameObject.name);
+                // Debug.Log(hit.transform.gameObject.name);
 
                 if (Input.GetKeyDown(KeyCode.B) || Input.GetButtonDown("Right Controller Trackpad (Press)")) {
                     string bname = buttonLookingAt.name;
@@ -78,6 +71,7 @@ public class MainMenuSelector : MonoBehaviour {
                     }
                     if (bname.Equals("SetTarget")) {
                         setTargetInfo.SetActive(true);
+						setTargetInfoText.text = "Use laser to choose a star as target:\nPress right controller trigger";
                         hideMenu();
                         return;
                     }
@@ -102,8 +96,7 @@ public class MainMenuSelector : MonoBehaviour {
         }
 
         if (helpBlock.activeSelf) {
-            Debug.Log("In helpBlock: ");
-            //if (Input.GetButtonDown("Right Controller Trackpad (Press)")) {
+            // Debug.Log("In helpBlock: ");
             if (Input.GetKeyDown(KeyCode.B) || Input.GetButtonDown("Right Controller Trackpad (Press)")) {
                 helpBlock.SetActive(false);
                 flyingInfo.SetActive(true);
@@ -111,22 +104,21 @@ public class MainMenuSelector : MonoBehaviour {
             }
         }
         if (setTargetInfo.activeSelf) {
-            Debug.Log("In setTarget Mode: ");
+            // Debug.Log("In setTarget Mode: ");
             LaserPointer lspointer = GameObject.Find("RightHand").GetComponent<LaserPointer>();
             if (lspointer.pointed != null) {
                 Debug.Log("GetStarTarget");
                 hyperDrive.lockStar((StarData)lspointer.pointed);
                 starTarget = (StarData)lspointer.pointed;
                 if (starTarget.ProperName != "") {
-                    setTargetInfoText.text = "Target: " + starTarget.ProperName + "\nDistance: " + starTarget.distance + "\nClick 'B' to confirm and fly to it" + "\nClick 'C' to discard and return";
+                    setTargetInfoText.text = "Target: " + starTarget.ProperName + "\nDistance: " + starTarget.distance + "\nPress right controller trackpad to confirm and fly to it" + "\nPress left controller trackpad to discard and return";
                 } else
-                    setTargetInfoText.text = "Target: HIP " + starTarget.HIP + "\nDistance: " + starTarget.distance + "\nClick 'B' to confirm and fly to it" + "\nClick 'C' to discard and return";
+					setTargetInfoText.text = "Target: HIP " + starTarget.HIP + "\nDistance: " + starTarget.distance + "\nPress right controller trackpad to confirm and fly to it" + "\nPress left controller trackpad to discard and return";
                 targetGet = true;
             }
             if (targetGet) {
                 if (Input.GetKeyDown(KeyCode.B) || Input.GetButtonDown("Right Controller Trackpad (Press)")) {
                     // Fly
-					// -> Change to set target fly mode
 					flyToTargetInfo.SetActive(true);
 					setTargetInfo.SetActive (false);
 					return;
@@ -135,45 +127,46 @@ public class MainMenuSelector : MonoBehaviour {
                     // Discard
                     setTargetInfo.SetActive(false);
                     flyingInfo.SetActive(true);
-					showMenu ();
                     return;
                 }
             }
         }
 		if (flyToTargetInfo.activeSelf) {
-			//Debug.Log ("Now fly to target: ");
-			//Vector3 v = transform.position - starTarget.drawnPos;
-			//float dist = v.magnitude;
-			//flyToTargetInfoText.text = "Target: " + starTarget.ProperName + "\nSpeed: " + "\nDistance: " + dist;
-            //StartCoroutine(hyperDrive.startWarp());
+			// Debug.Log ("Now fly to target: ");
             hyperDrive.StartWarp();
+			flyToTargetInfo.SetActive (false);
+			flyingInfo.SetActive (true);
+			return;
         }
 		if (drawConstellationInfo.activeSelf) {
-			Debug.Log ("In drawConstellation Mode: ");
+			// Debug.Log ("In drawConstellation Mode: ");
+			Text[] texts = drawConstellationInfo.GetComponentsInChildren<Text> ();
 			ConstellationCreater cc = GameObject.Find("_ConstellationMgr").GetComponent<ConstellationCreater>();
 			cc.customCreationMode = true;
             if (!menuSelector.enabled && (Input.GetKeyDown (KeyCode.C) || Input.GetButtonDown("Left Controller Trackpad (Press)"))) {
 				// Active draw constellation menu
 				menuSelector.enabled = true;
+				texts[1].text = "";
 				menuSelector.showMenu ();
 				return;
 			}
 			if (menuSelector.returnFlag) {
-				// Return to main menu
+				// Return
+				texts[1].text = "Press and hold right controller trigger and trackpad to draw\nWhen finish, press left controller trackpad";
 				drawConstellationInfo.SetActive(false);
 				menuSelector.returnFlag = false;
-				showMenu ();
+				flyingInfo.SetActive (true);
 				return;
 			}
 		}
 		if (scanInfo.activeSelf) {
-			Debug.Log ("In scan Mode: ");
+			// Debug.Log ("In scan Mode: ");
 			// Call radar functions
 			radar.scanEnvironment();
 			radar.showMarker();
             if (Input.GetKeyDown(KeyCode.C) || Input.GetButtonDown("Left Controller Trackpad (Press)")) {
 				scanInfo.SetActive (false);
-				showMenu ();
+				flyingInfo.SetActive (true);
 				return;
 			}
 		}
@@ -192,6 +185,10 @@ public class MainMenuSelector : MonoBehaviour {
 
 
     public void hideMenu() {
+		Renderer r = buttonLookingAt.GetComponent<Renderer>();
+		if (r != null) {
+			r.material.color = Color.white;
+		}
         menuCanvas.SetActive(false);
         //      enabled = false;
     }
