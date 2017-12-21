@@ -152,7 +152,7 @@ public class MainMenuSelector : MonoBehaviour {
 			Debug.Log ("In drawConstellation Mode: ");
 			ConstellationCreater cc = GameObject.Find("_ConstellationMgr").GetComponent<ConstellationCreater>();
 			cc.customCreationMode = true;
-            if (!menuSelector.enabled && (Input.GetKeyDown (KeyCode.M) || Input.GetButtonDown("RMenu"))) {
+            if (!menuSelector.enabled && (Input.GetKeyDown (KeyCode.C) || Input.GetButtonDown("Left Controller Trackpad (Press)"))) {
 				// Active draw constellation menu
 				menuSelector.enabled = true;
 				menuSelector.showMenu ();

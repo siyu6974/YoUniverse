@@ -115,7 +115,9 @@ public class Radar : MonoBehaviour {
 
 
     private IEnumerator fadeOutMarker(Marker m, float delay, float duration) {
+        if (m == null) yield break;
         SpriteRenderer sr = m.marker.GetComponent<SpriteRenderer>();
+        if (sr == null) yield break;
         yield return new WaitForSeconds(delay);
         float timer = 0f;
         Color startCol = sr.material.color;
