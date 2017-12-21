@@ -35,6 +35,7 @@ public class MenuSelector : MonoBehaviour {
                     if (bname.Equals ("Save")) {
                         // Save new constellation
                         cc.saveDrawing();
+						returnFlag = true;
                     } else if (bname.Equals ("AddName")) {
 						// User can give a name to the new constellation
                     } else if (bname.Equals("Discard")) {

@@ -14,8 +14,12 @@ public class MainMenuSelector : MonoBehaviour {
     public GameObject helpBlock;
     public GameObject setTargetInfo;
 	public GameObject drawConstellationInfo;
+	public GameObject scanInfo;
+	public GameObject flyToTargetInfo;
 	public Text setTargetInfoText;
+	public Text flyToTargetInfoText;
 	public MenuSelector menuSelector;
+	public Radar radar;
     [HideInInspector] public bool targetSet;
     [HideInInspector] public bool targetGet;
     [HideInInspector] public StarData starTarget;
@@ -83,31 +87,18 @@ public class MainMenuSelector : MonoBehaviour {
 						hideMenu();
 						return;
 					}
+					if (bname.Equals ("Scan")) {
+						scanInfo.SetActive (true);
+						hideMenu();
+						return;
+					}
                 }
-                //                  string bname = buttonLookingAt.name;
-                //                  ConstellationCreater cc = GameObject.Find("_ConstellationMgr").GetComponent<ConstellationCreater>();
-                //                  if (bname.Equals ("Save")) {
-                //                      // Save new constellation
-                //                      cc.saveDrawing();
-                //                  } else if (bname.Equals ("AddName")) {
-                //                      // User can give a name to the new constellation
-                //                  } else if (bname.Equals("Discard")) {
-                //                      // Cancel
-                //                      cc.discardDrawing();
-                //                  }
-                //                  hideMenu();
-                //              }
-
                 lastButtonLookingAt = buttonLookingAt;
             } else {
                 if (lastButtonLookingAt != null) {
                     Renderer r = lastButtonLookingAt.GetComponent<Renderer>();
                     r.material.color = Color.white;
                 }
-                //              if (Input.GetButtonDown("Right Controller Trackpad (Press)")) {
-                //              if (Input.GetKeyDown(KeyCode.V)) {
-                //                  hideMenu();
-                //              }
             }
         }
 
@@ -135,16 +126,26 @@ public class MainMenuSelector : MonoBehaviour {
             if (targetGet) {
                 if (Input.GetKeyDown(KeyCode.B) || Input.GetButtonDown("Fire2")) {
                     // Fly
-
+					// -> Change to set target fly mode
+					flyToTargetInfo.SetActive(true);
+					setTargetInfo.SetActive (false);
+					return;
                 }
                 if (Input.GetKeyDown(KeyCode.C)) {
                     // Discard
                     setTargetInfo.SetActive(false);
                     flyingInfo.SetActive(true);
+					showMenu ();
                     return;
                 }
             }
         }
+		if (flyToTargetInfo.activeSelf) {
+			Debug.Log ("Now fly to target: ");
+			Vector3 v = transform.position - starTarget.drawnPos;
+			float dist = v.magnitude;
+			flyToTargetInfoText.text = "Target: " + starTarget.ProperName + "\nSpeed: " + "\nDistance: " + dist;
+		}
 		if (drawConstellationInfo.activeSelf) {
 			Debug.Log ("In drawConstellation Mode: ");
 			ConstellationCreater cc = GameObject.Find("_ConstellationMgr").GetComponent<ConstellationCreater>();
@@ -162,7 +163,17 @@ public class MainMenuSelector : MonoBehaviour {
 				showMenu ();
 				return;
 			}
-
+		}
+		if (scanInfo.activeSelf) {
+			Debug.Log ("In scan Mode: ");
+			// Call radar functions
+			radar.scanEnvironment();
+			radar.showMarker();
+			if (Input.GetKeyDown(KeyCode.C)) {
+				scanInfo.SetActive (false);
+				showMenu ();
+				return;
+			}
 		}
     }
 
