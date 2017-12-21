@@ -53,7 +53,7 @@ public class MainMenuSelector : MonoBehaviour {
         //      menuCanvas.transform.rotation = Quaternion.Euler (v);
 
         if (menuCanvas.activeSelf) {
-            ajustRotation();
+            //ajustRotation();
 
             Ray rayEyeCast = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
             //          Debug.DrawRay(Camera.main.transform.position, rayEyeCast.direction * 1000f, Color.cyan);
