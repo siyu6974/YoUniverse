@@ -124,6 +124,8 @@ public class Radar : MonoBehaviour {
 
         while (timer <= duration) {
             // Set the colour based on the normalised time.
+            if (sr == null) yield break;
+
             sr.material.color = Color.Lerp(startCol, endCol, timer / duration);
 
             // Increment the timer by the time between frames and return next frame.

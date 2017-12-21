@@ -29,10 +29,12 @@ public class HyperDrive : MonoBehaviour {
     bool lockStar() {
         if (Input.GetKey(KeyCode.L) && pointer.pointed != null) {
             lockedStar = (StarData)pointer.pointed;
-            Vector3 relativePos = ((StarData)lockedStar).drawnPos;
             Camera cam = Camera.main;
-            GameObject marker = Instantiate(circlePref, cam.transform.position + relativePos, Quaternion.identity);
+            Vector3 pos = Vector3.ClampMagnitude(((StarData)lockedStar).drawnPos - cam.transform.position, 30);
+
+            GameObject marker = Instantiate(circlePref, cam.transform.position + pos, Quaternion.identity);
             marker.transform.LookAt(cam.transform);
+            StartCoroutine(fadeOutMarker(marker, 1f, 2f));
             Debug.Log("lock");
             return true;
         }
@@ -54,4 +56,24 @@ public class HyperDrive : MonoBehaviour {
         engaged = false;
     }
 
+
+    private IEnumerator fadeOutMarker(GameObject marker, float delay, float duration) {
+        SpriteRenderer sr = marker.GetComponent<SpriteRenderer>();
+        if (sr == null) yield break;
+        yield return new WaitForSeconds(delay);
+        float timer = 0f;
+        Color startCol = sr.material.color;
+        Color endCol = startCol;
+        endCol.a = 0;
+
+        while (timer <= duration) {
+            // Set the colour based on the normalised time.
+            sr.material.color = Color.Lerp(startCol, endCol, timer / duration);
+
+            // Increment the timer by the time between frames and return next frame.
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        Destroy(sr.gameObject);
+    }
 }
