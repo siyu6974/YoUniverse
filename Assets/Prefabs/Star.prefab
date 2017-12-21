@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 33063440553903890}
   - component: {fileID: 135576558523996400}
   - component: {fileID: 23895321217160952}
+  - component: {fileID: 114180682329973712}
   m_Layer: 0
   m_Name: Star
   m_TagString: Untagged
@@ -55,7 +56,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 2100000, guid: ae7a69b65f14d4f4b84e628158df00c1, type: 2}
+  - {fileID: 2100000, guid: 71d05dedc56f7f348bdb64d2f4000fde, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -81,6 +82,23 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1582986449550168}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &114180682329973712
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1582986449550168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34c20de9ecc8bde41b5ed3a66a8071a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spin: 1
+  spinParent: 0
+  speed: 3
+  clockwise: 1
+  direction: 1
+  directionChangeSpeed: 2
 --- !u!135 &135576558523996400
 SphereCollider:
   m_ObjectHideFlags: 1
