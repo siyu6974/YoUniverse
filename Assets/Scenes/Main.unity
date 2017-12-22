@@ -240,9 +240,9 @@ TextMesh:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 68881523}
-  m_Text: 'Lock
+  m_Text: 'Constellation
 
-    Constellation'
+    Tour'
   m_OffsetZ: 0
   m_CharacterSize: 0.025
   m_LineSpacing: 1.15
@@ -3051,7 +3051,7 @@ MonoBehaviour:
   ps: {fileID: 1083175137}
   starPrefab: {fileID: 1582986449550168, guid: 9b9c687012f924c2dabb1a95496eb23a, type: 2}
   starsMax: 6000
-  hyperDrive: {fileID: 247041835}
+  forceNoTransformation: 0
   ignoreMovement: 0
 --- !u!198 &1083175137
 ParticleSystem:
@@ -7663,7 +7663,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1651802953}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: acddf9e40c48b4513acb3312ab3248f9, type: 3}
   m_Name: 
@@ -8461,7 +8461,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   constellationManager: {fileID: 1037490424}
-  cameraPivot: {fileID: 1651802955}
 --- !u!4 &2043562334
 Transform:
   m_ObjectHideFlags: 0
