@@ -82,7 +82,7 @@ public class Radar : MonoBehaviour {
                     
                     m.marker = Instantiate(circlePref, cam.transform.position + pos, Quaternion.identity);
                     m.marker.transform.LookAt(cam.transform);
-                    StartCoroutine(fadeOutMarker(m, 3f, 2f));
+                    StartCoroutine(fadeOutMarker(m, 2f, 1.5f));
                 }
                 m.isOnSight = true;
 
@@ -96,7 +96,7 @@ public class Radar : MonoBehaviour {
                 }
                 if (m.marker == null) {
                     m.marker = Instantiate(arrowPref, pos, Quaternion.identity);
-                    StartCoroutine(fadeOutMarker(m, 3f, 2f));
+                    StartCoroutine(fadeOutMarker(m, 2f, 1.5f));
                 }
                 m.marker.transform.LookAt(dirProjectionOnScreen, cam.transform.forward * -1);
                 m.marker.transform.position = pos + m.marker.transform.forward * 5;
