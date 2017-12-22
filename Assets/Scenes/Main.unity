@@ -325,7 +325,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4622349432097744, guid: 89bc615895cec4ab9b31e7e63459706d, type: 2}
       propertyPath: m_RootOrder
-      value: 14
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 89bc615895cec4ab9b31e7e63459706d, type: 2}
@@ -393,7 +393,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 14.61, y: -89.1, z: 0}
 --- !u!1 &123797651
 GameObject:
@@ -520,7 +520,7 @@ GameObject:
   - component: {fileID: 131335619}
   - component: {fileID: 131335618}
   m_Layer: 5
-  m_Name: SetTargetInfoCanvas
+  m_Name: WarpDriveInfoCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -743,7 +743,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &247041835
 MonoBehaviour:
@@ -818,7 +818,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &347205925
 GameObject:
@@ -1231,7 +1231,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.1
-  m_Text: 'Stars nearby will be shown
+  m_Text: 'Nearby stars will be shown
 
     Press left controller trackpad to return'
 --- !u!222 &541505293
@@ -1448,7 +1448,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4385900083889002, guid: 5e4e724e9e5c6455fb33ce56b29f6445, type: 2}
       propertyPath: m_RootOrder
-      value: 16
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 4385900083889002, guid: 5e4e724e9e5c6455fb33ce56b29f6445, type: 2}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -1461,6 +1461,10 @@ Prefab:
     - target: {fileID: 4385900083889002, guid: 5e4e724e9e5c6455fb33ce56b29f6445, type: 2}
       propertyPath: m_LocalEulerAnglesHint.x
       value: -16.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 1700586456367890, guid: 5e4e724e9e5c6455fb33ce56b29f6445, type: 2}
+      propertyPath: m_TagString
+      value: Planet
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5e4e724e9e5c6455fb33ce56b29f6445, type: 2}
@@ -1481,7 +1485,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &641617844
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2011,7 +2015,7 @@ Transform:
   - {fileID: 238215569}
   - {fileID: 735756767}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &857806264
 GameObject:
@@ -2471,11 +2475,11 @@ MonoBehaviour:
   menuCanvas: {fileID: 811044325}
   flyingInfo: {fileID: 1400771364}
   helpBlock: {fileID: 2029789628}
-  setTargetInfo: {fileID: 131335617}
+  warpDriveInfo: {fileID: 1423818205}
   drawConstellationInfo: {fileID: 65962578}
   scanInfo: {fileID: 1019640051}
   flyToTargetInfo: {fileID: 651669809}
-  setTargetInfoText: {fileID: 641617846}
+  warpDriveInfoText: {fileID: 641617846}
   flyToTargetInfoText: {fileID: 2133527201}
   menuSelector: {fileID: 1037490426}
   radar: {fileID: 1752566186}
@@ -2493,7 +2497,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1025934401
 GameObject:
@@ -2608,7 +2612,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1037490424
 MonoBehaviour:
@@ -5875,7 +5879,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1174265116
 GameObject:
@@ -5921,7 +5925,7 @@ GameObject:
   - component: {fileID: 1201208578}
   - component: {fileID: 1201208577}
   m_Layer: 9
-  m_Name: SetTarget
+  m_Name: WarpDrive
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6020,7 +6024,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1238936698
 MonoBehaviour:
@@ -6605,7 +6609,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Set Target Mode On:
+  m_Text: 'Warp Drive Mode On:
 
 '
 --- !u!222 &1423818208
@@ -6970,7 +6974,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1607288407}
   m_Layer: 9
-  m_Name: SetTargetButton
+  m_Name: WarpDriveButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7350,7 +7354,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1756095692
 GameObject:
@@ -7556,9 +7560,9 @@ TextMesh:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1820900283}
-  m_Text: 'Set
+  m_Text: 'Warp
 
-    Target'
+    Drive'
   m_OffsetZ: 0
   m_CharacterSize: 0.025
   m_LineSpacing: 1.15
@@ -7604,6 +7608,46 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!1 &1829324972
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1829324974}
+  - component: {fileID: 1829324973}
+  m_Layer: 0
+  m_Name: _PlanetManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1829324973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1829324972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f5a8ce91eb9a40a681aa708ad278072, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1829324974
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1829324972}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1860003798
 GameObject:
   m_ObjectHideFlags: 0
@@ -7925,7 +7969,7 @@ Transform:
   m_Children:
   - {fileID: 514456145}
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2047212632
 GameObject:

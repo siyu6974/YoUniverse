@@ -12,11 +12,11 @@ public class MainMenuSelector : MonoBehaviour {
     public GameObject menuCanvas;
     public GameObject flyingInfo;
     public GameObject helpBlock;
-    public GameObject setTargetInfo;
+    public GameObject warpDriveInfo;
 	public GameObject drawConstellationInfo;
 	public GameObject scanInfo;
 	public GameObject flyToTargetInfo;
-	public Text setTargetInfoText;
+	public Text warpDriveInfoText;
 	public Text flyToTargetInfoText;
 	public MenuSelector menuSelector;
 	public Radar radar;
@@ -69,9 +69,9 @@ public class MainMenuSelector : MonoBehaviour {
                         hideMenu();
                         return;
                     }
-                    if (bname.Equals("SetTarget")) {
-                        setTargetInfo.SetActive(true);
-						setTargetInfoText.text = "Use laser to choose a star as target:\nPress right controller trigger";
+                    if (bname.Equals("WarpDrive")) {
+                        warpDriveInfo.SetActive(true);
+						warpDriveInfoText.text = "Use laser to choose a star as target:\nPress right controller trigger";
                         hideMenu();
                         return;
                     }
@@ -103,29 +103,29 @@ public class MainMenuSelector : MonoBehaviour {
                 return;
             }
         }
-        if (setTargetInfo.activeSelf) {
-            // Debug.Log("In setTarget Mode: ");
+        if (warpDriveInfo.activeSelf) {
+            // Debug.Log("In warpDrive Mode: ");
             LaserPointer lspointer = GameObject.Find("RightHand").GetComponent<LaserPointer>();
             if (lspointer.pointed != null) {
                 Debug.Log("GetStarTarget");
                 hyperDrive.lockStar((StarData)lspointer.pointed);
                 starTarget = (StarData)lspointer.pointed;
                 if (starTarget.ProperName != "") {
-                    setTargetInfoText.text = "Target: " + starTarget.ProperName + "\nDistance: " + starTarget.distance + "\nPress right controller trackpad to confirm and fly to it" + "\nPress left controller trackpad to discard and return";
+                    warpDriveInfoText.text = "Target: " + starTarget.ProperName + "\nDistance: " + starTarget.distance + "\nPress right controller trackpad to confirm and fly to it" + "\nPress left controller trackpad to discard and return";
                 } else
-					setTargetInfoText.text = "Target: HIP " + starTarget.HIP + "\nDistance: " + starTarget.distance + "\nPress right controller trackpad to confirm and fly to it" + "\nPress left controller trackpad to discard and return";
+					warpDriveInfoText.text = "Target: HIP " + starTarget.HIP + "\nDistance: " + starTarget.distance + "\nPress right controller trackpad to confirm and fly to it" + "\nPress left controller trackpad to discard and return";
                 targetGet = true;
             }
             if (targetGet) {
                 if (Input.GetKeyDown(KeyCode.B) || Input.GetButtonDown("Right Controller Trackpad (Press)")) {
                     // Fly
 					flyToTargetInfo.SetActive(true);
-					setTargetInfo.SetActive (false);
+					warpDriveInfo.SetActive (false);
 					return;
                 }
                 if (Input.GetKeyDown(KeyCode.C) || Input.GetButtonDown("Left Controller Trackpad (Press)")) {
                     // Discard
-                    setTargetInfo.SetActive(false);
+                    warpDriveInfo.SetActive(false);
                     flyingInfo.SetActive(true);
                     return;
                 }
