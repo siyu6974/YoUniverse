@@ -60,7 +60,7 @@ public class CoordinateManager : MonoBehaviour {
             // in interstellar space
             for (int i = 0; i < starDataSet.Length; i++) {
                 Vector3 starRelativePos = starDataSet[i].coord - virtualPos.galactic;
-                if (Vector3.Magnitude(starRelativePos) < MyConstants.STAR_SYSTEM_BORDER_ENTRY) {
+                if (starRelativePos.magnitude < MyConstants.STAR_SYSTEM_BORDER_ENTRY) {
                     if (starSysEntryPt == null) {
                         Debug.Log("Entering");
                         // just enter the system

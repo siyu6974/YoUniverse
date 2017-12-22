@@ -36,7 +36,7 @@ public class HyperDrive : MonoBehaviour {
         StarData star = (StarData)lockedStar;
         Vector3 distanceVec = star.coord - CoordinateManager.virtualPos.galactic;
         Vector3 delta = distanceVec / 100f;
-        warpSpeed = Vector3.Magnitude(delta);
+        warpSpeed = delta.magnitude;
         CoordinateManager.exit(Camera.main.transform.position);
         while (Vector3.Magnitude(distanceVec) > 2) {
             CoordinateManager.virtualPos.galactic += delta;

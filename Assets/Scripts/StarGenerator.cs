@@ -86,19 +86,18 @@ public class StarGenerator : MonoBehaviour {
             Destroy(nearestStar);
             nearestStar = null;
         }
-        Vector3 pos = omniPos.galactic; 
+        Vector3 pos = omniPos.galactic;
         // TODO: USE absMag to get more stars!
         for (int i = 0; i < starsMax; i++) {
             Vector3 starRelativePos = starDataSet[i].coord - pos;
-            float distance = Vector3.Magnitude(starRelativePos);
+            float distance = starRelativePos.magnitude;
             starDataSet[i].distance = distance;
             if (distance < MyConstants.STAR_SYSTEM_BORDER_ENTRY) continue;
             Camera cam = Camera.main;
             starParticles[i].position = cam.transform.position + starRelativePos.normalized * cam.farClipPlane * 0.9f;
             starDataSet[i].drawnPos = starParticles[i].position;
 
-            starDataSet[i].Mag = adaptMagitude(starRelativePos.magnitude, starDataSet[i].AbsMag);
-
+            starDataSet[i].Mag = calculateMagitude(starRelativePos.magnitude, starDataSet[i].AbsMag);
             float starSize = adaptLuminanceScaledLn(pointSourceMagToLnLuminance(starDataSet[i].Mag), .6f);
             starSize *= starLinearScale;
 
@@ -157,7 +156,7 @@ public class StarGenerator : MonoBehaviour {
     }
 
 
-    float adaptMagitude(float distance, float M) {
+    float calculateMagitude(float distance, float M) {
         return (float)(M - 5 * Math.Log10(3260f / distance));
     }
 
