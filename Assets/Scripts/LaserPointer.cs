@@ -39,7 +39,7 @@ public class LaserPointer : MonoBehaviour {
             //            ray = Camera.main.ScreenToWorldPoint(ray).normalized;
             lr.enabled = true;
             for (int i = 0; i < starsMax; i++) {
-                if (Vector3.Angle(starDataSet[i].drawnPos, ray) < 1f) {
+                if (starDataSet[i].Mag < 11 && Vector3.Angle(starDataSet[i].drawnPos, ray) < 1f) {
                     string constellation = constellationMgr.drawConstellationOfSelectedStar(starDataSet[i].HIP);
 
                     showStarInfo(starDataSet[i], constellation);
