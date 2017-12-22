@@ -18,20 +18,30 @@ public class MainMenuSelector : MonoBehaviour {
 	public GameObject flyToTargetInfo;
 	public Text warpDriveInfoText;
 	public Text flyToTargetInfoText;
+	public GameObject lockConstellationInfo;
+	public GameObject turnAroundInfo;
+	public Text setTargetInfoText;
+	public Text lockConstellationInfoText;
 	public MenuSelector menuSelector;
 	public Radar radar;
     [HideInInspector] public bool targetSet;
     [HideInInspector] public bool targetGet;
+	[HideInInspector] public bool constellationSet;
+	[HideInInspector] public bool constellationGet;
     [HideInInspector] public StarData starTarget;
+	[HideInInspector] public ConstellationData constellationTarget;
 
     public HyperDrive hyperDrive;
     public LaserPointer laserPointer;
+	public lockConstellation locker;
 
     // Use this for initialization
     void Start() {
         layerButton = 1 << 9;
         targetGet = false;
         targetSet = false;
+		constellationGet = false;
+		constellationSet = false;
     }
 
     // Update is called once per frame
@@ -49,7 +59,7 @@ public class MainMenuSelector : MonoBehaviour {
         }
 
         if (menuCanvas.activeSelf) {
-            ajustRotation();
+            // ajustRotation();
 
             Ray rayEyeCast = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
             RaycastHit hit;
@@ -76,6 +86,12 @@ public class MainMenuSelector : MonoBehaviour {
                         hideMenu();
                         return;
                     }
+					if (bname.Equals("LockConstellation")) {
+						lockConstellationInfo.SetActive(true);
+						lockConstellationInfoText.text = "Use laser to choose a constellation to lock:\nPress right controller trigger";
+						hideMenu();
+						return;
+					}
 					if (bname.Equals("DrawConstellation")) {
 						drawConstellationInfo.SetActive(true);
 						hideMenu();
@@ -138,6 +154,40 @@ public class MainMenuSelector : MonoBehaviour {
 			flyingInfo.SetActive (true);
 			return;
         }
+		if (lockConstellationInfo.activeSelf) {
+			// Debug.Log ("In lockConstellation Mode: ");
+			LaserPointer lspointer = GameObject.Find("RightHand").GetComponent<LaserPointer>();
+			if (lspointer.pointed != null) {
+				Debug.Log("GetStarPointed");
+				// hyperDrive.lockStar((StarData)lspointer.pointed);
+				if (lspointer.selected != null) {
+					constellationTarget = (ConstellationData)lspointer.selected;
+					lockConstellationInfoText.text = "Constellation: " + constellationTarget.name + "\nPress right controller trackpad to lock" + "\nPress left controller trackpad to discard and return";
+					constellationGet = true;
+				} 
+			}
+			if (constellationGet) {
+				if (Input.GetKeyDown(KeyCode.B) || Input.GetButtonDown("Right Controller Trackpad (Press)")) {
+					// Turn around
+					locker.setConstellationToLock(constellationTarget);
+					turnAroundInfo.SetActive(true);
+					lockConstellationInfo.SetActive (false);
+					return;
+				}
+				if (Input.GetKeyDown(KeyCode.C) || Input.GetButtonDown("Left Controller Trackpad (Press)")) {
+					// Discard
+					lockConstellationInfo.SetActive(false);
+					flyingInfo.SetActive(true);
+					return;
+				}
+			}
+		}
+		if (turnAroundInfo.activeSelf) {
+			locker.StartTurning ();
+			turnAroundInfo.SetActive (false);
+			flyingInfo.SetActive (true);
+			return;
+		}
 		if (drawConstellationInfo.activeSelf) {
 			// Debug.Log ("In drawConstellation Mode: ");
 			Text[] texts = drawConstellationInfo.GetComponentsInChildren<Text> ();
