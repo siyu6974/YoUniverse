@@ -22,7 +22,7 @@ public class HyperDrive : MonoBehaviour {
         marker = Instantiate(circlePref, cam.transform.position + pos, Quaternion.identity);
         marker.transform.LookAt(cam.transform);
         StartCoroutine(fadeOutMarker(marker, 1f, 2f));
-        Debug.Log("lock");
+        //Debug.Log("lock");
     }
 
 
@@ -31,7 +31,7 @@ public class HyperDrive : MonoBehaviour {
         GameObject warpEffect = Instantiate(warpEffectPrefab, transform.position+Camera.main.transform.forward*10f, Quaternion.identity);
         warpEffect.transform.LookAt(Camera.main.transform);
         WarpEffectController wec = warpEffect.GetComponent<WarpEffectController>();
-        wec.playEffect(1);
+        wec.playEffect(1.1f);
 
         StarData star = (StarData)lockedStar;
         Vector3 distanceVec = star.coord - CoordinateManager.virtualPos.galactic;

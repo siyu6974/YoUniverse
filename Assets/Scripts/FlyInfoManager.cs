@@ -30,7 +30,7 @@ public class FlyInfoManager : MonoBehaviour {
         phase = controller.phase;
 
         if (hyperDrive.engaged) {
-            speedText = speedTitle + (hyperDrive.warpSpeed / 10).ToString("F1") + " ly/s";
+            speedText = speedTitle + (hyperDrive.warpSpeed * 100).ToString("F1") + " ly/s";
         } else {
             if (CoordinateManager.isInStarSystem()) {
                 speedText = speedTitle + (speed * 1500).ToString("F1") + " km/s";

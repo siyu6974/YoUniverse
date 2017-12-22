@@ -107,7 +107,7 @@ public class MainMenuSelector : MonoBehaviour {
         if (warpDriveInfo.activeSelf) {
             // Debug.Log("In warpDrive Mode: ");
             if (laserPointer.pointed != null) {
-                Debug.Log("GetStarTarget");
+                //Debug.Log("GetStarTarget");
                 hyperDrive.lockStar((StarData)laserPointer.pointed);
                 starTarget = (StarData)laserPointer.pointed;
                 if (starTarget.ProperName != "") {
