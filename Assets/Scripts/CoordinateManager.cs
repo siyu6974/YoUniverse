@@ -97,6 +97,8 @@ public class CoordinateManager : MonoBehaviour {
 
 
     public static void exit(Vector3 realWorldPos) {
+        if (!isInStarSystem()) return;
+
         Vector3 flyingDir = ((Vector3)virtualPos.stellar - (Vector3)prevVirtualPos.stellar).normalized;
 
         starSysExitPt.r = realWorldPos;

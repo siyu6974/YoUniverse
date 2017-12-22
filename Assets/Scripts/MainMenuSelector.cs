@@ -243,7 +243,7 @@ public class MainMenuSelector : MonoBehaviour {
         //      enabled = false;
     }
 
-    public void ajustRotation() {
+    public void adjustRotation() {
         Camera cam = Camera.main;
         Vector3 v1 = cam.transform.rotation.eulerAngles;
         Vector3 v2 = menuCanvas.transform.rotation.eulerAngles;

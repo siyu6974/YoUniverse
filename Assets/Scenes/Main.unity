@@ -8461,6 +8461,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   constellationManager: {fileID: 1037490424}
+  cameraPivot: {fileID: 1651802955}
 --- !u!4 &2043562334
 Transform:
   m_ObjectHideFlags: 0

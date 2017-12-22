@@ -28,7 +28,8 @@ public class HyperDrive : MonoBehaviour {
 
     private IEnumerator startWarp() {
         engaged = true;
-        GameObject warpEffect = Instantiate(warpEffectPrefab, transform.position+Camera.main.transform.forward*10f, Quaternion.identity);
+        StarGenerator.instance.forceNoTransformation = true;
+        GameObject warpEffect = Instantiate(warpEffectPrefab, Camera.main.transform.position+Camera.main.transform.forward*10f, Quaternion.identity);
         warpEffect.transform.LookAt(Camera.main.transform);
         WarpEffectController wec = warpEffect.GetComponent<WarpEffectController>();
         wec.playEffect(1.1f);
@@ -43,6 +44,7 @@ public class HyperDrive : MonoBehaviour {
             yield return new WaitForSeconds(0.01f);
             distanceVec = star.coord - CoordinateManager.virtualPos.galactic;
         }
+        StarGenerator.instance.forceNoTransformation = false;
         engaged = false;
     }
 

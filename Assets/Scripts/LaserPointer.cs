@@ -43,7 +43,6 @@ public class LaserPointer : MonoBehaviour {
                 if (starDataSet[i].Mag < 11 && Vector3.Angle(starDataSet[i].drawnPos, ray) < 1f) {
                     string constellation = constellationMgr.drawConstellationOfSelectedStar(starDataSet[i].HIP);
 					selected = constellationMgr.selected;
-
                     showStarInfo(starDataSet[i], constellation);
 					pointed = starDataSet [i];
 

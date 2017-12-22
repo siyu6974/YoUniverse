@@ -36,7 +36,7 @@ public class StarGenerator : MonoBehaviour {
     const float starLinearScale = 19.569f * 2f;
     float lnfovFactor;
 
-    public HyperDrive hyperDrive;
+    public bool forceNoTransformation;
 
 	[HideInInspector]
 	public bool ignoreMovement = false;
@@ -55,7 +55,7 @@ public class StarGenerator : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (!hyperDrive.engaged)
+        if (!forceNoTransformation)
             CoordinateManager.transformPosition(Camera.main.transform.position);
 
         if (!ignoreMovement)
@@ -301,4 +301,12 @@ public class StarGenerator : MonoBehaviour {
         new Color(1.000000f,0.772843f,0.643824f),
         new Color(1.000000f,0.772549f,0.647059f),
     };
+
+    public static StarGenerator instance;
+    void Awake() {
+        //constructor
+        if (instance != null)
+            Debug.LogError("Star Gen has already been instantiated");
+        instance = this;
+    }
 }

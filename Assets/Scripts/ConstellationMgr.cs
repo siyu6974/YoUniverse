@@ -123,17 +123,22 @@ public class ConstellationMgr : MonoBehaviour {
     }
 
 	public Vector3 getConstellationCenter(ConstellationData c) {
-		Vector3 v = Vector3.zero;
+        Vector3 v;
+        long x = 0, y = 0, z = 0;
 		int i;
 		for (i = 0; i < c.links.GetLength(0); i++) {
-			v += getStarDrawnPosition(c.links[i, 0]);
+            v = getStarRealPosition(c.links[i, 0]);
+            x = (long)v.x;
+            y = (long)v.y;
+            z = (long)v.z;
 		}
-		v += getStarDrawnPosition (c.links [i-1, 1]);
+        v = getStarRealPosition(c.links [i-1, 1]);
 		i++;
-		v.x = v.x / i;
-		v.y = v.y / i;
-		v.z = v.z / i;
-		return v;
+        x = (long)v.x;
+        y = (long)v.y;
+        z = (long)v.z;
+
+        return new Vector3(x/i,y/i,z/i);
 	}
 
 
@@ -183,9 +188,22 @@ public class ConstellationMgr : MonoBehaviour {
                 return starDataSet[i].drawnPos;
             }
         }
+        Debug.LogWarning("zero pos");
         return Vector3.zero;
     }
 
+
+    private Vector3 getStarRealPosition(int id) {
+        if (starDataSet == null) starDataSet = GameObject.Find("_StarGenerator").GetComponent<StarGenerator>().starDataSet;
+
+        for (int i = 0; i < starDataSet.Length; i++) {
+            if (id == starDataSet[i].HIP) {
+                return starDataSet[i].coord;
+            }
+        }
+        Debug.LogWarning("zero pos");
+        return Vector3.zero;
+    }
 
     private void clearDrawing() {
         foreach (LineRenderer lr in linesDrawn) {
@@ -196,9 +214,9 @@ public class ConstellationMgr : MonoBehaviour {
     }
 
 
-    public void clearDrawingWithFadeOut() {
+    public void clearDrawingWithFadeOut(float duration = 1.3f) {
         foreach (LineRenderer lr in linesDrawn) {
-            StartCoroutine(fadeOut(lr, 1.3f));
+            StartCoroutine(fadeOut(lr, duration));
         }
         linesDrawn.Clear();
         lineIndex = 0;

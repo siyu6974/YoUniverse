@@ -27,20 +27,33 @@ public class lockConstellation : MonoBehaviour {
 	private IEnumerator startTurning() {
 		Debug.DrawLine (Camera.main.transform.position, turningCenter, Color.red);
 		engaged = true;
-		float delta = 360 / (10 / 0.01f); // Turning 360 deg in 10 sec
-		float s = 0;
-		while (s < 360) {
-			Camera.main.transform.RotateAround (turningCenter, turningCenter + Camera.main.transform.up, delta);
-			yield return new WaitForSeconds(0.01f);
-			s += delta;
+        StarGenerator.instance.forceNoTransformation = true;
+
+        float r = Vector3.Magnitude(CoordinateManager.virtualPos.galactic - turningCenter);
+        Vector3 initPosition = CoordinateManager.virtualPos.galactic;
+        Vector3 rotationCenter = turningCenter - new Vector3(Mathf.Cos(0) * r, 0, Mathf.Sin(0) * r);
+
+        float t = 0;
+        float delta = 2 * Mathf.PI / 5 * 0.01f ; // Turning 360 deg in 5 sec
+        CoordinateManager.exit(Camera.main.transform.position);
+        while (t < 2 * Mathf.PI) {
+            CoordinateManager.virtualPos.galactic = rotationCenter + new Vector3(Mathf.Cos(t)*r, 0, Mathf.Sin(t) * r);
+            constellationManager.drawConstellation(lockedConstellation);
+            constellationManager.clearDrawingWithFadeOut(0.01f);
+            yield return new WaitForSeconds(0.01f);
+            t += delta;
 		}
+
+        CoordinateManager.virtualPos.galactic = initPosition;
+        constellationManager.drawConstellation(lockedConstellation);
+
 		engaged = false;
-		constellationManager.clearDrawingWithFadeOut ();
+        StarGenerator.instance.forceNoTransformation = false;
+		constellationManager.clearDrawingWithFadeOut();
 	}
 
 	public void StartTurning() {
 		if (engaged) return;
-		constellationManager.drawConstellation (lockedConstellation);
 		StartCoroutine(startTurning());
 	}
 }
