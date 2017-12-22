@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WarpSpeed : MonoBehaviour {
+public class WarpEffectController : MonoBehaviour {
     public float WarpDistortion;
     public float accelaration;
     ParticleSystem particles;
@@ -46,5 +46,13 @@ public class WarpSpeed : MonoBehaviour {
 
     bool atNormalSpeed() {
         return rend.velocityScale > 0;
+    }
+
+    public void playEffect(float duration) {
+        var main = particles.main;
+        main.duration = duration;
+        main.startLifetime = duration;
+        particles.Play();
+        Destroy(gameObject, duration+1);
     }
 }

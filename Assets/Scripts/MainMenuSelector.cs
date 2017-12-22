@@ -25,6 +25,7 @@ public class MainMenuSelector : MonoBehaviour {
     [HideInInspector] public StarData starTarget;
 
     public HyperDrive hyperDrive;
+    public LaserPointer laserPointer;
 
     // Use this for initialization
     void Start() {
@@ -105,11 +106,10 @@ public class MainMenuSelector : MonoBehaviour {
         }
         if (warpDriveInfo.activeSelf) {
             // Debug.Log("In warpDrive Mode: ");
-            LaserPointer lspointer = GameObject.Find("RightHand").GetComponent<LaserPointer>();
-            if (lspointer.pointed != null) {
+            if (laserPointer.pointed != null) {
                 Debug.Log("GetStarTarget");
-                hyperDrive.lockStar((StarData)lspointer.pointed);
-                starTarget = (StarData)lspointer.pointed;
+                hyperDrive.lockStar((StarData)laserPointer.pointed);
+                starTarget = (StarData)laserPointer.pointed;
                 if (starTarget.ProperName != "") {
                     warpDriveInfoText.text = "Target: " + starTarget.ProperName + "\nDistance: " + starTarget.distance + "\nPress right controller trackpad to confirm and fly to it" + "\nPress left controller trackpad to discard and return";
                 } else
