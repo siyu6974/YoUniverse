@@ -49,9 +49,12 @@ public class WarpEffectController : MonoBehaviour {
     }
 
     public void playEffect(float duration) {
-        var main = particles.main;
-        main.duration = duration;
-        main.startLifetime = duration;
+        if (!particles.isPlaying) {
+            var main = particles.main;
+            main.duration = duration;
+            main.startLifetime = duration;
+        }
+
         particles.Play();
         Destroy(gameObject, duration+1);
     }
