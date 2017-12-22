@@ -42,7 +42,8 @@ public class FlyInfoManager : MonoBehaviour {
 		//}
         positionText = positionTitle + getPosition();
 
-		infos.text = speedText + "\n" + statusText + "\n" + positionText;
+        //infos.text = speedText + "\n" + statusText + "\n" + positionText;
+        infos.text = speedText + "\n" + positionText;
 	}
 
 

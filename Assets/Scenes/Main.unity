@@ -6621,8 +6621,8 @@ TextMesh:
     all the constellation in universe: \n\tpress left controller menu button once\n6)
     To check those constellations created by yourself: \n\tpress left controller menu
     button twice\n7) To fly: press and hold \n\tleft controller trigger, trackpad
-    and right controller trackpad\n8) To control flying speed: change the distance
-    vertical \n\tbetween the controller and the headset\n9) To zoom in: make your
+    and right controller trackpad\n8) To control flying speed: change the vertical
+    distance \n\tbetween the controller and the headset\n9) To zoom in: make your
     controllers close to the headset\n\nPress right controller trackpad to close this
     information block"
   m_OffsetZ: 0
@@ -7105,7 +7105,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Flying Information:
+  m_Text: 'Flight Control:
 
 '
 --- !u!222 &1642060300
