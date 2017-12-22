@@ -14,6 +14,7 @@ public class FlyInfoManager : MonoBehaviour {
 	CharacterStates state;
 	LandingPhases phase;
 
+    public HyperDrive hyperDrive;
     public FlightController controller;
 
 	// Use this for initialization
@@ -28,13 +29,15 @@ public class FlyInfoManager : MonoBehaviour {
         speed = state == CharacterStates.flying ? controller.speed : 0;
         phase = controller.phase;
 
-
-        if (CoordinateManager.isInStarSystem()) {
-            speedText = speedTitle + (speed*1500).ToString("F1") + " km/s";
+        if (hyperDrive.engaged) {
+            speedText = speedTitle + (hyperDrive.warpSpeed / 10).ToString("F1") + " ly/s";
         } else {
-            speedText = speedTitle + (speed/10).ToString("F1") + " ly/s";
+            if (CoordinateManager.isInStarSystem()) {
+                speedText = speedTitle + (speed * 1500).ToString("F1") + " km/s";
+            } else {
+                speedText = speedTitle + (speed / 10).ToString("F1") + " ly/s";
+            }
         }
-		
 		//if (state == CharacterStates.landing) {
 		//	statusText = statusTitle + state.ToString () + " - " + phase.ToString ();
 		//} else {

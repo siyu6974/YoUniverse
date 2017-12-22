@@ -111,9 +111,9 @@ public class MainMenuSelector : MonoBehaviour {
                 hyperDrive.lockStar((StarData)laserPointer.pointed);
                 starTarget = (StarData)laserPointer.pointed;
                 if (starTarget.ProperName != "") {
-                    warpDriveInfoText.text = "Target: " + starTarget.ProperName + "\nDistance: " + starTarget.distance + "\nPress right controller trackpad to confirm and fly to it" + "\nPress left controller trackpad to discard and return";
+                    warpDriveInfoText.text = "Target: " + starTarget.ProperName + "\nDistance: " + starTarget.distance + "ly\nPress right controller trackpad to confirm and fly to it" + "\nPress left controller trackpad to discard and return";
                 } else
-					warpDriveInfoText.text = "Target: HIP " + starTarget.HIP + "\nDistance: " + starTarget.distance + "\nPress right controller trackpad to confirm and fly to it" + "\nPress left controller trackpad to discard and return";
+					warpDriveInfoText.text = "Target: HIP " + starTarget.HIP + "\nDistance: " + starTarget.distance + "ly\nPress right controller trackpad to confirm and fly to it" + "\nPress left controller trackpad to discard and return";
                 targetGet = true;
             }
             if (targetGet) {

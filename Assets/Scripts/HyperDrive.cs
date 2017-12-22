@@ -10,17 +10,8 @@ public class HyperDrive : MonoBehaviour {
     private GameObject marker;
 
     public bool engaged { get; private set; }
-
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-
-	}
-
+    public float warpSpeed { get; private set; }
+    
 
     public void lockStar(StarData star) {
         lockedStar = star;
@@ -45,6 +36,7 @@ public class HyperDrive : MonoBehaviour {
         StarData star = (StarData)lockedStar;
         Vector3 distanceVec = star.coord - CoordinateManager.virtualPos.galactic;
         Vector3 delta = distanceVec / 100f;
+        warpSpeed = Vector3.Magnitude(delta);
         CoordinateManager.exit(Camera.main.transform.position);
         while (Vector3.Magnitude(distanceVec) > 2) {
             CoordinateManager.virtualPos.galactic += delta;
