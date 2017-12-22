@@ -32,6 +32,9 @@ public class ConstellationMgr : MonoBehaviour {
     public GameObject linePrefab;
     private List<LineRenderer> linesDrawn;
 
+	[HideInInspector]
+	public ConstellationData? selected { get; private set;}
+
 
 	void Start () {
         load_data();
@@ -109,7 +112,8 @@ public class ConstellationMgr : MonoBehaviour {
     }
 
 
-    private void drawConstellation(ConstellationData c) {
+//    private void drawConstellation(ConstellationData c) {
+	public void drawConstellation(ConstellationData c) {
         for (int j = 0; j < c.links.GetLength(0); j++) {
             Vector3 a = getStarDrawnPosition(c.links[j, 0]);
             Vector3 b = getStarDrawnPosition(c.links[j, 1]);
@@ -117,6 +121,20 @@ public class ConstellationMgr : MonoBehaviour {
                 drawLine(a, b, Color.white);
         }
     }
+
+	public Vector3 getConstellationCenter(ConstellationData c) {
+		Vector3 v = Vector3.zero;
+		int i;
+		for (i = 0; i < c.links.GetLength(0); i++) {
+			v += getStarDrawnPosition(c.links[i, 0]);
+		}
+		v += getStarDrawnPosition (c.links [i-1, 1]);
+		i++;
+		v.x = v.x / i;
+		v.y = v.y / i;
+		v.z = v.z / i;
+		return v;
+	}
 
 
     void drawLine(Vector3 start, Vector3 end, Color color) {
@@ -147,10 +165,12 @@ public class ConstellationMgr : MonoBehaviour {
             for (int j = 0; j < c.links.GetLength(0); j++) {
                 if (c.links[j, 0] == HIP || c.links[j, 1] == HIP) {
                     drawConstellation(c);
+					selected = c;
                     return c.name;
                 }
             }
         }
+		selected = null;
         return "";
     }
 
