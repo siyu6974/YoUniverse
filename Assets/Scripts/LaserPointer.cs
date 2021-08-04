@@ -15,7 +15,7 @@ public class LaserPointer : MonoBehaviour {
 	public ConstellationData? selected { get; private set; }
 
     private Vector3 ray;
-
+    public GameObject laserPointer;
 
     void Start() {
         lr = GetComponent<LineRenderer>();
@@ -24,6 +24,8 @@ public class LaserPointer : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        transform.rotation = Camera.main.transform.rotation;
+
         if (starDataSet == null) {
             StarGenerator sg = GameObject.Find("_StarGenerator").GetComponent<StarGenerator>();
             starDataSet = sg.starDataSet;
@@ -68,12 +70,12 @@ public class LaserPointer : MonoBehaviour {
     private void LateUpdate()
     {
         if (lr.enabled)
-            drawLine(transform.position, ray);
+            drawLine(laserPointer.transform.position, ray);
     }
 
     void drawLine(Vector3 start, Vector3 end) {
         // leave a margin 
-        Vector3 margin = (end - start).normalized * .5f;
+        Vector3 margin = (end - start).normalized * .01f;
         lr.SetPosition(0, start + margin);
         lr.SetPosition(1, end - margin);
     }
