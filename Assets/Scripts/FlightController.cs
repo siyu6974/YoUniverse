@@ -98,7 +98,7 @@ public class FlightController : MonoBehaviour {
                 } else {
                     moveDirection = camT.forward;
                     if (VRModeDetector.isInVR)
-                        speed += (InputTracking.GetLocalPosition(VRNode.RightHand).y - InputTracking.GetLocalPosition(VRNode.CenterEye).y);
+                        speed += (UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.RightHand).y - UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.CenterEye).y);
                     else
                         speed += 0.3f;
                     moveDirection *= speed;
@@ -175,7 +175,7 @@ public class FlightController : MonoBehaviour {
                 // Walking on orbit
                 if (orbitEntryPoint == null) {
                     if (VRModeDetector.isInVR) {
-                        orbitEntryPoint = InputTracking.GetLocalPosition(VRNode.CenterEye);
+                        orbitEntryPoint = UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.CenterEye);
                     } else {
                         orbitEntryPoint = GameObject.Find("TestTrackingObj").transform.position;
                     }
@@ -184,7 +184,7 @@ public class FlightController : MonoBehaviour {
                     Vector3 entryPoint = (Vector3)orbitEntryPoint;
                     Vector3 currentPos;
                     if (VRModeDetector.isInVR) {
-                        currentPos = InputTracking.GetLocalPosition(VRNode.CenterEye);
+                        currentPos = UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.CenterEye);
                     } else {
                         currentPos = GameObject.Find("TestTrackingObj").transform.position;
                     }
@@ -230,7 +230,7 @@ public class FlightController : MonoBehaviour {
                     moveDirection = camT.position - standingPlanet.position;
                     moveDirection = moveDirection.normalized;
                     Debug.DrawLine(camT.position, moveDirection*1000, Color.cyan);
-                    speed += (InputTracking.GetLocalPosition(VRNode.RightHand).y - InputTracking.GetLocalPosition(VRNode.CenterEye).y);
+                    speed += (UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.RightHand).y - UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.CenterEye).y);
 
                     moveDirection *= speed;
                     transform.Translate(moveDirection * Time.deltaTime, Space.World);

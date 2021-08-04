@@ -11,7 +11,7 @@ public class RightHandController : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        trackingOffset = InputTracking.GetLocalPosition(VRNode.RightHand);
+        trackingOffset = UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.RightHand);
         offset = new Vector3(.50f, 0f, .35f);
     }
 
@@ -20,8 +20,8 @@ public class RightHandController : MonoBehaviour {
         bool vrCtr = VRModeDetector.isInVR;
 
         if (vrCtr) {
-            transform.localPosition = InputTracking.GetLocalPosition(VRNode.RightHand) - trackingOffset + transform.InverseTransformVector(offset);
-            transform.rotation = pivot.rotation * InputTracking.GetLocalRotation(VRNode.RightHand);
+            transform.localPosition = UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.RightHand) - trackingOffset + transform.InverseTransformVector(offset);
+            transform.rotation = pivot.rotation * UnityEngine.XR.InputTracking.GetLocalRotation(UnityEngine.XR.XRNode.RightHand);
         }
     }
 }
