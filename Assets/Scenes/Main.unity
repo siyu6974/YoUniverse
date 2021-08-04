@@ -3024,7 +3024,7 @@ MonoBehaviour:
   constellationSet: 0
   constellationGet: 0
   hyperDrive: {fileID: 247041835}
-  laserPointer: {fileID: 0}
+  laserPointer: {fileID: 753185660}
   locker: {fileID: 2043562333}
 --- !u!4 &1021181276
 Transform:
@@ -3309,7 +3309,7 @@ MonoBehaviour:
   starCSV: {fileID: 4900000, guid: 607c88b6c8a50458696d60318b5ac3dd, type: 3}
   ps: {fileID: 1083175137}
   starPrefab: {fileID: 1582986449550168, guid: 9b9c687012f924c2dabb1a95496eb23a, type: 3}
-  starsMax: 6000
+  starsMax: 8000
   forceNoTransformation: 0
   ignoreMovement: 0
 --- !u!198 &1083175137

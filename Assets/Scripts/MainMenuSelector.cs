@@ -120,6 +120,7 @@ public class MainMenuSelector : MonoBehaviour {
                 return;
             }
         }
+        // --- warp drive ----
         if (warpDriveInfo.activeSelf) {
             // Debug.Log("In warpDrive Mode: ");
             if (laserPointer.pointed != null) {
@@ -154,6 +155,8 @@ public class MainMenuSelector : MonoBehaviour {
 			flyingInfo.SetActive (true);
 			return;
         }
+        // --- warp drive ----
+
 		if (lockConstellationInfo.activeSelf) {
 			// Debug.Log ("In lockConstellation Mode: ");
 			LaserPointer lspointer = GameObject.Find("RightHand").GetComponent<LaserPointer>();
