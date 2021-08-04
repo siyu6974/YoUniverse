@@ -9,8 +9,8 @@ public class BodyController : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        //        offset = transform.position - head.transform.position;
-        offset = Vector3.zero;
+        offset = transform.position - head.transform.position;
+        // offset = Vector3.zero;
         Debug.Log(offset);
     }
 

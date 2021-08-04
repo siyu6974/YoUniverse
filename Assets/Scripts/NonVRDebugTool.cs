@@ -32,7 +32,9 @@ public class NonVRDebugTool : MonoBehaviour {
     private void RotateView() {
         //avoids the mouse looking if the game is effectively paused
         if (Mathf.Abs(Time.timeScale) < float.Epsilon) return;
+        // if (Input.GetButton("Fire1") {
 
+        // }
         mouseLook.LookRotation(transform, cam.transform);
         //pivot.transform.rotation = cam.transform.rotation;
     }

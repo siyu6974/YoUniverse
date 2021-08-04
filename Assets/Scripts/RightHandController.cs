@@ -12,7 +12,7 @@ public class RightHandController : MonoBehaviour {
     // Use this for initialization
     void Start() {
         trackingOffset = UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.RightHand);
-        offset = new Vector3(.50f, 0f, .35f);
+        offset = new Vector3(0.9f, 0f, 0);
     }
 
     // Update is called once per frame
