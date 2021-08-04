@@ -46,7 +46,7 @@ public class MainMenuSelector : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (Input.GetKeyDown(KeyCode.V) || Input.GetButtonDown("RMenu")) {
+        if (Input.GetKeyDown(KeyCode.M) || Input.GetButtonDown("RMenu")) {
             // Debug.Log("V pressed");
             if (!menuCanvas.activeSelf) {
                 showMenu();
@@ -71,7 +71,7 @@ public class MainMenuSelector : MonoBehaviour {
                 r.material.color = new Color(0.98f, 0.5f, 0.45f);
                 // Debug.Log(hit.transform.gameObject.name);
 
-                if (Input.GetKeyDown(KeyCode.B) || Input.GetButtonDown("Right Controller Trackpad (Press)")) {
+                if (Input.GetButtonDown("Fire1") || Input.GetButtonDown("Right Controller Trackpad (Press)")) {
                     string bname = buttonLookingAt.name;
                     if (bname.Equals("Help")) {
                         helpBlock.transform.position = Camera.main.transform.position + Camera.main.transform.forward * 0.3f + Camera.main.transform.up * 2.95f;
@@ -114,7 +114,7 @@ public class MainMenuSelector : MonoBehaviour {
 
         if (helpBlock.activeSelf) {
             // Debug.Log("In helpBlock: ");
-            if (Input.GetKeyDown(KeyCode.B) || Input.GetButtonDown("Right Controller Trackpad (Press)")) {
+            if (Input.GetButtonDown("Fire1") || Input.GetButtonDown("Right Controller Trackpad (Press)")) {
                 helpBlock.SetActive(false);
                 flyingInfo.SetActive(true);
                 return;
@@ -133,13 +133,13 @@ public class MainMenuSelector : MonoBehaviour {
                 targetGet = true;
             }
             if (targetGet) {
-                if (Input.GetKeyDown(KeyCode.B) || Input.GetButtonDown("Right Controller Trackpad (Press)")) {
+                if (Input.GetButtonDown("Fire1") || Input.GetButtonDown("Right Controller Trackpad (Press)")) {
                     // Fly
 					flyToTargetInfo.SetActive(true);
 					warpDriveInfo.SetActive (false);
 					return;
                 }
-                if (Input.GetKeyDown(KeyCode.C) || Input.GetButtonDown("Left Controller Trackpad (Press)")) {
+                if (Input.GetButtonDown("Fire2") || Input.GetButtonDown("Left Controller Trackpad (Press)")) {
                     // Discard
                     warpDriveInfo.SetActive(false);
                     flyingInfo.SetActive(true);
@@ -167,14 +167,14 @@ public class MainMenuSelector : MonoBehaviour {
 				} 
 			}
 			if (constellationGet) {
-				if (Input.GetKeyDown(KeyCode.B) || Input.GetButtonDown("Right Controller Trackpad (Press)")) {
+				if (Input.GetButtonDown("Fire1") || Input.GetButtonDown("Right Controller Trackpad (Press)")) {
 					// Turn around
 					locker.setConstellationToLock(constellationTarget);
 					turnAroundInfo.SetActive(true);
 					lockConstellationInfo.SetActive (false);
 					return;
 				}
-				if (Input.GetKeyDown(KeyCode.C) || Input.GetButtonDown("Left Controller Trackpad (Press)")) {
+				if (Input.GetButtonDown("Fire2") || Input.GetButtonDown("Left Controller Trackpad (Press)")) {
 					// Discard
 					lockConstellationInfo.SetActive(false);
 					flyingInfo.SetActive(true);
@@ -193,7 +193,7 @@ public class MainMenuSelector : MonoBehaviour {
 			Text[] texts = drawConstellationInfo.GetComponentsInChildren<Text> ();
 			ConstellationCreater cc = GameObject.Find("_ConstellationMgr").GetComponent<ConstellationCreater>();
 			cc.customCreationMode = true;
-            if (!menuSelector.enabled && (Input.GetKeyDown (KeyCode.C) || Input.GetButtonDown("Left Controller Trackpad (Press)"))) {
+            if (!menuSelector.enabled && (Input.GetKeyDown(KeyCode.C) || Input.GetButtonDown("Left Controller Trackpad (Press)"))) {
 				// Active draw constellation menu
 				menuSelector.enabled = true;
 				texts[1].text = "";
@@ -214,7 +214,7 @@ public class MainMenuSelector : MonoBehaviour {
 			// Call radar functions
 			radar.scanEnvironment();
 			radar.showMarker();
-            if (Input.GetKeyDown(KeyCode.C) || Input.GetButtonDown("Left Controller Trackpad (Press)")) {
+            if (Input.GetButtonDown("Fire2") || Input.GetButtonDown("Left Controller Trackpad (Press)")) {
 				scanInfo.SetActive (false);
 				flyingInfo.SetActive (true);
 				return;

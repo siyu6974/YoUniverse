@@ -241,7 +241,7 @@ public class FlightController : MonoBehaviour {
     }
 
     bool isFlying() {
-        return Input.GetKey(KeyCode.O) || Input.GetButton("Left Controller Trigger (Touch)")
+        return Input.GetKey(KeyCode.LeftShift) || Input.GetButton("Left Controller Trigger (Touch)")
             && Input.GetButton("Left Controller Trackpad (Press)") && Input.GetButton("Right Controller Trackpad (Press)");
     }
 

@@ -29,7 +29,7 @@ public class MenuSelector : MonoBehaviour {
 				Renderer r = buttonLookingAt.GetComponent<Renderer> ();
                 r.material.color = Color.yellow;
 
-                if (Input.GetButtonDown("Right Controller Trackpad (Press)") || Input.GetKeyDown(KeyCode.B)) {
+                if (Input.GetButtonDown("Right Controller Trackpad (Press)") || Input.GetButtonDown("Fire1")) {
 					string bname = buttonLookingAt.name;
                     ConstellationCreater cc = GameObject.Find("_ConstellationMgr").GetComponent<ConstellationCreater>();
                     if (bname.Equals ("Save")) {

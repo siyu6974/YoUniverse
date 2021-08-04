@@ -43,7 +43,7 @@ public class ConstellationMgr : MonoBehaviour {
 	}
 	
 	void Update () {
-        if (Input.GetKeyDown(KeyCode.N) || (VRModeDetector.isInVR && Input.GetButtonDown("LMenu"))) {
+        if (Input.GetKeyDown(KeyCode.Tab) || (VRModeDetector.isInVR && Input.GetButtonDown("LMenu"))) {
             toggleDrawMode();
         }
         if (drawMode == 0) return;

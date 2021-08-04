@@ -24,12 +24,12 @@ public class ZoomController : MonoBehaviour {
         bool vrInput = (Vector3.Distance(UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.LeftHand), UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.LeftEye)) < .18f) &&
             (Vector3.Distance(UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.RightHand), UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.RightEye)) < .18f);
 
-		if (((vrCtr && vrInput) || Input.GetKeyDown(KeyCode.P)) && zoomed == false) {
+		if (((vrCtr && vrInput) || Input.GetKeyDown(KeyCode.Z)) && zoomed == false) {
             Debug.Log("Zoom in");
             initPos = bodyPivot.transform.position;
             zoomed = true;
             sg.ignoreMovement = true;
-        } else if (((vrCtr && !vrInput) || Input.GetKeyUp(KeyCode.P)) && zoomed == true) {
+        } else if (((vrCtr && !vrInput) || Input.GetKeyUp(KeyCode.Z)) && zoomed == true) {
             Debug.Log("Zoom out");
             bodyPivot.transform.position = initPos;
             zoomed = false;
