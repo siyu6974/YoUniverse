@@ -13,15 +13,13 @@ public struct ConstellationData {
 
 public class ConstellationMgr : MonoBehaviour {
 
-    private int drawMode; // 0 disabled, 1 std 88, 2 custom;
-
-    private void toggleDrawMode() {
-        clearDrawing();
-        drawMode = (drawMode+1) % 3;
-        if (userConstellationDataSet.Count == 0 && drawMode == 2) {
-            drawMode = 0;
-        }
+    enum SkyCulture
+    {
+        Westen = 1,
+        User
     }
+    private SkyCulture skyCulture = SkyCulture.Westen; // 0 disabled, 1 std 88, 2 custom;
+    private bool shoudDrawConstellation = false;
 
 
     [HideInInspector]
@@ -50,14 +48,24 @@ public class ConstellationMgr : MonoBehaviour {
 	
 	void Update () {
         if (Input.GetKeyDown(KeyCode.Tab) || (VRModeDetector.isInVR && Input.GetButtonDown("LMenu"))) {
-            toggleDrawMode();
+            shoudDrawConstellation = !shoudDrawConstellation;
+            if (shoudDrawConstellation == false) clearDrawing();
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha1)) { 
+            clearDrawing();
+            skyCulture = SkyCulture.Westen;
+        } else if (Input.GetKeyDown(KeyCode.Alpha2)) { 
+            clearDrawing();
+            skyCulture = SkyCulture.User;
         }
 	}
 
 
     void LateUpdate () {
-        if (drawMode == 0) return;
-        drawAll();
+        if (skyCulture == 0) return;
+        if (shoudDrawConstellation) {
+            drawAll();
+        }
     }
 
     [SerializeField]
@@ -133,7 +141,7 @@ public class ConstellationMgr : MonoBehaviour {
         lineIndex = 0;
         lableIndex = 0;
 
-        if (drawMode == 1) {
+        if (skyCulture == SkyCulture.Westen) {
             // if constellationData not ready, skip this frame
             if (constellationDataSet == null) return;
 
@@ -141,7 +149,7 @@ public class ConstellationMgr : MonoBehaviour {
                 ConstellationData c = constellationDataSet[i];
                 drawConstellation(c);
             }
-        } else if (drawMode == 2) {
+        } else if (skyCulture == SkyCulture.User) {
             foreach (ConstellationData c in userConstellationDataSet) {
                 drawConstellation(c);
             }
@@ -246,17 +254,29 @@ public class ConstellationMgr : MonoBehaviour {
 
     public string drawConstellationOfSelectedStar(int HIP) {
         clearDrawing();
-        for (int i = 0; i < constellationDataSet.Length; i++) {
-            ConstellationData c = constellationDataSet[i];
+        if (skyCulture == SkyCulture.Westen) {
+            for (int i = 0; i < constellationDataSet.Length; i++) {
+                ConstellationData c = constellationDataSet[i];
 
-            for (int j = 0; j < c.links.GetLength(0); j++) {
-                if (c.links[j, 0] == HIP || c.links[j, 1] == HIP) {
-                    drawConstellation(c);
-					selected = c;
-                    return c.name;
+                for (int j = 0; j < c.links.GetLength(0); j++) {
+                    if (c.links[j, 0] == HIP || c.links[j, 1] == HIP) {
+                        drawConstellation(c);
+                        selected = c;
+                        return c.name;
+                    }
                 }
             }
-        }
+        } else if (skyCulture == SkyCulture.User) {
+            foreach (ConstellationData c in userConstellationDataSet) {
+                for (int j = 0; j < c.links.GetLength(0); j++) {
+                    if (c.links[j, 0] == HIP || c.links[j, 1] == HIP) {
+                        drawConstellation(c);
+                        selected = c;
+                        return c.name;
+                    }
+                }
+            }
+        } 
 		selected = null;
         return "";
     }
