@@ -19,7 +19,7 @@ public class ConstellationMgr : MonoBehaviour {
         User
     }
     private SkyCulture skyCulture = SkyCulture.Westen; // 0 disabled, 1 std 88, 2 custom;
-    private bool shoudDrawConstellation = false;
+    private bool shouldDrawAllConstellations = false;
 
 
     [HideInInspector]
@@ -48,8 +48,8 @@ public class ConstellationMgr : MonoBehaviour {
 	
 	void Update () {
         if (Input.GetKeyDown(KeyCode.Tab) || (VRModeDetector.isInVR && Input.GetButtonDown("LMenu"))) {
-            shoudDrawConstellation = !shoudDrawConstellation;
-            if (shoudDrawConstellation == false) clearDrawing();
+            shouldDrawAllConstellations = !shouldDrawAllConstellations;
+            if (shouldDrawAllConstellations == false) clearDrawing();
         }
         if (Input.GetKeyDown(KeyCode.Alpha1)) { 
             clearDrawing();
@@ -63,7 +63,7 @@ public class ConstellationMgr : MonoBehaviour {
 
     void LateUpdate () {
         if (skyCulture == 0) return;
-        if (shoudDrawConstellation) {
+        if (shouldDrawAllConstellations) {
             drawAll();
         }
     }
@@ -156,7 +156,6 @@ public class ConstellationMgr : MonoBehaviour {
     }
 
 
-//    private void drawConstellation(ConstellationData c) {
 	public void drawConstellation(ConstellationData c) {
         for (int j = 0; j < c.links.GetLength(0); j++) {
             Vector3 a = getStarDrawnPosition(c.links[j, 0]);
@@ -252,6 +251,7 @@ public class ConstellationMgr : MonoBehaviour {
 
 
     public string drawConstellationOfSelectedStar(int HIP) {
+        if (shouldDrawAllConstellations) return "";
         clearDrawing();
         if (skyCulture == SkyCulture.Westen) {
             for (int i = 0; i < constellationDataSet.Length; i++) {
