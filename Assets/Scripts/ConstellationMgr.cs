@@ -189,9 +189,8 @@ public class ConstellationMgr : MonoBehaviour {
 	public Vector3 getConstellationApparentCenter(ConstellationData c) {
         Vector3 v;
         long x = 0, y = 0, z = 0;
-		int i;
         HashSet<int> stars = new HashSet<int>();
-        for (i = 0; i < c.links.GetLength(0); i++) {
+        for (int i = 0; i < c.links.GetLength(0); i++) {
             stars.Add(c.links[i, 0]);
             stars.Add(c.links[i, 1]);
         }
@@ -201,16 +200,16 @@ public class ConstellationMgr : MonoBehaviour {
             y += (long)v.y;
             z += (long)v.z;
 		}
-        return new Vector3(x/i,y/i,z/i);
+        int n = stars.Count;
+        return new Vector3(x/n,y/n,z/n);
 	}
 
 
 	public Vector3 getConstellationCenter(ConstellationData c) {
         Vector3 v;
         long x = 0, y = 0, z = 0;
-		int i;
         HashSet<int> stars = new HashSet<int>();
-        for (i = 0; i < c.links.GetLength(0); i++) {
+        for (int i = 0; i < c.links.GetLength(0); i++) {
             stars.Add(c.links[i, 0]);
             stars.Add(c.links[i, 1]);
         }
@@ -220,7 +219,8 @@ public class ConstellationMgr : MonoBehaviour {
             y += (long)v.y;
             z += (long)v.z;
 		}
-        return new Vector3(x/i,y/i,z/i);
+        int n = stars.Count;
+        return new Vector3(x/n,y/n,z/n);
 	}
 
 

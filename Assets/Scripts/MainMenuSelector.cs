@@ -161,7 +161,6 @@ public class MainMenuSelector : MonoBehaviour {
 			// Debug.Log ("In lockConstellation Mode: ");
 			LaserPointer lspointer = GameObject.Find("RightHand").GetComponent<LaserPointer>();
 			if (lspointer.pointed != null) {
-				Debug.Log("GetStarPointed");
 				// hyperDrive.lockStar((StarData)lspointer.pointed);
 				if (lspointer.selected != null) {
 					constellationTarget = (ConstellationData)lspointer.selected;

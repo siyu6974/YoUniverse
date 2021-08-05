@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class lockConstellation : MonoBehaviour {
 	private ConstellationData lockedConstellation;
-	private Vector3 turningCenter;
+	private Vector3 rotationCenter;
 	public bool engaged { get; private set; }
 
 	public ConstellationMgr constellationManager;
@@ -21,27 +21,40 @@ public class lockConstellation : MonoBehaviour {
 
 	public void setConstellationToLock(ConstellationData c) {
 		lockedConstellation = c;
-		turningCenter = constellationManager.getConstellationCenter (c);
+		rotationCenter = constellationManager.getConstellationCenter (c);
 	}
 
 	private IEnumerator startTurning() {
-		Debug.DrawLine (Camera.main.transform.position, turningCenter, Color.red);
+		Debug.DrawLine (Camera.main.transform.position, rotationCenter, Color.red);
 		engaged = true;
         StarGenerator.instance.forceNoTransformation = true;
 
-        float r = Vector3.Magnitude(CoordinateManager.virtualPos.galactic - turningCenter);
         Vector3 initPosition = CoordinateManager.virtualPos.galactic;
-        Vector3 rotationCenter = turningCenter - new Vector3(Mathf.Cos(0) * r, 0, Mathf.Sin(0) * r);
+		Vector3 initRotation = Camera.main.transform.rotation.eulerAngles;
+        Vector3 rVect = initPosition - rotationCenter;
+		float r = Vector3.Magnitude(rVect);
+		float polarOffset = Mathf.Atan(rVect.z / rVect.x);
+		if (rVect.x < 0)
+            polarOffset += Mathf.PI;
+		float elevOffset = Mathf.Asin(rVect.y / r);
 
-        float t = 0;
-        float delta = 2 * Mathf.PI / 5 * 0.01f ; // Turning 360 deg in 5 sec
+		float progress = 0;
         CoordinateManager.exit(Camera.main.transform.position);
-        while (t < 2 * Mathf.PI) {
-            CoordinateManager.virtualPos.galactic = rotationCenter + new Vector3(Mathf.Cos(t)*r, 0, Mathf.Sin(t) * r);
+        while (progress < 1) {
+            float t = progress * progress * (3.0f - 2.0f * progress) * 2f * Mathf.PI;  // ease in and out
+			float elevation = t + elevOffset;
+			float polar = t + polarOffset;
+			float a = r * Mathf.Cos(elevation);
+			float x = a * Mathf.Cos(polar);
+			float y = r * Mathf.Sin(elevation);
+			float z = a * Mathf.Sin(polar);
+			Vector3 pos = new Vector3(x, y, z);
+            CoordinateManager.virtualPos.galactic = rotationCenter + pos;
+			// Camera.main.transform.rotation = Quaternion.Euler(initRotation+new Vector3(0, elevation*180/Mathf.PI, polar*180/Mathf.PI));
             constellationManager.drawConstellation(lockedConstellation);
             constellationManager.clearDrawingWithFadeOut(0.01f);
             yield return new WaitForSeconds(0.01f);
-            t += delta;
+			progress += 1f / (60 * 10);  //  10s at 60fps
 		}
 
         CoordinateManager.virtualPos.galactic = initPosition;
