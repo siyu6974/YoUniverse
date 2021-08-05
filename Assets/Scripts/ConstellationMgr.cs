@@ -129,7 +129,6 @@ public class ConstellationMgr : MonoBehaviour {
                     abbr = components[0],
                     links = links
                 };
-                Debug.Log(data);
                 userConstellationDataSet.Add(data); 
             }
         }

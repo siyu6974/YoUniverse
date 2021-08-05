@@ -117,7 +117,7 @@ public class ConstellationCreater : MonoBehaviour {
 
         // save to file
         string path = MyConstants.UserConstellationDataPath;
-        StreamWriter writer = new StreamWriter(path, true);
+        StreamWriter writer = new StreamWriter(path, false);
         foreach (ConstellationData con in userConstellationDataSet) {
             string line = $"{con.name} {nbLink}  ";
             for (int i = 0; i < nbLink; i++) {
