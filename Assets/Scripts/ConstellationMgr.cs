@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using UnityEngine.UI;
 
 
 public struct ConstellationData {
@@ -34,6 +35,8 @@ public class ConstellationMgr : MonoBehaviour {
     public GameObject linePrefab;
     private List<LineRenderer> linesDrawn;
 
+    private List<GameObject> labelShown;
+
 	[HideInInspector]
 	public ConstellationData? selected { get; private set;}
 
@@ -42,16 +45,20 @@ public class ConstellationMgr : MonoBehaviour {
         load_data();
         load_user_data();
         linesDrawn = new List<LineRenderer>();
+        labelShown = new List<GameObject>();
 	}
 	
 	void Update () {
         if (Input.GetKeyDown(KeyCode.Tab) || (VRModeDetector.isInVR && Input.GetButtonDown("LMenu"))) {
             toggleDrawMode();
         }
-        if (drawMode == 0) return;
-
-        drawAll();
 	}
+
+
+    void LateUpdate () {
+        if (drawMode == 0) return;
+        drawAll();
+    }
 
     [SerializeField]
     private TextAsset dataSource;
@@ -121,8 +128,10 @@ public class ConstellationMgr : MonoBehaviour {
     }
 
     private int lineIndex;
+    private int lableIndex;
     private void drawAll() {
         lineIndex = 0;
+        lableIndex = 0;
 
         if (drawMode == 1) {
             // if constellationData not ready, skip this frame
@@ -148,24 +157,69 @@ public class ConstellationMgr : MonoBehaviour {
             if (a != Vector3.zero && b != Vector3.zero)
                 drawLine(a, b, Color.white);
         }
+        showConstellationLabel(c);
     }
+
+
+	public void showConstellationLabel(ConstellationData c) {
+        GameObject textGO;
+        Text text;
+        try {
+            // try to reuse line renderer 
+            textGO = labelShown[lableIndex];
+            text = textGO.GetComponent<Text>();
+        } catch (System.ArgumentOutOfRangeException){
+            GameObject canvas = GameObject.Find("ConstellationNameCanvas");
+            textGO = new GameObject();
+            textGO.transform.parent = canvas.transform;
+            text = textGO.AddComponent<Text>();
+            text.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+            text.fontSize = 18;
+            labelShown.Add(textGO);
+        }
+        textGO.name = c.name + "_label";
+        text.text = c.name;
+        textGO.transform.position = getConstellationApparentCenter(c) * 0.8f;
+        textGO.transform.LookAt(Camera.main.transform);
+        textGO.transform.Rotate(0f, 180f, 0f);
+        lableIndex++;
+    }
+
+
+	public Vector3 getConstellationApparentCenter(ConstellationData c) {
+        Vector3 v;
+        long x = 0, y = 0, z = 0;
+		int i;
+        HashSet<int> stars = new HashSet<int>();
+        for (i = 0; i < c.links.GetLength(0); i++) {
+            stars.Add(c.links[i, 0]);
+            stars.Add(c.links[i, 1]);
+        }
+		foreach (int s in stars) {
+            v = getStarDrawnPosition(s);
+            x += (long)v.x;
+            y += (long)v.y;
+            z += (long)v.z;
+		}
+        return new Vector3(x/i,y/i,z/i);
+	}
+
 
 	public Vector3 getConstellationCenter(ConstellationData c) {
         Vector3 v;
         long x = 0, y = 0, z = 0;
 		int i;
-		for (i = 0; i < c.links.GetLength(0); i++) {
-            v = getStarRealPosition(c.links[i, 0]);
-            x = (long)v.x;
-            y = (long)v.y;
-            z = (long)v.z;
+        HashSet<int> stars = new HashSet<int>();
+        for (i = 0; i < c.links.GetLength(0); i++) {
+            stars.Add(c.links[i, 0]);
+            stars.Add(c.links[i, 1]);
+        }
+		foreach (int s in stars) {
+            v = getStarRealPosition(s);
+            x += (long)v.x;
+            y += (long)v.y;
+            z += (long)v.z;
 		}
-        v = getStarRealPosition(c.links [i-1, 1]);
-		i++;
-        x = (long)v.x;
-        y = (long)v.y;
-        z = (long)v.z;
-
         return new Vector3(x/i,y/i,z/i);
 	}
 
@@ -216,7 +270,6 @@ public class ConstellationMgr : MonoBehaviour {
                 return starDataSet[i].drawnPos;
             }
         }
-        Debug.LogWarning("zero pos");
         return Vector3.zero;
     }
 
@@ -229,7 +282,6 @@ public class ConstellationMgr : MonoBehaviour {
                 return starDataSet[i].coord;
             }
         }
-        Debug.LogWarning("zero pos");
         return Vector3.zero;
     }
 
@@ -237,8 +289,13 @@ public class ConstellationMgr : MonoBehaviour {
         foreach (LineRenderer lr in linesDrawn) {
             Destroy(lr.gameObject);
         }
+        foreach (GameObject go in labelShown) {
+            Destroy(go);
+        }
         linesDrawn.Clear();
+        labelShown.Clear();
         lineIndex = 0;
+        lableIndex = 0;
     }
 
 
@@ -246,8 +303,13 @@ public class ConstellationMgr : MonoBehaviour {
         foreach (LineRenderer lr in linesDrawn) {
             StartCoroutine(fadeOut(lr, duration));
         }
+        foreach (GameObject go in labelShown) {
+            Destroy(go);
+        }
         linesDrawn.Clear();
+        labelShown.Clear();
         lineIndex = 0;
+        lableIndex = 0;
     }
 
 
