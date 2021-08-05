@@ -35,6 +35,7 @@ public class MainMenuSelector : MonoBehaviour {
     public LaserPointer laserPointer;
 	public lockConstellation locker;
 
+    private InputBlocker ib;
     // Use this for initialization
     void Start() {
         layerButton = 1 << 9;
@@ -42,11 +43,13 @@ public class MainMenuSelector : MonoBehaviour {
         targetSet = false;
 		constellationGet = false;
 		constellationSet = false;
+        
+        ib = GameObject.Find("EventSystem").GetComponent<InputBlocker>();
     }
 
     // Update is called once per frame
     void Update() {
-        if (Input.GetKeyDown(KeyCode.M) || Input.GetButtonDown("RMenu")) {
+        if (!ib.inputBlocked && (Input.GetKeyDown(KeyCode.M) || Input.GetButtonDown("RMenu"))) {
             // Debug.Log("V pressed");
             if (!menuCanvas.activeSelf) {
                 showMenu();
@@ -203,6 +206,7 @@ public class MainMenuSelector : MonoBehaviour {
                 InputField inputField = GameObject.Find("ConstellationNameInputField").GetComponent<InputField>();
                 inputField.Select();
                 inputField.ActivateInputField();
+                ib.inputBlocked = true;
 				return;
 			}
 			if (menuSelector.returnFlag) {
@@ -211,6 +215,7 @@ public class MainMenuSelector : MonoBehaviour {
 				drawConstellationInfo.SetActive(false);
 				menuSelector.returnFlag = false;
 				flyingInfo.SetActive (true);
+                ib.inputBlocked = false;
 				return;
 			}
 		}
