@@ -201,6 +201,9 @@ public class MainMenuSelector : MonoBehaviour {
 				menuSelector.enabled = true;
 				texts[1].text = "";
 				menuSelector.showMenu ();
+                InputField inputField = GameObject.Find("ConstellationNameInputField").GetComponent<InputField>();
+                inputField.Select();
+                inputField.ActivateInputField();
 				return;
 			}
 			if (menuSelector.returnFlag) {

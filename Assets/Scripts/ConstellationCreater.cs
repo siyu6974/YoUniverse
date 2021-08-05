@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 
 public class ConstellationCreater : MonoBehaviour {
@@ -17,7 +18,7 @@ public class ConstellationCreater : MonoBehaviour {
     private bool isCreating = false;
     private int[] tmpStarPair = new int[2]{-1,-1};
     private CustomConstellation tmpConstellation = new CustomConstellation();
-    private List<ConstellationData> userContellationDataSet;
+    private List<ConstellationData> userConstellationDataSet;
 
     private MenuSelector ms;
 
@@ -78,8 +79,8 @@ public class ConstellationCreater : MonoBehaviour {
             }
             tmpConstellation.links.Add(tmpStarPair);
             tmpStarPair = new int[2] { -1, -1 };
-            if (userContellationDataSet == null) {
-                userContellationDataSet = GameObject.Find("_ConstellationMgr").GetComponent<ConstellationMgr>().userContellationDataSet;
+            if (userConstellationDataSet == null) {
+                userConstellationDataSet = GameObject.Find("_ConstellationMgr").GetComponent<ConstellationMgr>().userConstellationDataSet;
             }
         }
     }
@@ -107,12 +108,24 @@ public class ConstellationCreater : MonoBehaviour {
             c.links[i, 0] = cc.links[i][0];
             c.links[i, 1] = cc.links[i][1];
         }
-        userContellationDataSet.Add(c);
+        userConstellationDataSet.Add(c);
         foreach (LineRenderer l in linesDrawn) {
             Destroy(l.gameObject);
         }
         linesDrawn.Clear();
         tmpStarPair = new int[2] { -1, -1 };
+
+        // save to file
+        string path = MyConstants.UserConstellationDataPath;
+        StreamWriter writer = new StreamWriter(path, true);
+        foreach (ConstellationData con in userConstellationDataSet) {
+            string line = $"{con.name} {nbLink}  ";
+            for (int i = 0; i < nbLink; i++) {
+                line += $"{con.links[i, 0]} {con.links[i, 1]} ";
+            }
+            writer.WriteLine(line);
+        }
+        writer.Close();
         cc = null;
     }
 
@@ -123,10 +136,10 @@ public class ConstellationCreater : MonoBehaviour {
         discardDrawing(tmpConstellation);
     }
 
-    public void saveDrawing() {
+    public void saveDrawing(string name) {
         if (!isCreating) return;
         isCreating = false;
-
+        tmpConstellation.name = name;
         saveDrawing(tmpConstellation);
     }
 }

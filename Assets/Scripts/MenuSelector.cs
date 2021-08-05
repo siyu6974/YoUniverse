@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MenuSelector : MonoBehaviour {
 	GameObject buttonLookingAt;
@@ -34,7 +35,8 @@ public class MenuSelector : MonoBehaviour {
                     ConstellationCreater cc = GameObject.Find("_ConstellationMgr").GetComponent<ConstellationCreater>();
                     if (bname.Equals ("Save")) {
                         // Save new constellation
-                        cc.saveDrawing();
+						InputField inputField = GameObject.Find("ConstellationNameInputField").GetComponent<InputField>();
+                        cc.saveDrawing(inputField.text);
 						returnFlag = true;
                     } else if (bname.Equals ("AddName")) {
 						// User can give a name to the new constellation

@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
+
 
 public struct ConstellationData {
     public string name;
@@ -15,17 +17,17 @@ public class ConstellationMgr : MonoBehaviour {
     private void toggleDrawMode() {
         clearDrawing();
         drawMode = (drawMode+1) % 3;
-        if (userContellationDataSet.Count == 0 && drawMode == 2) {
+        if (userConstellationDataSet.Count == 0 && drawMode == 2) {
             drawMode = 0;
         }
     }
 
 
     [HideInInspector]
-    public ConstellationData[] contellationDataSet;
+    public ConstellationData[] constellationDataSet;
 
     [HideInInspector]
-    public List<ConstellationData> userContellationDataSet;
+    public List<ConstellationData> userConstellationDataSet = new List<ConstellationData>();
 
     private StarData[] starDataSet;
 
@@ -38,7 +40,7 @@ public class ConstellationMgr : MonoBehaviour {
 
 	void Start () {
         load_data();
-        userContellationDataSet = new List<ConstellationData>();
+        load_user_data();
         linesDrawn = new List<LineRenderer>();
 	}
 	
@@ -57,15 +59,15 @@ public class ConstellationMgr : MonoBehaviour {
     private TextAsset constellationNameAbbrSource; // abbr to name
 
     void load_data() {
-        Dictionary<string, string> dict = new Dictionary<string, string>();
+        Dictionary<string, string> nameAbbrDict = new Dictionary<string, string>();
         string[] lines = constellationNameAbbrSource.text.Split('\n');
         for (int i = 0; i < lines.Length; i++) {
             string[] components = lines[i].Split(',');
-            dict.Add(components[1], components[0]);
+            nameAbbrDict.Add(components[1], components[0]);
         }
 
         lines = dataSource.text.Split('\n');
-        contellationDataSet = new ConstellationData[lines.Length];
+        constellationDataSet = new ConstellationData[lines.Length];
 
         for (int i = 0; i < lines.Length; i++) {
             string[] components = lines[i].Split(' ');
@@ -82,30 +84,56 @@ public class ConstellationMgr : MonoBehaviour {
                 links = links
             };
             string tmp;
-            if (dict.TryGetValue(data.abbr, out tmp)) 
+            if (nameAbbrDict.TryGetValue(data.abbr, out tmp)) 
                 data.name = tmp;
             
-            contellationDataSet[i] = data; 
+            constellationDataSet[i] = data; 
         }
         constellationNameAbbrSource = null;
         dataSource = null;
     }
 
+    void load_user_data() {
+        using (StreamReader sr = new StreamReader(MyConstants.UserConstellationDataPath)) {
+            string[] lines = sr.ReadToEnd().Split('\n');
+            
+            if (lines.Length == 0) {return;}  
+            for (int i = 0; i < lines.Length; i++) {
+                string[] components = lines[i].Split(' ');
+                if (components.Length < 3) continue;
+                int nbLink = int.Parse(components[1]);
+                int[,] links = new int[nbLink, 2];
+                for (int j = 0; j < nbLink; j++) {
+                                    Debug.Log(components);
+
+                    links[j, 0] = int.Parse(components[3 + j * 2]);
+                    links[j, 1] = int.Parse(components[3 + j * 2 + 1]);
+                }
+                ConstellationData data = new ConstellationData {
+                    name = components[0],
+                    abbr = components[0],
+                    links = links
+                };
+                Debug.Log(data);
+                userConstellationDataSet.Add(data); 
+            }
+        }
+    }
 
     private int lineIndex;
     private void drawAll() {
         lineIndex = 0;
 
         if (drawMode == 1) {
-            // if contellationData not ready, skip this frame
-            if (contellationDataSet == null) return;
+            // if constellationData not ready, skip this frame
+            if (constellationDataSet == null) return;
 
-            for (int i = 0; i < contellationDataSet.Length; i++) {
-                ConstellationData c = contellationDataSet[i];
+            for (int i = 0; i < constellationDataSet.Length; i++) {
+                ConstellationData c = constellationDataSet[i];
                 drawConstellation(c);
             }
         } else if (drawMode == 2) {
-            foreach (ConstellationData c in userContellationDataSet) {
+            foreach (ConstellationData c in userConstellationDataSet) {
                 drawConstellation(c);
             }
         }
@@ -164,8 +192,8 @@ public class ConstellationMgr : MonoBehaviour {
 
     public string drawConstellationOfSelectedStar(int HIP) {
         clearDrawing();
-        for (int i = 0; i < contellationDataSet.Length; i++) {
-            ConstellationData c = contellationDataSet[i];
+        for (int i = 0; i < constellationDataSet.Length; i++) {
+            ConstellationData c = constellationDataSet[i];
 
             for (int j = 0; j < c.links.GetLength(0); j++) {
                 if (c.links[j, 0] == HIP || c.links[j, 1] == HIP) {
