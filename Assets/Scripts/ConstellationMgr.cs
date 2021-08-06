@@ -38,12 +38,14 @@ public class ConstellationMgr : MonoBehaviour {
 	[HideInInspector]
 	public ConstellationData? selected { get; private set;}
 
+    private Camera _camera;
 
 	void Start () {
         load_data();
         load_user_data();
-        linesDrawn = new List<LineRenderer>();
-        labelShown = new List<GameObject>();
+        linesDrawn = new List<LineRenderer>(1000);
+        labelShown = new List<GameObject>(200);
+        _camera = Camera.main;
 	}
 	
 	void Update () {
@@ -160,6 +162,11 @@ public class ConstellationMgr : MonoBehaviour {
         for (int j = 0; j < c.links.GetLength(0); j++) {
             Vector3 a = getStarDrawnPosition(c.links[j, 0]);
             Vector3 b = getStarDrawnPosition(c.links[j, 1]);
+            if (Vector3.Angle(a, _camera.transform.forward) > _camera.fieldOfView ||
+                Vector3.Angle(b, _camera.transform.forward) > _camera.fieldOfView) {
+                // Do not draw if object is off screen
+                continue;
+            }
             if (a != Vector3.zero && b != Vector3.zero)
                 drawLine(a, b, Color.white);
         }
@@ -168,6 +175,8 @@ public class ConstellationMgr : MonoBehaviour {
 
 
 	public void showConstellationLabel(ConstellationData c) {
+        Vector3 position = getConstellationApparentCenter(c);
+
         GameObject textGO;
         Text text;
         try {
@@ -180,13 +189,13 @@ public class ConstellationMgr : MonoBehaviour {
             textGO.transform.parent = canvas.transform;
             text = textGO.AddComponent<Text>();
             text.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
-            text.fontSize = 18;
+            text.fontSize = 17;
             labelShown.Add(textGO);
         }
         textGO.name = c.name + "_label";
         text.text = c.name;
-        textGO.transform.position = getConstellationApparentCenter(c) * 0.8f;
-        textGO.transform.LookAt(Camera.main.transform);
+        textGO.transform.position = position * 0.8f;
+        textGO.transform.LookAt(_camera.transform);
         textGO.transform.Rotate(0f, 180f, 0f);
         lableIndex++;
     }
