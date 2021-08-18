@@ -15,9 +15,11 @@ public class CoordinateManager : MonoBehaviour {
     static public StarData[] starDataSet;
 
     static public OmniPosition virtualPos = new OmniPosition {
-        stellar = new Vector3(10, 0, 0) // init around the Sun
+        stellar = new Vector3(10, 0, 0), // init around the Sun
     };
-    static public OmniPosition prevVirtualPos = new OmniPosition();
+    static public OmniPosition prevVirtualPos = new OmniPosition() {
+        galactic = new Vector3(-1,-1,-1)
+    };
 
     public class RVCoordinateBridge {
         public Vector3 r;

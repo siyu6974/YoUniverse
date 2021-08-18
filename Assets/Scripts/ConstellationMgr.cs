@@ -190,6 +190,7 @@ public class ConstellationMgr : MonoBehaviour {
             text = textGO.AddComponent<Text>();
             text.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
             text.fontSize = 17;
+            textGO.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 200);
             labelShown.Add(textGO);
         }
         textGO.name = c.name + "_label";

@@ -56,9 +56,12 @@ public class StarGenerator : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        // HACK: prevPos is changed in transformPosition, so it needs to be copied before
+        Vector3 prevPos = CoordinateManager.prevVirtualPos.galactic;
         if (!forceNoTransformation)
             CoordinateManager.transformPosition(Camera.main.transform.position);
 
+        // if (!ignoreMovement && CoordinateManager.virtualPos.galactic != prevPos)
         if (!ignoreMovement)
             createStars(CoordinateManager.virtualPos);
     }

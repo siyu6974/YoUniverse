@@ -54,7 +54,8 @@ public class lockConstellation : MonoBehaviour {
             constellationManager.drawConstellation(lockedConstellation);
             constellationManager.clearDrawingWithFadeOut(0.01f);
             yield return new WaitForSeconds(0.01f);
-			progress += 1f / (60 * 10);  //  10s at 60fps
+			progress += Time.deltaTime / 20;  //  300 frames
+			Debug.Log(progress);
 		}
 
         CoordinateManager.virtualPos.galactic = initPosition;
