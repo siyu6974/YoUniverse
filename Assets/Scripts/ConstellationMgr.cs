@@ -121,8 +121,6 @@ public class ConstellationMgr : MonoBehaviour {
                 int nbLink = int.Parse(components[1]);
                 int[,] links = new int[nbLink, 2];
                 for (int j = 0; j < nbLink; j++) {
-                                    Debug.Log(components);
-
                     links[j, 0] = int.Parse(components[3 + j * 2]);
                     links[j, 1] = int.Parse(components[3 + j * 2 + 1]);
                 }
@@ -162,7 +160,7 @@ public class ConstellationMgr : MonoBehaviour {
         for (int j = 0; j < c.links.GetLength(0); j++) {
             Vector3 a = getStarDrawnPosition(c.links[j, 0]);
             Vector3 b = getStarDrawnPosition(c.links[j, 1]);
-            if (Vector3.Angle(a, _camera.transform.forward) > _camera.fieldOfView ||
+            if (Vector3.Angle(a, _camera.transform.forward) > _camera.fieldOfView &&
                 Vector3.Angle(b, _camera.transform.forward) > _camera.fieldOfView) {
                 // Do not draw if object is off screen
                 continue;
@@ -183,7 +181,7 @@ public class ConstellationMgr : MonoBehaviour {
             // try to reuse line renderer 
             textGO = labelShown[lableIndex];
             text = textGO.GetComponent<Text>();
-        } catch (System.ArgumentOutOfRangeException){
+        } catch (System.ArgumentOutOfRangeException) {
             GameObject canvas = GameObject.Find("ConstellationNameCanvas");
             textGO = new GameObject();
             textGO.transform.parent = canvas.transform;
@@ -195,6 +193,7 @@ public class ConstellationMgr : MonoBehaviour {
         }
         textGO.name = c.name + "_label";
         text.text = c.name;
+        text.alignment = TextAnchor.MiddleCenter;
         textGO.transform.position = position * 0.8f;
         textGO.transform.LookAt(_camera.transform);
         textGO.transform.Rotate(0f, 180f, 0f);
