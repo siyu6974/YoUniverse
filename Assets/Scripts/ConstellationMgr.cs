@@ -194,7 +194,7 @@ public class ConstellationMgr : MonoBehaviour {
         textGO.name = c.name + "_label";
         text.text = c.name;
         text.alignment = TextAnchor.MiddleCenter;
-        textGO.transform.position = position * 0.8f;
+        textGO.transform.position = position;
         textGO.transform.LookAt(_camera.transform);
         textGO.transform.Rotate(0f, 180f, 0f);
         lableIndex++;
