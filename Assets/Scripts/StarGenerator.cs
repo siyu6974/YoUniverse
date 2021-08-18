@@ -403,7 +403,7 @@ StarPositionUpdateJob m_job;
         instance = this;
     }
 
-    void Distroy() {
+    void OnDestroy() {
         m_starPos.Dispose();
         m_starSize.Dispose();
         m_mag.Dispose();
