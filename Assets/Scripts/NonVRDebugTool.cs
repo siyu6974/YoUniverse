@@ -24,8 +24,8 @@ public class NonVRDebugTool : MonoBehaviour {
 
     private void Update() {
         RotateView();
-        //if (trackingOffset != null && fc.getState() != CharacterStates.flying)
-            //cam.transform.localPosition = debugTracking.position - (Vector3)trackingOffset;
+        // if (trackingOffset != null && fc.state != CharacterStates.flying)
+        //     cam.transform.localPosition = debugTracking.position - (Vector3)trackingOffset;
     }
 
 

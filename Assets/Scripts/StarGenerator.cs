@@ -1,5 +1,9 @@
 ﻿using UnityEngine;
 using System;
+using Unity.Collections;
+using UnityEngine.Jobs;
+using Unity.Jobs;
+using System.Linq;
 
 public struct StarData {
     // invar
@@ -42,28 +46,92 @@ public class StarGenerator : MonoBehaviour {
 	[HideInInspector]
 	public bool ignoreMovement = false;
 
+    public struct StarPositionUpdateJob : IJobParallelFor
+    {
+        // In
+        [ReadOnly]
+        public NativeArray<Vector3> starPoses;
+        [ReadOnly]
+        public Vector3 obPos;
+
+        public Vector3 camPos;
+        public NativeArray<float> absMags;
+
+        // Out
+        public NativeArray<Vector3> drawnPoses;
+        public NativeArray<float> mags;
+        public NativeArray<float> distances;
+        public NativeArray<float> starSizes;
+
+        public void Execute(int i) {
+            Vector3 starRelativePos = starPoses[i] - obPos;
+            drawnPoses[i] = camPos + starRelativePos.normalized * 700;
+
+            var distance = starRelativePos.magnitude;
+            distances[i] = distance;
+            var mag = calculateMagitude(distance, absMags[i]);
+            mags[i] = mag;
+            var starSize = adaptLuminanceScaledLn(pointSourceMagToLnLuminance(mag), .6f);
+            starSize *= starLinearScale;
+            if (starSize >= 20) {
+                starSize = 20;
+            }
+            starSizes[i] = starSize;
+        }
+    }
+
+NativeArray<Vector3> m_starPos;
+NativeArray<Vector3> m_starDrawnPos;
+NativeArray<float> m_distance;
+NativeArray<float> m_mag;
+NativeArray<float> m_absMags;
+NativeArray<float> m_starSize;
+StarPositionUpdateJob m_job; 
     // Use this for initialization
     void Start() {
         load_data();
         float fov = Camera.main.fieldOfView / 180f;
         double powFactor = Math.Pow(60f / Math.Max(0.7f, fov), 0.8f);
         lnfovFactor = (float)Math.Log(1f / 50f * 2025000f * 60f * 60f / (fov * fov) / (EYE_RESOLUTION * EYE_RESOLUTION) / powFactor / 1.4f);
+        Debug.Log(lnfovFactor);
 
         CoordinateManager.starDataSet = starDataSet;
         CoordinateManager.virtualPos.galactic = Camera.main.transform.position;
+
+        m_starPos = new NativeArray<Vector3>(starsMax, Allocator.Persistent);
+        m_starDrawnPos = new NativeArray<Vector3>(starsMax, Allocator.Persistent);
+        m_distance = new NativeArray<float>(starsMax, Allocator.Persistent);
+        m_mag = new NativeArray<float>(starsMax, Allocator.Persistent);
+        m_absMags = new NativeArray<float>(starsMax, Allocator.Persistent);
+        m_starSize = new NativeArray<float>(starsMax, Allocator.Persistent);
+
+        var starPosList = from star in starDataSet select star.coord;
+        m_starPos.CopyFrom(starPosList.ToArray<Vector3>());
+        var absMagList = from star in starDataSet select star.AbsMag;
+        m_absMags.CopyFrom(absMagList.ToArray<float>());
+
+        m_job = new StarPositionUpdateJob() {
+            starPoses = m_starPos,
+            absMags = m_absMags,
+            // out
+            mags = m_mag,
+            distances = m_distance,
+            drawnPoses = m_starDrawnPos,
+            starSizes = m_starSize
+        };
     }
 
 
     // Update is called once per frame
     void Update() {
         // HACK: prevPos is changed in transformPosition, so it needs to be copied before
-        Vector3 prevPos = CoordinateManager.prevVirtualPos.galactic;
+        var prevPos = CoordinateManager.prevVirtualPos;
         if (!forceNoTransformation)
             CoordinateManager.transformPosition(Camera.main.transform.position);
 
-        // if (!ignoreMovement && CoordinateManager.virtualPos.galactic != prevPos)
-        if (!ignoreMovement)
-            createStars(CoordinateManager.virtualPos);
+        if (CoordinateManager.virtualPos != prevPos)
+            if (!ignoreMovement)
+                createStars(CoordinateManager.virtualPos);
     }
 
 
@@ -91,28 +159,48 @@ public class StarGenerator : MonoBehaviour {
             nearestStar = null;
         }
         Vector3 pos = omniPos.galactic;
-        // TODO: USE absMag to get more stars!
+        Vector3 camPos = Camera.main.transform.position;
+        float farClipPlane = Camera.main.farClipPlane * 0.8f;
+
+        m_job.obPos = pos;
+        m_job.camPos = camPos;
+        JobHandle handle = m_job.Schedule(starsMax, 100);
+        // Wait for the job to complete
+        handle.Complete();
+
+
         for (int i = 0; i < starsMax; i++) {
-            Vector3 starRelativePos = starDataSet[i].coord - pos;
-            float distance = starRelativePos.magnitude;
+            float distance = m_distance[i];
             starDataSet[i].distance = distance;
             if (distance < MyConstants.STAR_SYSTEM_BORDER_ENTRY) continue;
-            Camera cam = Camera.main;
-            starParticles[i].position = cam.transform.position + starRelativePos.normalized * cam.farClipPlane * 0.9f;
-            starDataSet[i].drawnPos = starParticles[i].position;
-
-            starDataSet[i].Mag = calculateMagitude(starRelativePos.magnitude, starDataSet[i].AbsMag);
-            float starSize = adaptLuminanceScaledLn(pointSourceMagToLnLuminance(starDataSet[i].Mag), .6f);
-            starSize *= starLinearScale;
-
-            float luminanceFactor = 1f;
-            if (starSize >= 20) {
-                starSize = 20;
-            }
-
-            starParticles[i].startColor = starDataSet[i].Color * luminanceFactor;
-            starParticles[i].startSize = starSize;
+            starDataSet[i].Mag = m_mag[i];
+            starDataSet[i].drawnPos = m_starDrawnPos[i];
+            starParticles[i].position = m_starDrawnPos[i];
+            starParticles[i].startSize = m_starSize[i];
+            starParticles[i].startColor = starDataSet[i].Color * 1f;
         }
+
+
+        // TODO: USE absMag to get more stars!
+        // for (int i = 0; i < starsMax; i++) {
+        //     Vector3 starRelativePos = starDataSet[i].coord - pos;
+        //     float distance = starRelativePos.magnitude;
+        //     starDataSet[i].distance = distance;
+        //     if (distance < MyConstants.STAR_SYSTEM_BORDER_ENTRY) continue;
+        //     starParticles[i].position = camPos + starRelativePos.normalized * farClipPlane;
+        //     starDataSet[i].drawnPos = starParticles[i].position;
+
+        //     starDataSet[i].Mag = calculateMagitude(distance, starDataSet[i].AbsMag);
+        //     float starSize = adaptLuminanceScaledLn(pointSourceMagToLnLuminance(starDataSet[i].Mag), .6f);
+        //     starSize *= starLinearScale;
+
+        //     float luminanceFactor = 1f;
+        //     if (starSize >= 20) {
+        //         starSize = 20;
+        //     }
+        //     starParticles[i].startSize = starSize;
+        //     starParticles[i].startColor = starDataSet[i].Color * luminanceFactor;
+        // }
         ps.SetParticles(starParticles, starParticles.Length);
     }
 
@@ -160,16 +248,17 @@ public class StarGenerator : MonoBehaviour {
     }
 
 
-    float calculateMagitude(float distance, float M) {
+    static float calculateMagitude(float distance, float M) {
         return (float)(M - 5 * Math.Log10(3260f / distance));
     }
 
     // Compute the ln of the luminance for a point source with the given mag for the current FOV
-    float pointSourceMagToLnLuminance(float mag){
-        return -0.92103f*(mag + 12.12331f) + lnfovFactor;
+    static float pointSourceMagToLnLuminance(float mag){
+        return -0.92103f*(mag + 12.12331f) + 19.87f;
+        // return -0.92103f*(mag + 12.12331f) + lnfovFactor;
     }
 
-    float adaptLuminanceScaledLn(float lnWorldLuminance, float pFact = 0.5f) {
+    static float adaptLuminanceScaledLn(float lnWorldLuminance, float pFact = 0.5f) {
         const float lnPix0p0001 = -8.0656104861f;
         return (float)Math.Exp(((lnWorldLuminance+lnPix0p0001)*1)*pFact);
     }
@@ -312,5 +401,14 @@ public class StarGenerator : MonoBehaviour {
         if (instance != null)
             Debug.LogError("Star Gen has already been instantiated");
         instance = this;
+    }
+
+    void Distroy() {
+        m_starPos.Dispose();
+        m_starSize.Dispose();
+        m_mag.Dispose();
+        m_distance.Dispose();
+        m_starDrawnPos.Dispose();
+        m_absMags.Dispose();
     }
 }

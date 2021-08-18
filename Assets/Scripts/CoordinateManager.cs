@@ -9,6 +9,14 @@ public struct OmniPosition {
     // 1 unit = 10^-4 AU
     // origin: the sun, X->entrypoint,
     // stellar = null ==> is in interstellar space
+
+    public static bool operator ==(OmniPosition c1, OmniPosition c2) {
+        return c1.galactic == c2.galactic && c1.stellar == c2.stellar;
+    }
+
+    public static bool operator !=(OmniPosition c1, OmniPosition c2) {
+        return !(c1 == c2);
+    }
 }
 
 public class CoordinateManager : MonoBehaviour {
