@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -43,8 +43,8 @@ public class ConstellationMgr : MonoBehaviour {
 	void Start () {
         load_data();
         load_user_data();
-        linesDrawn = new List<LineRenderer>(1000);
-        labelShown = new List<GameObject>(200);
+        linesDrawn = new List<LineRenderer>(500);
+        labelShown = new List<GameObject>(100);
         _camera = Camera.main;
 	}
 	
@@ -67,6 +67,9 @@ public class ConstellationMgr : MonoBehaviour {
         if (skyCulture == 0) return;
         if (shouldDrawAllConstellations) {
             drawAll();
+            for (int i=lineIndex; i <linesDrawn.Count; i++) {
+                linesDrawn[i].enabled = false;
+            }
         }
     }
 
@@ -160,8 +163,9 @@ public class ConstellationMgr : MonoBehaviour {
         for (int j = 0; j < c.links.GetLength(0); j++) {
             Vector3 a = getStarDrawnPosition(c.links[j, 0]);
             Vector3 b = getStarDrawnPosition(c.links[j, 1]);
-            if (Vector3.Angle(a, _camera.transform.forward) > _camera.fieldOfView &&
-                Vector3.Angle(b, _camera.transform.forward) > _camera.fieldOfView) {
+            Vector3 a_r = a - _camera.transform.position;
+
+            if (Vector3.Angle(a_r, _camera.transform.forward) > _camera.fieldOfView) {
                 // Do not draw if object is off screen
                 continue;
             }
@@ -244,6 +248,7 @@ public class ConstellationMgr : MonoBehaviour {
         try {
             // try to reuse line renderer 
             lr = linesDrawn[lineIndex];
+            lr.enabled = true;
         } catch (System.ArgumentOutOfRangeException){
             lr = Instantiate(linePrefab, transform).GetComponent<LineRenderer>();
             linesDrawn.Add(lr);
