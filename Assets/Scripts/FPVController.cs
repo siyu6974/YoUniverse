@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityStandardAssets.Characters.FirstPerson;
 
-public class NonVRDebugTool : MonoBehaviour {
+public class FPVController : MonoBehaviour {
     public Camera cam;
     public GameObject pivot;
     FlightController fc;

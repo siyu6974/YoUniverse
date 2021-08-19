@@ -49,7 +49,7 @@ public class ConstellationMgr : MonoBehaviour {
 	}
 	
 	void Update () {
-        if (Input.GetKeyDown(KeyCode.Tab) || (VRModeDetector.isInVR && Input.GetButtonDown("LMenu"))) {
+        if (Input.GetKeyDown(KeyCode.Tab)) {
             shouldDrawAllConstellations = !shouldDrawAllConstellations;
             if (shouldDrawAllConstellations == false) clearDrawing();
         }

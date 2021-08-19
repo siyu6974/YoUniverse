@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.VR;
 
 public enum CharacterStates { flying = 1, inSpace = 2, landing = 3, onOrbit = 4, landed, takingOff };
 public enum LandingPhases { notLanding = 0, preparing = 1, turing = 2, getingDown = 3 };
@@ -97,10 +96,7 @@ public class FlightController : MonoBehaviour {
                     state = CharacterStates.inSpace;
                 } else {
                     moveDirection = camT.forward;
-                    if (VRModeDetector.isInVR)
-                        speed += (UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.RightHand).y - UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.CenterEye).y);
-                    else
-                        speed += 0.3f;
+                    speed += 0.3f;
                     moveDirection *= speed;
                     transform.position += (moveDirection * Time.deltaTime);
 
@@ -174,20 +170,12 @@ public class FlightController : MonoBehaviour {
 
                 // Walking on orbit
                 if (orbitEntryPoint == null) {
-                    if (VRModeDetector.isInVR) {
-                        orbitEntryPoint = UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.CenterEye);
-                    } else {
-                        orbitEntryPoint = GameObject.Find("TestTrackingObj").transform.position;
-                    }
+                    orbitEntryPoint = GameObject.Find("TestTrackingObj").transform.position;
                 }
                 if (orbitEntryPoint != null) {
                     Vector3 entryPoint = (Vector3)orbitEntryPoint;
                     Vector3 currentPos;
-                    if (VRModeDetector.isInVR) {
-                        currentPos = UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.CenterEye);
-                    } else {
-                        currentPos = GameObject.Find("TestTrackingObj").transform.position;
-                    }
+                    currentPos = GameObject.Find("TestTrackingObj").transform.position;
                     float theta = (currentPos.x - entryPoint.x) * (2 * Mathf.PI / 5f);
                     float phi = (currentPos.z - entryPoint.z) * (2 * Mathf.PI / 5f);
 
@@ -230,7 +218,6 @@ public class FlightController : MonoBehaviour {
                     moveDirection = camT.position - standingPlanet.position;
                     moveDirection = moveDirection.normalized;
                     Debug.DrawLine(camT.position, moveDirection*1000, Color.cyan);
-                    speed += (UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.RightHand).y - UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.CenterEye).y);
 
                     moveDirection *= speed;
                     transform.Translate(moveDirection * Time.deltaTime, Space.World);

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.VR;
 
 public class ZoomController : MonoBehaviour {
     float rate = 500.0f;
@@ -18,18 +17,12 @@ public class ZoomController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-
-        bool vrCtr = VRModeDetector.isInVR;
-
-        bool vrInput = (Vector3.Distance(UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.LeftHand), UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.LeftEye)) < .18f) &&
-            (Vector3.Distance(UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.RightHand), UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.RightEye)) < .18f);
-
-		if (((vrCtr && vrInput) || Input.GetKeyDown(KeyCode.LeftControl)) && zoomed == false) {
+		if (Input.GetKeyDown(KeyCode.LeftControl) && zoomed == false) {
             Debug.Log("Zoom in");
             initPos = bodyPivot.transform.position;
             zoomed = true;
             sg.ignoreMovement = true;
-        } else if (((vrCtr && !vrInput) || Input.GetKeyUp(KeyCode.LeftControl)) && zoomed == true) {
+        } else if (Input.GetKeyUp(KeyCode.LeftControl) && zoomed == true) {
             Debug.Log("Zoom out");
             bodyPivot.transform.position = initPos;
             zoomed = false;

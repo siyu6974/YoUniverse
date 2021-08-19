@@ -10,6 +10,16 @@ public struct OmniPosition {
     // origin: the sun, X->entrypoint,
     // stellar = null ==> is in interstellar space
 
+    public override bool Equals(object obj) {
+        if (!(obj is OmniPosition)) return false;
+
+        OmniPosition c2 = (OmniPosition) obj;
+        return this.galactic == c2.galactic && this.stellar == c2.stellar;
+    }
+ 
+    public override int GetHashCode() {
+        return (int)Vector3.Magnitude(galactic);
+    }
     public static bool operator ==(OmniPosition c1, OmniPosition c2) {
         return c1.galactic == c2.galactic && c1.stellar == c2.stellar;
     }
