@@ -175,7 +175,6 @@ StarPositionUpdateJob m_job;
             starDataSet[i].drawnPos = dp;
             starParticles[i].position = dp;
             starParticles[i].startSize = m_job.starSizes[i];
-            starParticles[i].startColor = starDataSet[i].Color * 1f;
         }
 
 
@@ -241,6 +240,7 @@ StarPositionUpdateJob m_job;
             starDataSet[i].coord.x = float.Parse(components[6]);
             starDataSet[i].coord.z = float.Parse(components[7]);
             starDataSet[i].coord.y = float.Parse(components[8]);
+            starParticles[i].startColor = starDataSet[i].Color * 1f;
         }
         starCSV = null;
     }
