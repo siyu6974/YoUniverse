@@ -8,7 +8,7 @@ public class FlyInfoManager : MonoBehaviour {
 	string speedText, statusText, positionText;
 	string speedTitle = "Speed: ";
 	string statusTitle = "Status: ";
-	string positionTitle = "Position: \n";
+	string positionTitle = "Coordinates: \n";
 
 	float speed;
 	CharacterStates state;
