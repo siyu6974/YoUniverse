@@ -116,16 +116,17 @@ public class ConstellationCreater : MonoBehaviour {
         tmpStarPair = new int[2] { -1, -1 };
 
         // save to file
-        string path = MyConstants.UserConstellationDataPath;
-        StreamWriter writer = new StreamWriter(path, false);
+        var p = Application.persistentDataPath + MyConstants.UserConstellationDataFileName;
+        StreamWriter writer = new StreamWriter(p, false);
         foreach (ConstellationData con in userConstellationDataSet) {
             string line = $"{con.name} {nbLink}  ";
-            for (int i = 0; i < nbLink; i++) {
+            for (int i = 0; i < con.links.GetLength(0); i++) {
                 line += $"{con.links[i, 0]} {con.links[i, 1]} ";
             }
             writer.WriteLine(line);
         }
         writer.Close();
+        Debug.Log("Saved to file " + p);
         cc = null;
     }
 
@@ -141,6 +142,7 @@ public class ConstellationCreater : MonoBehaviour {
         isCreating = false;
         tmpConstellation.name = name;
         saveDrawing(tmpConstellation);
+        tmpConstellation = null;
     }
 }
 

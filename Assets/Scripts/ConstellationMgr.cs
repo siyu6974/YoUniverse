@@ -114,27 +114,30 @@ public class ConstellationMgr : MonoBehaviour {
     }
 
     void load_user_data() {
-        using (StreamReader sr = new StreamReader(MyConstants.UserConstellationDataPath)) {
-            string[] lines = sr.ReadToEnd().Split('\n');
-            
-            if (lines.Length == 0) {return;}  
-            for (int i = 0; i < lines.Length; i++) {
-                string[] components = lines[i].Split(' ');
-                if (components.Length < 3) continue;
-                int nbLink = int.Parse(components[1]);
-                int[,] links = new int[nbLink, 2];
-                for (int j = 0; j < nbLink; j++) {
-                    links[j, 0] = int.Parse(components[3 + j * 2]);
-                    links[j, 1] = int.Parse(components[3 + j * 2 + 1]);
+        var p = Application.persistentDataPath + MyConstants.UserConstellationDataFileName;
+        try {
+            using (StreamReader sr = new StreamReader(p)) {
+                string[] lines = sr.ReadToEnd().Split('\n');
+                
+                if (lines.Length == 0) {return;}  
+                for (int i = 0; i < lines.Length; i++) {
+                    string[] components = lines[i].Split(' ');
+                    if (components.Length < 3) continue;
+                    int nbLink = int.Parse(components[1]);
+                    int[,] links = new int[nbLink, 2];
+                    for (int j = 0; j < nbLink; j++) {
+                        links[j, 0] = int.Parse(components[3 + j * 2]);
+                        links[j, 1] = int.Parse(components[3 + j * 2 + 1]);
+                    }
+                    ConstellationData data = new ConstellationData {
+                        name = components[0],
+                        abbr = components[0],
+                        links = links
+                    };
+                    userConstellationDataSet.Add(data); 
                 }
-                ConstellationData data = new ConstellationData {
-                    name = components[0],
-                    abbr = components[0],
-                    links = links
-                };
-                userConstellationDataSet.Add(data); 
             }
-        }
+        } catch {}
     }
 
     private int lineIndex;
