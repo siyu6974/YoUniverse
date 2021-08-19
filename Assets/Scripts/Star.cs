@@ -10,6 +10,7 @@ public class Star : MonoBehaviour
     void Start()
     {
         orgScale = transform.localScale;
+        transform.localScale = Vector3.zero;
     }
 
     // Update is called once per frame

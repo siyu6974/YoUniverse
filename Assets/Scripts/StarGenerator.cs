@@ -67,14 +67,13 @@ public class StarGenerator : MonoBehaviour {
 
         public void Execute(int i) {
             Vector3 starRelativePos = starPoses[i] - obPos;
-            drawnPoses[i] = camPos + starRelativePos.normalized * 700;
+            drawnPoses[i] = camPos + starRelativePos.normalized * 800;
 
             var distance = starRelativePos.magnitude;
             distances[i] = distance;
             var mag = calculateMagitude(distance, absMags[i]);
             mags[i] = mag;
-            var starSize = adaptLuminanceScaledLn(pointSourceMagToLnLuminance(mag), .6f);
-            starSize *= starLinearScale;
+            var starSize = starLinearScale * adaptLuminanceScaledLn(pointSourceMagToLnLuminance(mag), .6f);
             if (starSize >= 20) {
                 starSize = 20;
             }
@@ -82,9 +81,8 @@ public class StarGenerator : MonoBehaviour {
         }
     }
 
+    StarPositionUpdateJob m_job; 
 
-StarPositionUpdateJob m_job; 
-    // Use this for initialization
     void Start() {
         load_data();
         float fov = Camera.main.fieldOfView / 180f;
@@ -165,11 +163,13 @@ StarPositionUpdateJob m_job;
         // Wait for the job to complete
         handle.Complete();
 
-
         for (int i = 0; i < starsMax; i++) {
             float distance = m_job.distances[i];
             starDataSet[i].distance = distance;
-            if (distance < MyConstants.STAR_SYSTEM_BORDER_ENTRY) continue;
+            if (distance < MyConstants.STAR_SYSTEM_BORDER_ENTRY) {
+                starParticles[i].startSize = 0f;
+                continue;
+            }
             starDataSet[i].Mag = m_job.mags[i];
             var dp = m_job.drawnPoses[i];
             starDataSet[i].drawnPos = dp;
@@ -177,27 +177,6 @@ StarPositionUpdateJob m_job;
             starParticles[i].startSize = m_job.starSizes[i];
         }
 
-
-        // TODO: USE absMag to get more stars!
-        // for (int i = 0; i < starsMax; i++) {
-        //     Vector3 starRelativePos = starDataSet[i].coord - pos;
-        //     float distance = starRelativePos.magnitude;
-        //     starDataSet[i].distance = distance;
-        //     if (distance < MyConstants.STAR_SYSTEM_BORDER_ENTRY) continue;
-        //     starParticles[i].position = camPos + starRelativePos.normalized * farClipPlane;
-        //     starDataSet[i].drawnPos = starParticles[i].position;
-
-        //     starDataSet[i].Mag = calculateMagitude(distance, starDataSet[i].AbsMag);
-        //     float starSize = adaptLuminanceScaledLn(pointSourceMagToLnLuminance(starDataSet[i].Mag), .6f);
-        //     starSize *= starLinearScale;
-
-        //     float luminanceFactor = 1f;
-        //     if (starSize >= 20) {
-        //         starSize = 20;
-        //     }
-        //     starParticles[i].startSize = starSize;
-        //     starParticles[i].startColor = starDataSet[i].Color * luminanceFactor;
-        // }
         ps.SetParticles(starParticles, starParticles.Length);
     }
 
@@ -252,6 +231,7 @@ StarPositionUpdateJob m_job;
 
     // Compute the ln of the luminance for a point source with the given mag for the current FOV
     static float pointSourceMagToLnLuminance(float mag){
+        // TODO: lnfovFactor is hardcoded
         return -0.92103f*(mag + 12.12331f) + 19.87f;
         // return -0.92103f*(mag + 12.12331f) + lnfovFactor;
     }
