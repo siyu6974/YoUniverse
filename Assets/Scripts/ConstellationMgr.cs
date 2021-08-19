@@ -170,7 +170,7 @@ public class ConstellationMgr : MonoBehaviour {
                 continue;
             }
             if (a != Vector3.zero && b != Vector3.zero)
-                drawLine(a, b, Color.white);
+                drawLine(a, b);
         }
         showConstellationLabel(c);
     }
@@ -243,7 +243,7 @@ public class ConstellationMgr : MonoBehaviour {
 	}
 
 
-    void drawLine(Vector3 start, Vector3 end, Color color) {
+    void drawLine(Vector3 start, Vector3 end) {
         LineRenderer lr;
         try {
             // try to reuse line renderer 
@@ -252,8 +252,10 @@ public class ConstellationMgr : MonoBehaviour {
         } catch (System.ArgumentOutOfRangeException){
             lr = Instantiate(linePrefab, transform).GetComponent<LineRenderer>();
             linesDrawn.Add(lr);
+            var color = Color.white;
+            color.a = 0.5f;
+            lr.material.color = color;
         }
-        lr.material.color = color;
 
         // leave a margin 
         Vector3 margin = (end - start).normalized * 10f;
