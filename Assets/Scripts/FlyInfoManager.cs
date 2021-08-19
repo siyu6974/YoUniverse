@@ -38,11 +38,11 @@ public class FlyInfoManager : MonoBehaviour {
                 speedText = speedTitle + (speed / 10).ToString("F1") + " ly/s";
             }
         }
-		//if (state == CharacterStates.landing) {
-		//	statusText = statusTitle + state.ToString () + " - " + phase.ToString ();
-		//} else {
-		//	statusText = statusTitle + state.ToString ();
-		//}
+		if (state == CharacterStates.landing) {
+			statusText = statusTitle + state.ToString () + " - " + phase.ToString ();
+		} else {
+			statusText = statusTitle + state.ToString ();
+		}
         positionText = positionTitle + getPosition();
 
         //infos.text = speedText + "\n" + statusText + "\n" + positionText;

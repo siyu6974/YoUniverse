@@ -51,11 +51,13 @@ public class StarGenerator : MonoBehaviour {
         // In
         [ReadOnly]
         public NativeArray<Vector3> starPoses;
+
         [ReadOnly]
+        public NativeArray<float> absMags;
+
         public Vector3 obPos;
 
         public Vector3 camPos;
-        public NativeArray<float> absMags;
 
         // Out
         public NativeArray<Vector3> drawnPoses;
@@ -80,12 +82,7 @@ public class StarGenerator : MonoBehaviour {
         }
     }
 
-NativeArray<Vector3> m_starPos;
-NativeArray<Vector3> m_starDrawnPos;
-NativeArray<float> m_distance;
-NativeArray<float> m_mag;
-NativeArray<float> m_absMags;
-NativeArray<float> m_starSize;
+
 StarPositionUpdateJob m_job; 
     // Use this for initialization
     void Start() {
@@ -98,26 +95,26 @@ StarPositionUpdateJob m_job;
         CoordinateManager.starDataSet = starDataSet;
         CoordinateManager.virtualPos.galactic = Camera.main.transform.position;
 
-        m_starPos = new NativeArray<Vector3>(starsMax, Allocator.Persistent);
-        m_starDrawnPos = new NativeArray<Vector3>(starsMax, Allocator.Persistent);
-        m_distance = new NativeArray<float>(starsMax, Allocator.Persistent);
-        m_mag = new NativeArray<float>(starsMax, Allocator.Persistent);
-        m_absMags = new NativeArray<float>(starsMax, Allocator.Persistent);
-        m_starSize = new NativeArray<float>(starsMax, Allocator.Persistent);
+        var _starPos = new NativeArray<Vector3>(starsMax, Allocator.Persistent);
+        var _starDrawnPos = new NativeArray<Vector3>(starsMax, Allocator.Persistent);
+        var _distance = new NativeArray<float>(starsMax, Allocator.Persistent);
+        var _mag = new NativeArray<float>(starsMax, Allocator.Persistent);
+        var _absMags = new NativeArray<float>(starsMax, Allocator.Persistent);
+        var _starSize = new NativeArray<float>(starsMax, Allocator.Persistent);
 
         var starPosList = from star in starDataSet select star.coord;
-        m_starPos.CopyFrom(starPosList.ToArray<Vector3>());
+        _starPos.CopyFrom(starPosList.ToArray<Vector3>());
         var absMagList = from star in starDataSet select star.AbsMag;
-        m_absMags.CopyFrom(absMagList.ToArray<float>());
+        _absMags.CopyFrom(absMagList.ToArray<float>());
 
         m_job = new StarPositionUpdateJob() {
-            starPoses = m_starPos,
-            absMags = m_absMags,
+            starPoses = _starPos,
+            absMags = _absMags,
             // out
-            mags = m_mag,
-            distances = m_distance,
-            drawnPoses = m_starDrawnPos,
-            starSizes = m_starSize
+            mags = _mag,
+            distances = _distance,
+            drawnPoses = _starDrawnPos,
+            starSizes = _starSize
         };
     }
 
@@ -170,13 +167,14 @@ StarPositionUpdateJob m_job;
 
 
         for (int i = 0; i < starsMax; i++) {
-            float distance = m_distance[i];
+            float distance = m_job.distances[i];
             starDataSet[i].distance = distance;
             if (distance < MyConstants.STAR_SYSTEM_BORDER_ENTRY) continue;
-            starDataSet[i].Mag = m_mag[i];
-            starDataSet[i].drawnPos = m_starDrawnPos[i];
-            starParticles[i].position = m_starDrawnPos[i];
-            starParticles[i].startSize = m_starSize[i];
+            starDataSet[i].Mag = m_job.mags[i];
+            var dp = m_job.drawnPoses[i];
+            starDataSet[i].drawnPos = dp;
+            starParticles[i].position = dp;
+            starParticles[i].startSize = m_job.starSizes[i];
             starParticles[i].startColor = starDataSet[i].Color * 1f;
         }
 
@@ -404,11 +402,11 @@ StarPositionUpdateJob m_job;
     }
 
     void OnDestroy() {
-        m_starPos.Dispose();
-        m_starSize.Dispose();
-        m_mag.Dispose();
-        m_distance.Dispose();
-        m_starDrawnPos.Dispose();
-        m_absMags.Dispose();
+        m_job.starPoses.Dispose();
+        m_job.absMags.Dispose();
+        m_job.mags.Dispose();
+        m_job.distances.Dispose();
+        m_job.drawnPoses.Dispose();
+        m_job.starSizes.Dispose();
     }
 }
