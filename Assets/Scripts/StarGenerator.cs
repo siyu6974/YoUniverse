@@ -7,14 +7,14 @@ using System.Linq;
 
 public struct StarData {
     // invar
+    public int StarID;
     public int HIP;
     public string BayerFlamsteed;
     public string ProperName;
     public float AbsMag;
     public string Spectrum;
     public Color Color;
-    // NOTE: BUG: WRONG 10^-2?????
-    public Vector3 coord; // in parsec/326 OR 10^-1 lr
+    public Vector3 coord; // in parsec/326.156 OR 10^-2 lr
 
     // var
     public float distance;
@@ -199,26 +199,28 @@ public class StarGenerator : MonoBehaviour {
 
     void load_data() {
         string[] lines = starCSV.text.Split('\n');
-        // HIP,BayerFlamsteed,ProperName,Distance,Mag,AbsMag,Spectrum,ColorIndex,X,Y,Z
+        // StarID,HIP,BayerFlamsteed,ProperName,AbsMag,Spectrum,ColorIndex,X,Y,Z 
+        // XYZ in ly
 
         starDataSet = new StarData[starsMax];
         starParticles = new ParticleSystem.Particle[starsMax];
 
         for (int i = 0; i < starsMax; i++) {
-            string[] components = lines[i].Split(',');
-            starDataSet[i].HIP = int.Parse(components[0]);
-            starDataSet[i].BayerFlamsteed = components[1];
-            starDataSet[i].ProperName = components[2];
-            starDataSet[i].AbsMag = float.Parse(components[3]);
-            starDataSet[i].Spectrum = components[4];
+            string[] components = lines[i+1].Split(',');
+            starDataSet[i].StarID = int.Parse(components[0]);
+            starDataSet[i].HIP = int.Parse(components[1]);
+            starDataSet[i].BayerFlamsteed = components[2];
+            starDataSet[i].ProperName = components[3];
+            starDataSet[i].AbsMag = float.Parse(components[4]);
+            starDataSet[i].Spectrum = components[5];
             try {
-                starDataSet[i].Color = getColor(float.Parse(components[5]));
+                starDataSet[i].Color = getColor(float.Parse(components[6]));
             } catch {
                 starDataSet[i].Color = Color.white;
             }
-            starDataSet[i].coord.x = float.Parse(components[6]);
-            starDataSet[i].coord.z = float.Parse(components[7]);
-            starDataSet[i].coord.y = float.Parse(components[8]);
+            starDataSet[i].coord.x = float.Parse(components[7])*100;
+            starDataSet[i].coord.z = float.Parse(components[8])*100;
+            starDataSet[i].coord.y = float.Parse(components[9])*100;
             starParticles[i].startColor = starDataSet[i].Color * 1f;
         }
         starCSV = null;
