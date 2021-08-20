@@ -3475,7 +3475,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lrPrefab: {fileID: 120629635333992180, guid: cfb3447dcba46479ba28ca612e77eac6, type: 3}
-  pointerDirection: {fileID: 753185659}
   customCreationMode: 0
 --- !u!114 &1037490426
 MonoBehaviour:

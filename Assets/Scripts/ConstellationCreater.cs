@@ -22,8 +22,6 @@ public class ConstellationCreater : MonoBehaviour {
 
     private MenuSelector ms;
 
-	public Transform pointerDirection;
-
 	[HideInInspector] public bool customCreationMode;
 
     void Start() {
@@ -31,13 +29,12 @@ public class ConstellationCreater : MonoBehaviour {
 		customCreationMode = false;
     }
 
-
     private Vector3 startDrawingPos;
 
     void Update() {
         if (isCreating && lr != null) {
-			Vector3 ray = pointerDirection.forward * Camera.main.farClipPlane * 0.9f;
-           
+            Transform cam = Camera.main.transform;
+			Vector3 ray = cam.position + cam.forward * 800f;
             drawLine(startDrawingPos, ray);
         }
         //if (Input.GetButtonDown("RMenu")) {
