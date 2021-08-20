@@ -32,23 +32,20 @@ public class LaserPointer : MonoBehaviour {
             return;
         }
 
-
-        //      Debug.Log(Input.GetAxis ("Axis1D.PrimaryIndexTrigger"));
-        //      Debug.Log(Input.GetButton("Fire1"));
         if (Input.GetButton("Fire1")) {
             ray = transform.position + transform.forward * Camera.main.farClipPlane * 0.9f;
-            //            ray.z = Camera.main.farClipPlane * 0.9f;
-            //            ray = Camera.main.ScreenToWorldPoint(ray).normalized;
             lr.enabled = true;
+            var camPos = Camera.main.transform.position;
             for (int i = 0; i < starsMax; i++) {
-                if (starDataSet[i].Mag < 11 && Vector3.Angle(starDataSet[i].drawnPos, ray) < 1f) {
-                    if (starDataSet[i].drawnPos == Vector3.zero) {
-                        continue;
-                    }
+                if (starDataSet[i].drawnPos == Vector3.zero) {
+                    continue;
+                }
+                var starRelativePos = starDataSet[i].drawnPos - camPos;
+                if (starDataSet[i].Mag < 8 && Vector3.Angle(starRelativePos, transform.forward) < .5f) {
                     string constellation = constellationMgr.drawConstellationOfSelectedStar(starDataSet[i].HIP);
 					selected = constellationMgr.selected;
                     showStarInfo(starDataSet[i], constellation);
-					pointed = starDataSet [i];
+					pointed = starDataSet[i];
 
                     constellationCreater.SendMessage("constructConstellation", starDataSet[i]);
 
